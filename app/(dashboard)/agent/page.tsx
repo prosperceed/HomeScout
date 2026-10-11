@@ -1,0 +1,31 @@
+export default function AgentDashboardPage() {
+	return (
+		<div className="space-y-6">
+			<header>
+				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+					Dashboard
+				</p>
+				<h1 className="mt-2 text-4xl font-black tracking-[-0.06em] text-slate-900">
+					Agent overview
+				</h1>
+			</header>
+			<div className="grid gap-4 md:grid-cols-3">
+				{[
+					{ label: "Managed listings", value: "27" },
+					{ label: "New inquiries", value: "15" },
+					{ label: "Conversion rate", value: "32%" },
+				].map((item) => (
+					<div
+						key={item.label}
+						className="rounded-[24px] border border-stone-200 bg-white p-5 shadow-sm"
+					>
+						<p className="text-sm text-slate-500">{item.label}</p>
+						<p className="mt-3 text-3xl font-black tracking-[-0.06em] text-slate-900">
+							{item.value}
+						</p>
+					</div>
+				))}
+			</div>
+		</div>
+	);
+}
