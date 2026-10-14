@@ -42,7 +42,7 @@ export default function AuthLayout({
 							</h2>
 							<p className="mt-4 text-sm leading-relaxed text-slate-300">
 								Join thousands of people who found their perfect home through
-								HomeScout — simple, clear, and built on trust.
+								HomeScout.
 							</p>
 						</div>
 					</div>

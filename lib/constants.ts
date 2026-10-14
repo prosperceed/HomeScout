@@ -33,10 +33,10 @@ export const PRICE_RANGES = [
 ];
 
 export const DASHBOARD_ROUTES: Record<string, string> = {
-  client: "/dashboard/client",
-  landlord: "/dashboard/landlord",
-  agent: "/dashboard/agent",
-  admin: "/dashboard/admin",
+  client: "/client",
+  landlord: "/landlord",
+  agent: "/agent",
+  admin: "/admin",
 };
 
 export const AUTH_ROUTES = {

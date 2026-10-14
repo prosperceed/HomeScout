@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -127,8 +127,7 @@ interface AgentRoleData {
 	fee_value: string;
 }
 
-// ── Step Indicator ───────────────────────────────────────────────────────────
-
+//Step Indicator
 function StepIndicator({ current, total }: { current: number; total: number }) {
 	return (
 		<div
@@ -170,8 +169,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
 	);
 }
 
-// ── Input component ──────────────────────────────────────────────────────────
-
+//Input component
 function Field({
 	label,
 	id,
@@ -207,8 +205,7 @@ const inputClass =
 const errorInputClass =
 	"w-full rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-300/25 transition-all";
 
-// ── Main Register Page ────────────────────────────────────────────────────────
-
+// Main Register Page
 const easeCurve = [0.22, 1, 0.36, 1] as const;
 
 const SLIDE = {
@@ -221,7 +218,7 @@ const SLIDE = {
 	}),
 };
 
-export default function RegisterPage() {
+function RegisterPageInner() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const initialRole = (searchParams.get("role") as UserRole) || null;
@@ -953,5 +950,13 @@ export default function RegisterPage() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function RegisterPage() {
+	return (
+		<Suspense>
+			<RegisterPageInner />
+		</Suspense>
 	);
 }

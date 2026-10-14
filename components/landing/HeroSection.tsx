@@ -15,8 +15,8 @@ export default function HeroSection() {
 					className="object-cover opacity-50"
 					sizes="100vw"
 				/>
-				<div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-950/60 to-brand-900/40" />
-				<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(124,92,246,0.18),transparent)]" />
+				<div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-950/60 to-[#33a674]/40" />
+				<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgb(15, 23, 42),transparent)]" />
 			</div>
 
 			<div className="relative container-shell pt-16 pb-0 lg:pt-20">
@@ -29,13 +29,12 @@ export default function HeroSection() {
 						</h1>
 
 						<p className="mt-6 max-w-md text-lg leading-relaxed text-slate-300">
-							No fake agents. No wandering. No exploitation. HomeScout connects
-							house hunters, landlords, and agents across Nigeria — directly,
-							safely, and without the runaround.
+							HomeScout connects house hunters, landlords, and agents across
+							Nigeria directly, safely, and without the runaround.
 						</p>
 
 						<div className="mt-8 flex flex-wrap gap-3">
-							<Link
+							{/* <Link
 								href="/register"
 								className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-slate-700"
 							>
@@ -46,7 +45,7 @@ export default function HeroSection() {
 								className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white/20"
 							>
 								Browse listings
-							</Link>
+							</Link> */}
 						</div>
 					</div>
 
@@ -56,8 +55,8 @@ export default function HeroSection() {
 				</div>
 
 				<div
-					className="relative -mb-8 rounded-2xl border border-slate-200/50 p-3 sm:p-4"
-					style={{ background: "rgba(255,255,255,0.97)", zIndex: 20 }}
+					className="relative z-50 -mb-1 rounded-md border border-slate-200/50 p-3 sm:p-4"
+					style={{ background: "rgba(255,255,255,0.97)" }}
 				>
 					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 						<div className="rounded-xl border border-slate-100 bg-slate-50 p-3">

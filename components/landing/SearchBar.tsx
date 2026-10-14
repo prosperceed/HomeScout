@@ -53,7 +53,7 @@ export default function SearchBar() {
                 className={cn(
                   "flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition-all duration-150 relative",
                   activeTab === id
-                    ? "text-[#4f6af5] bg-[#f0f4ff]"
+                    ? "text-[#0f172a] bg-[#f1f5f9]"
                     : "text-[#637099] hover:text-[#1c2038] hover:bg-[#f5f5f3]"
                 )}
                 aria-selected={activeTab === id}
@@ -63,7 +63,7 @@ export default function SearchBar() {
                 {label}
                 {activeTab === id && (
                   <span
-                    className="absolute bottom-0 inset-x-0 h-0.5 rounded-full bg-[#4f6af5]"
+                    className="absolute bottom-0 inset-x-0 h-0.5 rounded-full bg-[#0f172a]"
                     aria-hidden="true"
                   />
                 )}
@@ -91,7 +91,7 @@ export default function SearchBar() {
                   id="state-select"
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="w-full pl-9 pr-4 py-3 bg-[#f8f9fc] border border-[#e8e8e4] rounded-xl text-sm text-[#1c2038] appearance-none focus:outline-none focus:ring-2 focus:ring-[#4f6af5]/30 focus:border-[#4f6af5] transition-all cursor-pointer"
+                  className="w-full pl-9 pr-4 py-3 bg-[#f8f9fc] border border-[#e8e8e4] rounded-xl text-sm text-[#1c2038] appearance-none focus:outline-none focus:ring-2 focus:ring-[#0f172a]/20 focus:border-[#0f172a] transition-all cursor-pointer"
                   aria-label="Select state"
                 >
                   <option value="">Any state</option>
@@ -128,7 +128,7 @@ export default function SearchBar() {
                   id="type-select"
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
-                  className="w-full pl-9 pr-4 py-3 bg-[#f8f9fc] border border-[#e8e8e4] rounded-xl text-sm text-[#1c2038] appearance-none focus:outline-none focus:ring-2 focus:ring-[#4f6af5]/30 focus:border-[#4f6af5] transition-all cursor-pointer"
+                  className="w-full pl-9 pr-4 py-3 bg-[#f8f9fc] border border-[#e8e8e4] rounded-xl text-sm text-[#1c2038] appearance-none focus:outline-none focus:ring-2 focus:ring-[#0f172a]/20 focus:border-[#0f172a] transition-all cursor-pointer"
                   aria-label="Select property type"
                 >
                   <option value="">Any type</option>
@@ -165,7 +165,7 @@ export default function SearchBar() {
                   id="price-select"
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value)}
-                  className="w-full pl-9 pr-4 py-3 bg-[#f8f9fc] border border-[#e8e8e4] rounded-xl text-sm text-[#1c2038] appearance-none focus:outline-none focus:ring-2 focus:ring-[#4f6af5]/30 focus:border-[#4f6af5] transition-all cursor-pointer"
+                  className="w-full pl-9 pr-4 py-3 bg-[#f8f9fc] border border-[#e8e8e4] rounded-xl text-sm text-[#1c2038] appearance-none focus:outline-none focus:ring-2 focus:ring-[#0f172a]/20 focus:border-[#0f172a] transition-all cursor-pointer"
                   aria-label="Select budget range"
                 >
                   <option value="">Any budget</option>
@@ -199,7 +199,7 @@ export default function SearchBar() {
               <button
                 key={city}
                 onClick={() => setState(city === "Abuja" ? "FCT - Abuja" : city)}
-                className="px-3 py-1 text-xs font-medium text-[#637099] bg-[#f8f9fc] border border-[#e8e8e4] rounded-full hover:border-[#a5bcfd] hover:text-[#4f6af5] hover:bg-[#f0f4ff] transition-all"
+                className="px-3 py-1 text-xs font-medium text-[#637099] bg-[#f8f9fc] border border-[#e8e8e4] rounded-full hover:border-[#94a3b8] hover:text-[#0f172a] hover:bg-[#f1f5f9] transition-all"
               >
                 {city}
               </button>
