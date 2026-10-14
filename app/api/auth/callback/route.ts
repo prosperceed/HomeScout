@@ -19,46 +19,45 @@ import type { UserRole } from "@/types";
  * metadata and redirect them to the appropriate dashboard.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+	const { searchParams, origin } = new URL(request.url);
 
-  const code = searchParams.get("code");
-  const error = searchParams.get("error");
-  const errorDescription = searchParams.get("error_description");
+	const code = searchParams.get("code");
+	const error = searchParams.get("error");
+	const errorDescription = searchParams.get("error_description");
 
-  // Surface Supabase errors back to the login page
-  if (error) {
-    const params = new URLSearchParams({
-      error,
-      ...(errorDescription ? { error_description: errorDescription } : {}),
-    });
-    return NextResponse.redirect(`${origin}/login?${params.toString()}`);
-  }
+	// Surface Supabase errors back to the login page
+	if (error) {
+		const params = new URLSearchParams({
+			error,
+			...(errorDescription ? { error_description: errorDescription } : {}),
+		});
+		return NextResponse.redirect(`${origin}/login?${params.toString()}`);
+	}
 
-  if (!code) {
-    // No code and no error — likely a direct navigation; send home
-    return NextResponse.redirect(`${origin}/`);
-  }
+	if (!code) {
+		// No code and no error — likely a direct navigation; send home
+		return NextResponse.redirect(`${origin}/`);
+	}
 
-  const supabase = await createClient();
+	const supabase = await createClient();
 
-  const { data, error: exchangeError } =
-    await supabase.auth.exchangeCodeForSession(code);
+	const { data, error: exchangeError } =
+		await supabase.auth.exchangeCodeForSession(code);
 
-  if (exchangeError || !data.session) {
-    const params = new URLSearchParams({
-      error: "auth_callback_failed",
-      error_description:
-        exchangeError?.message ?? "Could not complete sign-in. Please try again.",
-    });
-    return NextResponse.redirect(`${origin}/login?${params.toString()}`);
-  }
+	if (exchangeError || !data.session) {
+		const params = new URLSearchParams({
+			error: "auth_callback_failed",
+			error_description:
+				exchangeError?.message ??
+				"Could not complete sign-in. Please try again.",
+		});
+		return NextResponse.redirect(`${origin}/login?${params.toString()}`);
+	}
 
-  // Determine the destination from the user's role metadata
-  const role = data.session.user.user_metadata?.role as UserRole | undefined;
-  const destination =
-    role && DASHBOARD_ROUTES[role]
-      ? DASHBOARD_ROUTES[role]
-      : "/"; // Fallback to home if role is missing
+	// Determine the destination from the user's role metadata
+	const role = data.session.user.user_metadata?.role as UserRole | undefined;
+	const destination =
+		role && DASHBOARD_ROUTES[role] ? DASHBOARD_ROUTES[role] : "/"; // Fallback to home if role is missing
 
-  return NextResponse.redirect(`${origin}${destination}`);
+	return NextResponse.redirect(`${origin}${destination}`);
 }
