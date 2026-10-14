@@ -101,7 +101,13 @@ const recentOrders: RecentOrder[] = [
 
 const statusConfig: Record<
 	OrderStatus,
-	{ label: string; bg: string; text: string; dot: string; icon: React.ElementType }
+	{
+		label: string;
+		bg: string;
+		text: string;
+		dot: string;
+		icon: React.ElementType;
+	}
 > = {
 	approved: {
 		label: "Approved",
@@ -137,14 +143,10 @@ const agentTypeBadge: Record<
 	RecentOrder["agentType"],
 	{ bg: string; text: string }
 > = {
-	Company:  { bg: "bg-brand-100",  text: "text-brand-600"  },
-	Landlord: { bg: "bg-coral-100",  text: "text-coral-700"  },
-	Agent:    { bg: "bg-teal-100",   text: "text-teal-700"   },
+	Company: { bg: "bg-brand-100", text: "text-brand-600" },
+	Landlord: { bg: "bg-coral-100", text: "text-coral-700" },
+	Agent: { bg: "bg-teal-100", text: "text-teal-700" },
 };
-
-// ─── Stat card definitions ─────────────────────────────────────────────────────
-// Each card has its own full gradient background using site palette colors.
-// Shadows are intentionally light — just a soft ring + faint drop shadow.
 
 const stats = [
 	{
@@ -213,7 +215,7 @@ const stats = [
 
 function formatPrice(n: number) {
 	if (n >= 1_000_000) return `₦${(n / 1_000_000).toFixed(1)}M`;
-	if (n >= 1_000)     return `₦${(n / 1_000).toFixed(0)}k`;
+	if (n >= 1_000) return `₦${(n / 1_000).toFixed(0)}k`;
 	return `₦${n}`;
 }
 
@@ -234,11 +236,10 @@ function StatusBadge({ status }: { status: OrderStatus }) {
 export default function ClientDashboardPage() {
 	return (
 		<div className="space-y-8">
-
 			{/* Page header — "Profile Active" badge removed */}
 			<header>
 				<p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
-					Dashboard
+					Your space
 				</p>
 				<h1 className="mt-1.5 text-4xl font-black tracking-[-0.04em] text-slate-900">
 					Overview
@@ -274,12 +275,16 @@ export default function ClientDashboardPage() {
 								<p className={`text-sm font-medium ${stat.labelColor}`}>
 									{stat.label}
 								</p>
-								<p className={`mt-1 text-4xl font-black tracking-[-0.06em] ${stat.numColor}`}>
+								<p
+									className={`mt-1 text-4xl font-black tracking-[-0.06em] ${stat.numColor}`}
+								>
 									{String(stat.value).padStart(2, "0")}
 								</p>
 							</div>
 
-							<p className={`relative mt-3 text-xs font-semibold ${stat.changeColor}`}>
+							<p
+								className={`relative mt-3 text-xs font-semibold ${stat.changeColor}`}
+							>
 								{stat.change}
 							</p>
 						</div>
@@ -348,7 +353,9 @@ export default function ClientDashboardPage() {
 													>
 														{order.agentType}
 													</span>
-													<span className="text-xs text-slate-400">{order.location}</span>
+													<span className="text-xs text-slate-400">
+														{order.location}
+													</span>
 												</div>
 											</div>
 										</td>
@@ -364,7 +371,9 @@ export default function ClientDashboardPage() {
 											<span className="text-sm font-black tracking-tight text-slate-900">
 												{formatPrice(order.price)}
 											</span>
-											<span className="text-xs text-slate-400">/{order.pricePeriod}</span>
+											<span className="text-xs text-slate-400">
+												/{order.pricePeriod}
+											</span>
 										</td>
 										<td className="px-4 py-4 text-right">
 											<span className="text-xs font-medium text-slate-400">
