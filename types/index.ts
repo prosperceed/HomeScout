@@ -9,6 +9,8 @@ export type PropertyType =
 	| "villa"
 	| "short_let";
 
+export type ListingTag = "for_sale" | "for_rent" | "shortlet";
+
 export type PropertyStatus =
 	| "available"
 	| "rented"
@@ -107,6 +109,7 @@ export interface PropertyListing {
 	status: PropertyStatus;
 	price: number;
 	price_period: "per_month" | "per_year" | "per_night";
+	listing_tag: ListingTag;
 	bedrooms: number;
 	bathrooms: number;
 	area_sqft?: number;

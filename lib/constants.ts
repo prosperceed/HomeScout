@@ -51,6 +51,12 @@ export const AMENITIES = [
   "Gym", "Swimming Pool", "Elevator", "Balcony", "Garden",
 ];
 
+export const LISTING_TAGS: { value: string; label: string; color: string }[] = [
+  { value: "for_sale",  label: "For Sale",  color: "bg-emerald-500" },
+  { value: "for_rent",  label: "For Rent",  color: "bg-blue-500"    },
+  { value: "shortlet",  label: "Shortlet",  color: "bg-violet-500"  },
+];
+
 export const PLATFORM_STATS = [
   { value: "12,400+", label: "Verified Listings" },
   { value: "8,200+", label: "Happy Tenants" },

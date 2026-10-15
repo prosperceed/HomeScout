@@ -8,6 +8,7 @@ const cards = [
 		location: "Lekki Phase 1, Lagos",
 		price: "₦1.8M / yr",
 		type: "Villa",
+		tag: "for_sale",
 		image: "/assets/house1.jpeg",
 	},
 	{
@@ -15,6 +16,7 @@ const cards = [
 		location: "Wuse, Abuja",
 		price: "₦420K / yr",
 		type: "Apartment",
+		tag: "for_rent",
 		image: "/assets/house2.jpeg",
 	},
 	{
@@ -22,9 +24,28 @@ const cards = [
 		location: "GRA, Port Harcourt",
 		price: "₦2.4M / yr",
 		type: "Luxury Villa",
+		tag: "shortlet",
 		image: "/assets/house3.jpeg",
 	},
 ];
+
+const tagConfig: Record<string, { label: string; dot: string; pill: string }> = {
+	for_sale: {
+		label: "For Sale",
+		dot:  "bg-emerald-500",
+		pill: "bg-emerald-500/90 text-white",
+	},
+	for_rent: {
+		label: "For Rent",
+		dot:  "bg-blue-500",
+		pill: "bg-blue-500/90 text-white",
+	},
+	shortlet: {
+		label: "Shortlet",
+		dot:  "bg-violet-500",
+		pill: "bg-violet-500/90 text-white",
+	},
+};
 
 const tabs = ["All", "Apartment", "Duplex", "Self-contain", "Lodge"];
 
@@ -62,55 +83,70 @@ export default function PropertyCardsSection() {
 				</div>
 
 				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-					{cards.map((card) => (
-						<Link
-							key={card.title}
-							href="/explore"
-							className="group overflow-hidden rounded-3xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.09)]"
-						>
-							<div className="relative h-60 overflow-hidden">
-								<Image
-									src={card.image}
-									alt={card.title}
-									fill
-									className="object-cover transition duration-500 group-hover:scale-105"
-									sizes="(max-width: 768px) 100vw, 33vw"
-								/>
-								<div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
-								<span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-800">
-									{card.type}
-								</span>
-							</div>
+					{cards.map((card) => {
+						const tag = tagConfig[card.tag];
+						return (
+							<Link
+								key={card.title}
+								href="/explore"
+								className="group overflow-hidden rounded-3xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.09)]"
+							>
+								<div className="relative h-60 overflow-hidden">
+									<Image
+										src={card.image}
+										alt={card.title}
+										fill
+										className="object-cover transition duration-500 group-hover:scale-105"
+										sizes="(max-width: 768px) 100vw, 33vw"
+									/>
+									<div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
 
-							<div className="p-5">
-								<div className="flex items-start justify-between gap-3">
-									<h3 className="text-lg font-bold text-slate-900">
-										{card.title}
-									</h3>
-									<span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-										Verified
+									{/* property type badge */}
+									<span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-800">
+										{card.type}
 									</span>
+
+									{/* listing tag badge */}
+									{tag && (
+										<span
+											className={`absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm ${tag.pill}`}
+										>
+											<span className={`h-1.5 w-1.5 rounded-full bg-white/80`} />
+											{tag.label}
+										</span>
+									)}
 								</div>
-								<div className="mt-2 flex items-center gap-1.5 text-sm text-slate-400">
-									<MapPin className="h-3.5 w-3.5" />
-									{card.location}
-								</div>
-								<div className="mt-4 flex items-end justify-between border-t border-slate-100 pt-4">
-									<div>
-										<p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-											Per year
-										</p>
-										<p className="mt-1 text-2xl font-black tracking-tight text-slate-900">
-											{card.price}
-										</p>
+
+								<div className="p-5">
+									<div className="flex items-start justify-between gap-3">
+										<h3 className="text-lg font-bold text-slate-900">
+											{card.title}
+										</h3>
+										<span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+											Verified
+										</span>
 									</div>
-									<span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white">
-										View <ArrowRight className="h-3.5 w-3.5" />
-									</span>
+									<div className="mt-2 flex items-center gap-1.5 text-sm text-slate-400">
+										<MapPin className="h-3.5 w-3.5" />
+										{card.location}
+									</div>
+									<div className="mt-4 flex items-end justify-between border-t border-slate-100 pt-4">
+										<div>
+											<p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+												Per year
+											</p>
+											<p className="mt-1 text-2xl font-black tracking-tight text-slate-900">
+												{card.price}
+											</p>
+										</div>
+										<span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white">
+											View <ArrowRight className="h-3.5 w-3.5" />
+										</span>
+									</div>
 								</div>
-							</div>
-						</Link>
-					))}
+							</Link>
+						);
+					})}
 				</div>
 
 				<div className="mt-10 text-center">

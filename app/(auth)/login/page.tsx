@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,11 +27,14 @@ export default function LoginPage() {
 
       const role = String(data.user.user_metadata?.role ?? "client");
       const next =
+        searchParams.get("next") ??
         searchParams.get("redirect") ??
         ({ client: "/client", landlord: "/landlord", agent: "/agent", admin: "/admin" }[role] ?? "/explore");
 
-      router.push(next);
-      router.refresh();
+      // Hard redirect so the browser sends fresh auth cookies to the middleware
+      // on the next request — avoids the race where router.push navigates before
+      // Supabase cookies are visible server-side, causing a login bounce loop.
+      window.location.href = next;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign in right now.");
     } finally {

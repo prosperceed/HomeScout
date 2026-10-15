@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Search, SlidersHorizontal, MoreHorizontal, ChevronDown } from "lucide-react";
+import {
+	Search,
+	SlidersHorizontal,
+	MoreHorizontal,
+	ChevronDown,
+} from "lucide-react";
 
 type DealStatus = "active" | "pending" | "closed" | "cancelled";
 
@@ -87,22 +92,36 @@ const listings: Listing[] = [
 ];
 
 const statusConfig: Record<DealStatus, { label: string; classes: string }> = {
-	active: { label: "Active", classes: "bg-green-50 text-green-700 ring-1 ring-green-200" },
-	pending: { label: "Pending", classes: "bg-amber-50 text-amber-700 ring-1 ring-amber-200" },
-	closed: { label: "Closed", classes: "bg-blue-50 text-blue-700 ring-1 ring-blue-200" },
-	cancelled: { label: "Cancelled", classes: "bg-red-50 text-red-600 ring-1 ring-red-200" },
+	active: {
+		label: "Active",
+		classes: "bg-green-50 text-green-700 ring-1 ring-green-200",
+	},
+	pending: {
+		label: "Pending",
+		classes: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+	},
+	closed: {
+		label: "Closed",
+		classes: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
+	},
+	cancelled: {
+		label: "Cancelled",
+		classes: "bg-red-50 text-red-600 ring-1 ring-red-200",
+	},
 };
 
 function StatusBadge({ status }: { status: DealStatus }) {
 	const cfg = statusConfig[status];
 	return (
-		<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ${cfg.classes}`}>
+		<span
+			className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ${cfg.classes}`}
+		>
 			{cfg.label}
 		</span>
 	);
 }
 
-export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void }) {
+export function AgentListingsTable() {
 	const [query, setQuery] = useState("");
 	const [sortBy, setSortBy] = useState("date");
 	const [selected, setSelected] = useState<string[]>([]);
@@ -111,17 +130,19 @@ export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void
 		(l) =>
 			l.property.toLowerCase().includes(query.toLowerCase()) ||
 			l.client.toLowerCase().includes(query.toLowerCase()) ||
-			l.orderId.toLowerCase().includes(query.toLowerCase())
+			l.orderId.toLowerCase().includes(query.toLowerCase()),
 	);
 
 	const toggleSelect = (id: string) => {
 		setSelected((prev) =>
-			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
 		);
 	};
 
 	const toggleAll = () => {
-		setSelected(selected.length === filtered.length ? [] : filtered.map((l) => l.id));
+		setSelected(
+			selected.length === filtered.length ? [] : filtered.map((l) => l.id),
+		);
 	};
 
 	return (
@@ -138,24 +159,14 @@ export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void
 							value={query}
 							onChange={(e) => setQuery(e.target.value)}
 							placeholder="Search products..."
-							className="h-8 rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+							className="h-8 rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-xs font-medium text-slate-700 placeholder:text-slate-400  focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
 						/>
 					</div>
-					<button
-						className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
-					>
+					<button className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">
 						<SlidersHorizontal className="h-3.5 w-3.5" />
 						Sort by
 						<ChevronDown className="h-3 w-3" />
 					</button>
-					{onNewListing && (
-						<button
-							onClick={onNewListing}
-							className="rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-1.5 text-xs font-bold text-white shadow-[0_2px_8px_rgba(37,99,235,0.3)] transition hover:shadow-[0_4px_16px_rgba(37,99,235,0.4)]"
-						>
-							+ New Listing
-						</button>
-					)}
 				</div>
 			</div>
 
@@ -166,28 +177,40 @@ export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void
 							<th className="w-10 px-4 py-3.5">
 								<input
 									type="checkbox"
-									checked={selected.length === filtered.length && filtered.length > 0}
+									checked={
+										selected.length === filtered.length && filtered.length > 0
+									}
 									onChange={toggleAll}
 									className="h-4 w-4 rounded-md border-slate-300 accent-blue-600"
 								/>
 							</th>
-							{["Property Info", "Order Id", "Date", "Client", "Category", "Status", "Items", "Total"].map(
-								(h) => (
-									<th
-										key={h}
-										className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-widest text-slate-400"
-									>
-										{h}
-									</th>
-								)
-							)}
+							{[
+								"Property Info",
+								"Order Id",
+								"Date",
+								"Client",
+								"Category",
+								"Status",
+								"Items",
+								"Total",
+							].map((h) => (
+								<th
+									key={h}
+									className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-widest text-slate-400"
+								>
+									{h}
+								</th>
+							))}
 							<th className="px-4 py-3.5" />
 						</tr>
 					</thead>
 					<tbody>
 						{filtered.length === 0 ? (
 							<tr>
-								<td colSpan={9} className="py-12 text-center text-sm text-slate-400">
+								<td
+									colSpan={9}
+									className="py-12 text-center text-sm text-slate-400"
+								>
 									No listings found
 								</td>
 							</tr>
@@ -195,7 +218,7 @@ export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void
 							filtered.map((listing) => (
 								<tr
 									key={listing.id}
-									className="group border-b border-slate-50 transition hover:bg-blue-50/40"
+									className="group border-b border-slate-50 align-middle transition hover:bg-blue-50/40"
 								>
 									<td className="px-4 py-3.5">
 										<input
@@ -213,14 +236,14 @@ export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void
 									<td className="px-4 py-3.5 text-sm font-medium text-slate-500">
 										{listing.orderId}
 									</td>
-									<td className="px-4 py-3.5 text-sm text-slate-500">
+									<td className="px-4 py-3.8 text-[12px] text-slate-500">
 										{listing.date}
 									</td>
 									<td className="px-4 py-3.5 text-sm font-medium text-slate-700">
 										{listing.client}
 									</td>
-									<td className="px-4 py-3.5">
-										<span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">
+									<td className="px-4 py-3.5 align-middle">
+										<span className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-[11px] font-semibold leading-none text-slate-600 whitespace-nowrap">
 											{listing.category}
 										</span>
 									</td>
@@ -236,7 +259,7 @@ export function AgentListingsTable({ onNewListing }: { onNewListing?: () => void
 									<td className="px-4 py-3.5">
 										<button
 											aria-label="More"
-											className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 opacity-0 transition group-hover:opacity-100 hover:bg-slate-100 hover:text-slate-700"
+											className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-slate-400 opacity-0 transition group-hover:opacity-100 hover:bg-slate-100 hover:text-slate-700"
 										>
 											<MoreHorizontal className="h-4 w-4" />
 										</button>
