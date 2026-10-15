@@ -29,6 +29,7 @@ import {
 	DASHBOARD_ROUTES,
 } from "@/lib/constants";
 import type { UserRole, PropertyType, FeeType } from "@/types";
+import { toast } from "@/lib/toast";
 
 const credentialsSchema = z.object({
 	full_name: z.string().min(2, "Enter your full name"),
@@ -324,10 +325,14 @@ function RegisterPageInner() {
 			});
 
 			if (error) {
+				toast.error("Registration failed", { description: error.message });
 				setServerError(error.message);
 				return;
 			}
 
+			toast.success("Account created!", {
+				description: "Taking you to your dashboard…",
+			});
 			router.push(DASHBOARD_ROUTES[selectedRole] ?? "/");
 		});
 	};
@@ -799,7 +804,11 @@ function RegisterPageInner() {
 								exit="exit"
 							>
 								<form
-									onSubmit={handleSubmit(onSubmit)}
+									onSubmit={handleSubmit(onSubmit, () => {
+										toast.error("Please fix the errors below", {
+											description: "Check the highlighted fields and try again.",
+										});
+									})}
 									noValidate
 									className="space-y-4"
 								>

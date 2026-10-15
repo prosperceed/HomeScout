@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
+import { Toaster } from "@/components/ui/toaster";
 
 const plusJakarta = Plus_Jakarta_Sans({
 	variable: "--font-sans",
@@ -53,7 +54,10 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
-			<body>{children}</body>
+			<body>
+			{children}
+			<Toaster />
+		</body>
 		</html>
 	);
 }
