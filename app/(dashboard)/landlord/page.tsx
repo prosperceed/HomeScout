@@ -1,31 +1,29 @@
-export default function LandlordDashboardPage() {
-	return (
-		<div className="space-y-6">
-			<header>
-				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-					Dashboard
-				</p>
-				<h1 className="mt-2 text-4xl font-black tracking-[-0.06em] text-slate-900">
-					Landlord overview
-				</h1>
-			</header>
-			<div className="grid gap-4 md:grid-cols-3">
-				{[
-					{ label: "Active listings", value: "12" },
-					{ label: "Occupied units", value: "9" },
-					{ label: "Pending requests", value: "3" },
-				].map((item) => (
-					<div
-						key={item.label}
-						className="rounded-[24px] border border-stone-200 bg-white p-5 shadow-sm"
-					>
-						<p className="text-sm text-slate-500">{item.label}</p>
-						<p className="mt-3 text-3xl font-black tracking-[-0.06em] text-slate-900">
-							{item.value}
-						</p>
-					</div>
-				))}
-			</div>
-		</div>
-	);
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getLandlordStats, getLandlordProperties } from "@/lib/supabase/queries";
+import { LandlordStatCards } from "@/components/landlord/LandlordStatCards";
+import { LandlordListingsTable } from "@/components/landlord/LandlordListingsTable";
+
+export default async function LandlordDashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const [stats, properties] = await Promise.all([
+    getLandlordStats(user.id),
+    getLandlordProperties(user.id),
+  ]);
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Dashboard</p>
+        <h1 className="mt-2 text-4xl font-black tracking-[-0.06em] text-slate-900">Landlord overview</h1>
+      </header>
+
+      <LandlordStatCards stats={stats} />
+
+      <LandlordListingsTable properties={properties} />
+    </div>
+  );
 }

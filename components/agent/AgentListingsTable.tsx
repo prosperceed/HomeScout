@@ -1,275 +1,164 @@
 "use client";
 
-import { useState } from "react";
-import {
-	Search,
-	SlidersHorizontal,
-	MoreHorizontal,
-	ChevronDown,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { Tables } from "@/types/database.types";
+import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 
-type DealStatus = "active" | "pending" | "closed" | "cancelled";
+type PropertyRow = Tables<"property_listings">;
 
-interface Listing {
-	id: string;
-	property: string;
-	orderId: string;
-	date: string;
-	client: string;
-	category: string;
-	status: DealStatus;
-	items: number;
-	total: string;
-}
+export default function AgentListingsTable() {
+	const [listings, setListings] = useState<PropertyRow[]>([]);
+	const [loading, setLoading] = useState(true);
 
-const listings: Listing[] = [
-	{
-		id: "1",
-		property: "3-Bed Apartment, Lekki Phase 1",
-		orderId: "#HS-001",
-		date: "Oct 10, 2026",
-		client: "Emeka Okafor",
-		category: "Family Apartment",
-		status: "active",
-		items: 3,
-		total: "₦1,200,000",
-	},
-	{
-		id: "2",
-		property: "Studio Flat, Victoria Island",
-		orderId: "#HS-002",
-		date: "Oct 08, 2026",
-		client: "Aisha Bello",
-		category: "Shared Flat",
-		status: "pending",
-		items: 1,
-		total: "₦480,000",
-	},
-	{
-		id: "3",
-		property: "4-Bed Duplex, Ikoyi",
-		orderId: "#HS-003",
-		date: "Oct 06, 2026",
-		client: "Chidi Nwachukwu",
-		category: "Duplex",
-		status: "closed",
-		items: 4,
-		total: "₦3,600,000",
-	},
-	{
-		id: "4",
-		property: "2-Bed Apartment, Surulere",
-		orderId: "#HS-004",
-		date: "Oct 04, 2026",
-		client: "Fatima Ibrahim",
-		category: "Family Apartment",
-		status: "active",
-		items: 2,
-		total: "₦720,000",
-	},
-	{
-		id: "5",
-		property: "Student Lodge, Yaba",
-		orderId: "#HS-005",
-		date: "Oct 02, 2026",
-		client: "Tunde Adeyemi",
-		category: "Student Lodge",
-		status: "cancelled",
-		items: 1,
-		total: "₦240,000",
-	},
-	{
-		id: "6",
-		property: "Villa, Banana Island",
-		orderId: "#HS-006",
-		date: "Sep 30, 2026",
-		client: "Ngozi Eze",
-		category: "Villa",
-		status: "closed",
-		items: 5,
-		total: "₦8,400,000",
-	},
-];
+	useEffect(() => {
+		let channel: any;
+		const supabase = createClient();
 
-const statusConfig: Record<DealStatus, { label: string; classes: string }> = {
-	active: {
-		label: "Active",
-		classes: "bg-green-50 text-green-700 ring-1 ring-green-200",
-	},
-	pending: {
-		label: "Pending",
-		classes: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
-	},
-	closed: {
-		label: "Closed",
-		classes: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
-	},
-	cancelled: {
-		label: "Cancelled",
-		classes: "bg-red-50 text-red-600 ring-1 ring-red-200",
-	},
-};
+		async function fetchListings() {
+			setLoading(true);
+			try {
+				const { data: userData } = await supabase.auth.getUser();
+				const user = userData?.user;
+				if (!user) return;
+				const userId = user.id;
+				const { data, error } = await supabase
+					.from("property_listings")
+					.select("*")
+					.or(`owner_id.eq.${userId},agent_id.eq.${userId}`)
+					.order("created_at", { ascending: false });
+				if (error) throw error;
+				setListings(data || []);
+			} catch (err) {
+				console.error("Failed to load agent listings", err);
+			} finally {
+				setLoading(false);
+			}
+		}
 
-function StatusBadge({ status }: { status: DealStatus }) {
-	const cfg = statusConfig[status];
-	return (
-		<span
-			className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ${cfg.classes}`}
-		>
-			{cfg.label}
-		</span>
-	);
-}
+		fetchListings();
 
-export function AgentListingsTable() {
-	const [query, setQuery] = useState("");
-	const [sortBy, setSortBy] = useState("date");
-	const [selected, setSelected] = useState<string[]>([]);
+		// subscribe to realtime changes and update list
+		channel = supabase
+			.channel("public:property_listings")
+			.on(
+				"postgres_changes",
+				{ event: "*", schema: "public", table: "property_listings" },
+				(payload: any) => {
+					const newRow = payload?.new;
+					const oldRow = payload?.old;
+					const event = payload?.eventType ?? payload?.event;
+					// update only if change affects this user
+					supabase.auth.getUser().then(({ data }) => {
+						const userId = data?.user?.id;
+						if (!userId) return;
+						const affectsUser = (r: any) =>
+							r && (r.owner_id === userId || r.agent_id === userId);
+						setListings((prev) => {
+							if (event === "INSERT") {
+								if (affectsUser(newRow)) return [newRow, ...prev];
+								return prev;
+							}
+							if (event === "UPDATE") {
+								if (affectsUser(newRow))
+									return [newRow, ...prev.filter((p) => p.id !== newRow.id)];
+								if (affectsUser(oldRow) && !affectsUser(newRow))
+									return prev.filter((p) => p.id !== oldRow.id);
+							}
+							if (event === "DELETE") {
+								if (affectsUser(oldRow))
+									return prev.filter((p) => p.id !== oldRow.id);
+							}
+							return prev;
+						});
+					});
+				},
+			)
+			.subscribe();
 
-	const filtered = listings.filter(
-		(l) =>
-			l.property.toLowerCase().includes(query.toLowerCase()) ||
-			l.client.toLowerCase().includes(query.toLowerCase()) ||
-			l.orderId.toLowerCase().includes(query.toLowerCase()),
-	);
+		return () => {
+			if (channel) channel.unsubscribe();
+		};
+	}, []);
 
-	const toggleSelect = (id: string) => {
-		setSelected((prev) =>
-			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-		);
-	};
-
-	const toggleAll = () => {
-		setSelected(
-			selected.length === filtered.length ? [] : filtered.map((l) => l.id),
-		);
-	};
+	if (loading) return <div className="p-6">Loading listings…</div>;
 
 	return (
 		<div className="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/80 shadow-[0_2px_16px_rgba(15,23,42,0.06)]">
-			<div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-6 py-5">
-				<h2 className="text-base font-black tracking-[-0.03em] text-slate-900">
-					Recent Orders
-				</h2>
-				<div className="flex items-center gap-2">
-					<div className="relative">
-						<Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-						<input
-							type="text"
-							value={query}
-							onChange={(e) => setQuery(e.target.value)}
-							placeholder="Search products..."
-							className="h-8 rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-xs font-medium text-slate-700 placeholder:text-slate-400  focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-						/>
-					</div>
-					<button className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">
-						<SlidersHorizontal className="h-3.5 w-3.5" />
-						Sort by
-						<ChevronDown className="h-3 w-3" />
-					</button>
+			<div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+				<div>
+					<h2 className="text-base font-black tracking-[-0.03em] text-slate-900">
+						Your Listings
+					</h2>
+					<p className="mt-0.5 text-sm text-slate-400">
+						{listings.length} listings
+					</p>
 				</div>
+				<Link
+					href="/agent/properties/new"
+					className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800"
+				>
+					Add listing
+				</Link>
 			</div>
 
-			<div className="overflow-x-auto">
-				<table className="w-full min-w-[700px]">
-					<thead>
-						<tr className="border-b border-slate-100">
-							<th className="w-10 px-4 py-3.5">
-								<input
-									type="checkbox"
-									checked={
-										selected.length === filtered.length && filtered.length > 0
-									}
-									onChange={toggleAll}
-									className="h-4 w-4 rounded-md border-slate-300 accent-blue-600"
-								/>
-							</th>
-							{[
-								"Property Info",
-								"Order Id",
-								"Date",
-								"Client",
-								"Category",
-								"Status",
-								"Items",
-								"Total",
-							].map((h) => (
-								<th
-									key={h}
-									className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-widest text-slate-400"
-								>
-									{h}
-								</th>
-							))}
-							<th className="px-4 py-3.5" />
-						</tr>
-					</thead>
-					<tbody>
-						{filtered.length === 0 ? (
-							<tr>
-								<td
-									colSpan={9}
-									className="py-12 text-center text-sm text-slate-400"
-								>
-									No listings found
-								</td>
+			{listings.length === 0 ? (
+				<div className="p-6 text-center text-sm text-slate-500">
+					No listings yet
+				</div>
+			) : (
+				<div className="overflow-x-auto">
+					<table className="w-full min-w-[700px]">
+						<thead>
+							<tr className="border-b border-slate-100">
+								<th className="w-10 px-4 py-3.5" />
+								<th className="px-4 py-3.5 text-left">Property</th>
+								<th className="px-4 py-3.5">Tag</th>
+								<th className="px-4 py-3.5">Status</th>
+								<th className="px-4 py-3.5">Items</th>
+								<th className="px-4 py-3.5">Total</th>
+								<th className="px-4 py-3.5" />
 							</tr>
-						) : (
-							filtered.map((listing) => (
-								<tr
-									key={listing.id}
-									className="group border-b border-slate-50 align-middle transition hover:bg-blue-50/40"
-								>
+						</thead>
+						<tbody>
+							{listings.map((l) => (
+								<tr key={l.id} className="group border-b">
+									<td className="px-4 py-3.5" />
 									<td className="px-4 py-3.5">
-										<input
-											type="checkbox"
-											checked={selected.includes(listing.id)}
-											onChange={() => toggleSelect(listing.id)}
-											className="h-4 w-4 rounded-md border-slate-300 accent-blue-600"
-										/>
-									</td>
-									<td className="px-4 py-3.5">
-										<p className="max-w-[180px] truncate text-sm font-semibold text-slate-800">
-											{listing.property}
+										<p className="max-w-[240px] truncate text-sm font-semibold text-slate-800">
+											{l.title}
+										</p>
+										<p className="mt-0.5 text-xs text-slate-400">
+											{l.formatted_address ?? "—"}
 										</p>
 									</td>
-									<td className="px-4 py-3.5 text-sm font-medium text-slate-500">
-										{listing.orderId}
+									<td className="px-4 py-3.5 text-sm text-slate-600">
+										{l.listing_tag}
 									</td>
-									<td className="px-4 py-3.8 text-[12px] text-slate-500">
-										{listing.date}
-									</td>
-									<td className="px-4 py-3.5 text-sm font-medium text-slate-700">
-										{listing.client}
-									</td>
-									<td className="px-4 py-3.5 align-middle">
-										<span className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-[11px] font-semibold leading-none text-slate-600 whitespace-nowrap">
-											{listing.category}
-										</span>
-									</td>
-									<td className="px-4 py-3.5">
-										<StatusBadge status={listing.status} />
+									<td className="px-4 py-3.5 text-sm text-slate-600">
+										{l.status}
 									</td>
 									<td className="px-4 py-3.5 text-sm font-semibold text-slate-700">
-										{listing.items}
+										{(l.images as any)?.length ?? 0}
 									</td>
 									<td className="px-4 py-3.5 text-sm font-black text-slate-900">
-										{listing.total}
+										{l.price ? `₦${l.price.toLocaleString()}` : "-"}
 									</td>
 									<td className="px-4 py-3.5">
 										<button
 											aria-label="More"
-											className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-slate-400 opacity-0 transition group-hover:opacity-100 hover:bg-slate-100 hover:text-slate-700"
+											className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 opacity-0 transition group-hover:opacity-100 hover:bg-slate-100 hover:text-slate-700"
 										>
 											<MoreHorizontal className="h-4 w-4" />
 										</button>
 									</td>
 								</tr>
-							))
-						)}
-					</tbody>
-				</table>
-			</div>
+							))}
+						</tbody>
+					</table>
+				</div>
+			)}
 		</div>
 	);
 }

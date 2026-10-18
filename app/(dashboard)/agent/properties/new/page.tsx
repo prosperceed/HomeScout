@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { toast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import {
 	ArrowLeft,
@@ -16,6 +17,7 @@ import {
 	type PickedLocation,
 } from "@/components/maps/PropertyMapPicker";
 import { PROPERTY_TYPES, AMENITIES, LISTING_TAGS } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 
 const PRICE_PERIODS = [
 	{ value: "per_year", label: "Per Year" },
@@ -29,6 +31,29 @@ export default function NewListingPage() {
 	const [location, setLocation] = useState<PickedLocation | null>(null);
 	const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [imageFiles, setImageFiles] = useState<File[]>([]);
+	const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+	const handleFiles = (files: FileList | null) => {
+		if (!files || files.length === 0) return;
+		const picked: File[] = [];
+		const urls: string[] = [];
+		for (let i = 0; i < files.length; i++) {
+			const f = files[i];
+			if (!f.type.startsWith("image/")) continue;
+			picked.push(f);
+			urls.push(URL.createObjectURL(f));
+		}
+		setImageFiles((prev) => [...prev, ...picked].slice(-6));
+		setPreviewUrls((prev) => [...prev, ...urls].slice(-6)); // keep last 6 previews
+	};
+	useEffect(() => {
+		return () => {
+			previewUrls.forEach((u) => URL.revokeObjectURL(u));
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 	const [form, setForm] = useState({
 		title: "",
 		description: "",
@@ -66,10 +91,76 @@ export default function NewListingPage() {
 			return;
 		}
 		setIsSubmitting(true);
-		// TODO: wire up to Supabase
-		await new Promise((r) => setTimeout(r, 1200));
-		setIsSubmitting(false);
-		router.push("/agent/properties");
+		// Persist to Supabase: upload images to storage, insert property row
+		const supabase = createClient();
+		try {
+			const { data: userData } = await supabase.auth.getUser();
+			const user = userData?.user;
+			if (!user) throw new Error("You must be signed in to publish a listing.");
+
+			// upload images sequentially and collect public URLs
+			const uploadedUrls: string[] = [];
+			for (let i = 0; i < imageFiles.length; i++) {
+				const file = imageFiles[i];
+				const path = `properties/${user.id}/${Date.now()}-${i}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+				const { error: upErr } = await supabase.storage
+					.from("property-images")
+					.upload(path, file, { upsert: false });
+				if (upErr) {
+					console.warn("Upload error", upErr.message);
+					continue;
+				}
+				const { data: urlData } = supabase.storage
+					.from("property-images")
+					.getPublicUrl(path);
+				if (urlData?.publicUrl) uploadedUrls.push(urlData.publicUrl);
+			}
+
+			const insertPayload = {
+				title: form.title || "Untitled property",
+				description: form.description || null,
+				type: (form.type || null) as any,
+				status: "available",
+				listing_tag: (form.listing_tag || null) as any,
+				price: form.price ? Number(form.price) : 0,
+				price_period: form.price_period as any,
+				bedrooms: form.bedrooms ? Number(form.bedrooms) : 0,
+				bathrooms: form.bathrooms ? Number(form.bathrooms) : 0,
+				images: uploadedUrls,
+				amenities: selectedAmenities,
+				lat: location?.lat ?? null,
+				lng: location?.lng ?? null,
+				formatted_address: location?.formatted_address ?? null,
+				state: location?.state ?? null,
+				city: location?.city ?? null,
+				is_verified: false,
+				is_featured: false,
+				views_count: 0,
+				owner_id: user.id,
+				owner_type: "agent",
+				agent_id: user.id,
+			};
+
+			const { data: inserted, error: insertErr } = await supabase
+				.from("property_listings")
+				.insert(insertPayload)
+				.select()
+				.single();
+
+			if (insertErr) throw insertErr;
+
+			setIsSubmitting(false);
+			toast.success("Property added", {
+				description: "Your listing was added to the marketplace.",
+			});
+			router.push("/agent/properties");
+		} catch (err: any) {
+			console.error(err);
+			setIsSubmitting(false);
+			toast.error("Failed to add property", {
+				description: err?.message ?? "Please try again.",
+			});
+		}
 	};
 
 	return (
@@ -335,11 +426,54 @@ export default function NewListingPage() {
 						{/* ── Photos ── */}
 						<div className="space-y-1.5">
 							<label className="text-xs font-bold text-slate-700">Photos</label>
-							<div className="flex h-28 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-dashed border-slate-200 bg-white/60 text-slate-400 transition hover:border-blue-300 hover:bg-blue-50/40">
+
+							<input
+								ref={fileInputRef}
+								type="file"
+								accept="image/*"
+								multiple
+								onChange={(e) => handleFiles(e.target.files)}
+								className="hidden"
+								aria-hidden="true"
+							/>
+
+							<div
+								role="button"
+								tabIndex={0}
+								onClick={() => fileInputRef.current?.click()}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" || e.key === " ")
+										fileInputRef.current?.click();
+								}}
+								className="relative flex h-28 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border-2 border-dashed border-slate-200 bg-white/60 text-slate-400 transition hover:border-blue-300 hover:bg-blue-50/40"
+								aria-label="Upload property images"
+							>
 								<Upload className="h-5 w-5" />
 								<span className="text-sm font-medium">
 									Upload property images
 								</span>
+
+								{previewUrls.length > 0 && (
+									<div className="absolute left-3 top-3 flex items-center gap-2">
+										{previewUrls.slice(0, 3).map((src, i) => (
+											<div
+												key={i}
+												className="h-12 w-12 overflow-hidden rounded-lg border bg-slate-50"
+											>
+												<img
+													src={src}
+													alt={`preview-${i}`}
+													className="h-full w-full object-cover"
+												/>
+											</div>
+										))}
+										{previewUrls.length > 3 && (
+											<div className="ml-2 rounded-md bg-slate-900/80 px-2 py-0.5 text-xs font-semibold text-white">
+												+{previewUrls.length - 3}
+											</div>
+										)}
+									</div>
+								)}
 							</div>
 						</div>
 

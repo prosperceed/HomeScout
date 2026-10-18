@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { AgentListingsTable } from "@/components/agent/AgentListingsTable";
+import AgentListingsTable from "@/components/agent/AgentListingsTable";
 
 export default function AgentPropertiesPage() {
 	return (

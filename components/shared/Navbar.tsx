@@ -7,8 +7,8 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
 	{ label: "Home", href: "/" },
-	{ label: "About", href: "/#about" },
 	{ label: "Properties", href: "/explore" },
+	{ label: "Agent Finder", href: "/#agents" },
 	{ label: "Contact", href: "/#contact" },
 ];
 
@@ -84,23 +84,13 @@ export default function Navbar() {
 					<div className="hidden items-center gap-2 md:flex">
 						<Link
 							href="/login"
-							className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+							className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
 								scrolled
-									? "text-slate-600 hover:text-slate-900"
-									: "text-white/80 hover:text-white"
+									? "bg-brand-700 text-white hover:bg-brand-600"
+									: "border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
 							}`}
 						>
 							Sign in
-						</Link>
-						<Link
-							href="/register"
-							className={
-								scrolled
-									? "rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
-									: "rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
-							}
-						>
-							Sign up
 						</Link>
 					</div>
 
@@ -135,15 +125,9 @@ export default function Navbar() {
 					<div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
 						<Link
 							href="/login"
-							className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10"
+							className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
 						>
 							Sign in
-						</Link>
-						<Link
-							href="/register"
-							className="rounded-xl bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-slate-700"
-						>
-							Sign up
 						</Link>
 					</div>
 				</div>

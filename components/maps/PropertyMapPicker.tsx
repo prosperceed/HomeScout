@@ -28,9 +28,11 @@ declare global {
 
 function extractAddressComponent(
 	components: google.maps.GeocoderAddressComponent[],
-	types: string[]
+	types: string[],
 ): string {
-	const component = components.find((c) => types.some((t) => c.types.includes(t)));
+	const component = components.find((c) =>
+		types.some((t) => c.types.includes(t)),
+	);
 	return component?.long_name ?? "";
 }
 
@@ -49,12 +51,84 @@ export function PropertyMapPicker({
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [mapsLoaded, setMapsLoaded] = useState(false);
+	const [autoDetecting, setAutoDetecting] = useState(false);
 	const [picked, setPicked] = useState<PickedLocation | null>(
-		initialLocation ?? null
+		initialLocation ?? null,
 	);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const defaultCenter = { lat: 6.5244, lng: 3.3792 };
+
+	const reverseGeocode = useCallback((latLng: google.maps.LatLng) => {
+		setIsLoading(true);
+		geocoderRef.current?.geocode({ location: latLng }, (results, status) => {
+			setIsLoading(false);
+			if (status === "OK" && results?.[0]) {
+				const r = results[0];
+				const state = extractAddressComponent(r.address_components, [
+					"administrative_area_level_1",
+				]);
+				const lga = extractAddressComponent(r.address_components, [
+					"administrative_area_level_2",
+				]);
+				const city = extractAddressComponent(r.address_components, [
+					"locality",
+					"sublocality",
+				]);
+				setPicked({
+					lat: latLng.lat(),
+					lng: latLng.lng(),
+					formatted_address: r.formatted_address,
+					state,
+					local_government: lga,
+					city,
+				});
+			}
+		});
+	}, []);
+
+	const centerMapOnLocation = useCallback(
+		(lat: number, lng: number) => {
+			if (!mapInstanceRef.current || !markerRef.current) return;
+			const latLng = new window.google.maps.LatLng(lat, lng);
+			mapInstanceRef.current.setCenter(latLng);
+			mapInstanceRef.current.setZoom(15);
+			markerRef.current.setPosition(latLng);
+			reverseGeocode(latLng);
+		},
+		[reverseGeocode],
+	);
+
+	const detectCurrentLocation = useCallback(() => {
+		if (!navigator.geolocation) {
+			console.warn("Geolocation is not supported by this browser.");
+			return;
+		}
+
+		setAutoDetecting(true);
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				setAutoDetecting(false);
+				centerMapOnLocation(
+					position.coords.latitude,
+					position.coords.longitude,
+				);
+			},
+			(error) => {
+				setAutoDetecting(false);
+				console.warn("Unable to detect current location:", error.message);
+				if (mapInstanceRef.current) {
+					const defaultLatLng = new window.google.maps.LatLng(
+						defaultCenter.lat,
+						defaultCenter.lng,
+					);
+					mapInstanceRef.current.setCenter(defaultLatLng);
+					mapInstanceRef.current.setZoom(12);
+				}
+			},
+			{ enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+		);
+	}, [centerMapOnLocation]);
 
 	const loadGoogleMaps = useCallback(() => {
 		if (window.google?.maps) {
@@ -116,7 +190,7 @@ export function PropertyMapPicker({
               <ellipse cx="18" cy="40" rx="8" ry="4" fill="rgba(0,0,0,0.15)"/>
               <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 26 18 26S36 31.5 36 18C36 8.06 27.94 0 18 0z" fill="#2563eb"/>
               <circle cx="18" cy="18" r="8" fill="white"/>
-            </svg>`
+            </svg>`,
 					),
 				scaledSize: new window.google.maps.Size(36, 44),
 				anchor: new window.google.maps.Point(18, 44),
@@ -128,27 +202,6 @@ export function PropertyMapPicker({
 		if (initialLocation) {
 			setPicked(initialLocation);
 		}
-
-		const reverseGeocode = (latLng: google.maps.LatLng) => {
-			setIsLoading(true);
-			geocoderRef.current?.geocode({ location: latLng }, (results, status) => {
-				setIsLoading(false);
-				if (status === "OK" && results?.[0]) {
-					const r = results[0];
-					const state = extractAddressComponent(r.address_components, ["administrative_area_level_1"]);
-					const lga = extractAddressComponent(r.address_components, ["administrative_area_level_2"]);
-					const city = extractAddressComponent(r.address_components, ["locality", "sublocality"]);
-					setPicked({
-						lat: latLng.lat(),
-						lng: latLng.lng(),
-						formatted_address: r.formatted_address,
-						state,
-						local_government: lga,
-						city,
-					});
-				}
-			});
-		};
 
 		marker.addListener("dragend", () => {
 			const pos = marker.getPosition();
@@ -165,7 +218,10 @@ export function PropertyMapPicker({
 		if (searchInputRef.current) {
 			const autocomplete = new window.google.maps.places.Autocomplete(
 				searchInputRef.current,
-				{ componentRestrictions: { country: "ng" }, fields: ["geometry", "formatted_address", "address_components"] }
+				{
+					componentRestrictions: { country: "ng" },
+					fields: ["geometry", "formatted_address", "address_components"],
+				},
 			);
 			autocompleteRef.current = autocomplete;
 			autocomplete.addListener("place_changed", () => {
@@ -175,9 +231,16 @@ export function PropertyMapPicker({
 				map.setCenter(loc);
 				map.setZoom(16);
 				marker.setPosition(loc);
-				const state = extractAddressComponent(place.address_components ?? [], ["administrative_area_level_1"]);
-				const lga = extractAddressComponent(place.address_components ?? [], ["administrative_area_level_2"]);
-				const city = extractAddressComponent(place.address_components ?? [], ["locality", "sublocality"]);
+				const state = extractAddressComponent(place.address_components ?? [], [
+					"administrative_area_level_1",
+				]);
+				const lga = extractAddressComponent(place.address_components ?? [], [
+					"administrative_area_level_2",
+				]);
+				const city = extractAddressComponent(place.address_components ?? [], [
+					"locality",
+					"sublocality",
+				]);
 				setPicked({
 					lat: loc.lat(),
 					lng: loc.lng(),
@@ -190,13 +253,17 @@ export function PropertyMapPicker({
 			});
 		}
 
+		if (!initialLocation) {
+			detectCurrentLocation();
+		}
+
 		return () => {
 			mapInstanceRef.current = null;
 			markerRef.current = null;
 			geocoderRef.current = null;
 			autocompleteRef.current = null;
 		};
-	}, [open, mapsLoaded]);
+	}, [open, mapsLoaded, initialLocation, detectCurrentLocation]);
 
 	if (!open) return null;
 
@@ -216,15 +283,27 @@ export function PropertyMapPicker({
 							<h2 className="text-base font-black tracking-[-0.03em] text-slate-900">
 								Pick Property Location
 							</h2>
-							<p className="text-xs text-slate-400">Click on the map or search an address</p>
+							<p className="text-xs text-slate-400">
+								Click on the map or search an address
+							</p>
 						</div>
 					</div>
-					<button
-						onClick={onClose}
-						className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-					>
-						<X className="h-4 w-4" />
-					</button>
+					<div className="flex items-center gap-2">
+						<button
+							type="button"
+							onClick={detectCurrentLocation}
+							className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+							disabled={autoDetecting}
+						>
+							{autoDetecting ? "Locating…" : "Use my location"}
+						</button>
+						<button
+							onClick={onClose}
+							className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+						>
+							<X className="h-4 w-4" />
+						</button>
+					</div>
 				</div>
 
 				<div className="border-b border-slate-100 px-6 py-3">
@@ -252,7 +331,9 @@ export function PropertyMapPicker({
 					{isLoading && (
 						<div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-lg bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur-sm">
 							<Loader2 className="h-3.5 w-3.5 animate-spin text-blue-600" />
-							<span className="text-xs font-medium text-slate-600">Getting address…</span>
+							<span className="text-xs font-medium text-slate-600">
+								Getting address…
+							</span>
 						</div>
 					)}
 				</div>
@@ -261,12 +342,15 @@ export function PropertyMapPicker({
 					<div className="border-t border-slate-100 bg-blue-50/60 px-6 py-3">
 						<div className="flex items-start gap-2.5">
 							<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-							<div className="flex-1 min-w-0">
+							<div className="min-w-0 flex-1">
 								<p className="truncate text-sm font-semibold text-slate-800">
 									{picked.formatted_address}
 								</p>
 								<p className="mt-0.5 text-xs text-slate-400">
-									{picked.state}{picked.local_government ? `, ${picked.local_government}` : ""}
+									{picked.state}
+									{picked.local_government
+										? `, ${picked.local_government}`
+										: ""}
 									{" · "}
 									{picked.lat.toFixed(5)}, {picked.lng.toFixed(5)}
 								</p>
