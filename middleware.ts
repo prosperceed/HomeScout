@@ -28,15 +28,15 @@ export async function middleware(request: NextRequest) {
 				},
 				setAll(cookiesToSet) {
 					cookiesToSet.forEach(({ name, value }) =>
-						request.cookies.set(name, value)
+						request.cookies.set(name, value),
 					);
 					supabaseResponse = NextResponse.next({ request });
 					cookiesToSet.forEach(({ name, value, options }) =>
-						supabaseResponse.cookies.set(name, value, options)
+						supabaseResponse.cookies.set(name, value, options),
 					);
 				},
 			},
-		}
+		},
 	);
 
 	const {
@@ -45,8 +45,17 @@ export async function middleware(request: NextRequest) {
 
 	const { pathname } = request.nextUrl;
 
+	if (pathname.startsWith("/property/")) {
+		if (!user) {
+			const loginUrl = new URL("/login", request.url);
+			loginUrl.searchParams.set("next", pathname);
+			return NextResponse.redirect(loginUrl);
+		}
+		return supabaseResponse;
+	}
+
 	const matchedPrefix = Object.keys(PROTECTED_PREFIXES).find((prefix) =>
-		pathname.startsWith(prefix)
+		pathname.startsWith(prefix),
 	);
 
 	if (!matchedPrefix) {
@@ -80,5 +89,6 @@ export const config = {
 		"/landlord/:path*",
 		"/agent/:path*",
 		"/admin/:path*",
+		"/property/:path*",
 	],
 };

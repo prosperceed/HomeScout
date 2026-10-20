@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import {
 	ArrowLeft,
 	MapPin,
@@ -61,17 +61,29 @@ function normalizeImages(value: unknown): string[] {
 	return [];
 }
 
-export default function PropertyDetailPage() {
+function PropertyDetailPageInner() {
 	const params = useParams<{ id: string }>();
+	const router = useRouter();
 	const propertyId = params?.id ?? "";
 	const [property, setProperty] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [checkingAuth, setCheckingAuth] = useState(true);
 	const [imgIdx, setImgIdx] = useState(0);
 	const [saved, setSaved] = useState(false);
 
 	useEffect(() => {
 		let isActive = true;
 		const supabase = createClient();
+
+		async function verifyAccess() {
+			const { data: userData } = await supabase.auth.getUser();
+			if (!isActive) return;
+			if (!userData.user) {
+				router.replace(`/login?next=/property/${propertyId}`);
+				return;
+			}
+			setCheckingAuth(false);
+		}
 
 		async function loadProperty() {
 			if (!propertyId) {
@@ -100,11 +112,12 @@ export default function PropertyDetailPage() {
 			}
 		}
 
+		verifyAccess();
 		loadProperty();
 		return () => {
 			isActive = false;
 		};
-	}, [propertyId]);
+	}, [propertyId, router]);
 
 	const images = useMemo(() => {
 		if (!property) return [];
@@ -125,7 +138,7 @@ export default function PropertyDetailPage() {
 		? `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${property.lat},${property.lng}&zoom=16`
 		: "";
 
-	if (loading) {
+	if (checkingAuth || loading) {
 		return (
 			<div className="min-h-screen bg-[#f8f5f2] px-4 pt-28">
 				<div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-500">
@@ -438,5 +451,13 @@ export default function PropertyDetailPage() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function PropertyDetailPage() {
+	return (
+		<Suspense>
+			<PropertyDetailPageInner />
+		</Suspense>
 	);
 }

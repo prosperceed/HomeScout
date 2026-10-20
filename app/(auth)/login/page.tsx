@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 
-export default function LoginPage() {
+function LoginPageInner() {
 	const searchParams = useSearchParams();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -162,5 +162,13 @@ export default function LoginPage() {
 				</div>
 			</form>
 		</div>
+	);
+}
+
+export default function LoginPage() {
+	return (
+		<Suspense>
+			<LoginPageInner />
+		</Suspense>
 	);
 }

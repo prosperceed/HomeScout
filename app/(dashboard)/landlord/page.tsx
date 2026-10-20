@@ -1,10 +1,11 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getLandlordStats, getLandlordProperties } from "@/lib/supabase/queries";
 import { LandlordStatCards } from "@/components/landlord/LandlordStatCards";
 import { LandlordListingsTable } from "@/components/landlord/LandlordListingsTable";
 
-export default async function LandlordDashboardPage() {
+async function LandlordDashboardContent() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -25,5 +26,13 @@ export default async function LandlordDashboardPage() {
 
       <LandlordListingsTable properties={properties} />
     </div>
+  );
+}
+
+export default function LandlordDashboardPage() {
+  return (
+    <Suspense>
+      <LandlordDashboardContent />
+    </Suspense>
   );
 }

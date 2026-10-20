@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 
@@ -29,6 +32,12 @@ const columns = [
 ];
 
 export default function Footer() {
+	const [year, setYear] = useState(2026);
+
+	useEffect(() => {
+		setYear(new Date().getFullYear());
+	}, []);
+
 	return (
 		<footer className="bg-slate-950 text-slate-300">
 			<div className="container-shell py-16">
@@ -89,7 +98,7 @@ export default function Footer() {
 
 			<div className="border-t border-slate-800">
 				<div className="container-shell flex flex-col items-center justify-between gap-3 py-5 text-xs text-slate-500 md:flex-row">
-					<p>© {new Date().getFullYear()} HomeScout. All rights reserved.</p>
+					<p>© {year} HomeScout. All rights reserved.</p>
 					<p>Built for transparent property journeys across Nigeria.</p>
 				</div>
 			</div>

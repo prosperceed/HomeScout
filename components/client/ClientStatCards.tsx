@@ -1,76 +1,141 @@
-"use client";
-
-import { Heart, Building2, CheckCircle2, MessageSquare, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+import {
+	ArrowUpRight,
+	Building2,
+	CheckCircle2,
+	Heart,
+	MessageSquare,
+} from "lucide-react";
 import type { getClientStats } from "@/lib/supabase/queries";
 
 type Stats = Awaited<ReturnType<typeof getClientStats>>;
 
-interface Props { stats: Stats; }
+interface Props {
+	stats: Stats;
+}
 
 export function ClientStatCards({ stats }: Props) {
-  const cards = [
-    {
-      label: "Saved Homes",
-      value: stats.savedCount,
-      change: "View saved",
-      icon: Heart,
-      cardBg: "bg-gradient-to-br from-[#ff7a52] via-[#f95d2e] to-[#e04520]",
-      iconBg: "bg-white/20",
-    },
-    {
-      label: "Applications",
-      value: stats.applicationsCount,
-      change: "Track all",
-      icon: Building2,
-      cardBg: "bg-gradient-to-br from-[#334155] via-[#1e293b] to-[#0f172a]",
-      iconBg: "bg-white/15",
-    },
-    {
-      label: "Shortlisted",
-      value: stats.shortlistedCount,
-      change: "Approved bookings",
-      icon: CheckCircle2,
-      cardBg: "bg-gradient-to-br from-[#4aba8a] via-[#33a674] to-[#268660]",
-      iconBg: "bg-white/20",
-    },
-    {
-      label: "Messages",
-      value: stats.totalMessages,
-      change: `${stats.unreadMessages} unread`,
-      icon: MessageSquare,
-      cardBg: "bg-gradient-to-br from-[#5bb8cf] via-[#3a9db8] to-[#2d7f96]",
-      iconBg: "bg-white/20",
-    },
-  ];
+	const approvalRate =
+		stats.applicationsCount > 0
+			? Math.round((stats.shortlistedCount / stats.applicationsCount) * 100)
+			: 0;
 
-  return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {cards.map((card) => {
-        const Icon = card.icon;
-        return (
-          <div
-            key={card.label}
-            className={`group relative overflow-hidden rounded-3xl p-6 ring-1 ring-black/8 transition-transform duration-200 hover:-translate-y-0.5 ${card.cardBg}`}
-          >
-            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20200%20200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.75%22%20stitchTiles%3D%22stitch%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23n)%22%20opacity%3D%220.03%22%2F%3E%3C%2Fsvg%3E')] opacity-40" />
-            <div className="relative flex items-start justify-between">
-              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${card.iconBg}`}>
-                <Icon className="h-5 w-5 text-white" />
-              </div>
-              <button className="flex h-7 w-7 items-center justify-center rounded-lg text-white/40 transition hover:bg-white/15 hover:text-white">
-                <MoreHorizontal className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="relative mt-4">
-              <p className="text-sm font-medium text-white/80">{card.label}</p>
-              <p className="mt-1 text-4xl font-black tracking-[-0.06em] text-white">
-                {String(card.value).padStart(2, "0")}
-              </p>
-            </div>
-            <p className="relative mt-3 text-xs font-semibold text-white/60">{card.change}</p>
-          </div>
-        );
-      })}
-    </div>
-  );
+	const cards = [
+		{
+			label: "Saved Homes",
+			value: stats.savedCount,
+			note: stats.savedCount > 0 ? "Ready to revisit" : "Start your wishlist",
+			href: "/client/saved",
+			icon: Heart,
+			iconBg: "from-coral-400 to-coral-600",
+			iconShadow: "shadow-[0_8px_20px_-6px_rgba(249,93,46,0.55)]",
+			glow: "bg-coral-200",
+			chip: "bg-coral-50 text-coral-600",
+			bar: "from-coral-300 to-coral-500",
+			progress: Math.min(stats.savedCount * 10, 100),
+		},
+		{
+			label: "Applications",
+			value: stats.applicationsCount,
+			note: "Total booking requests",
+			href: "/client/applications",
+			icon: Building2,
+			iconBg: "from-brand-500 to-brand-700",
+			iconShadow: "shadow-[0_8px_20px_-6px_rgba(15,23,42,0.55)]",
+			glow: "bg-slate-200",
+			chip: "bg-slate-100 text-slate-600",
+			bar: "from-slate-400 to-slate-700",
+			progress: Math.min(stats.applicationsCount * 10, 100),
+		},
+		{
+			label: "Shortlisted",
+			value: stats.shortlistedCount,
+			note: `${approvalRate}% approval rate`,
+			href: "/client/applications",
+			icon: CheckCircle2,
+			iconBg: "from-sage-400 to-sage-600",
+			iconShadow: "shadow-[0_8px_20px_-6px_rgba(51,166,116,0.55)]",
+			glow: "bg-sage-200",
+			chip: "bg-sage-50 text-sage-700",
+			bar: "from-sage-300 to-sage-500",
+			progress: approvalRate,
+		},
+		{
+			label: "Messages",
+			value: stats.totalMessages,
+			note:
+				stats.unreadMessages > 0
+					? `${stats.unreadMessages} unread`
+					: "You're all caught up",
+			href: "/client/messages",
+			icon: MessageSquare,
+			iconBg: "from-teal-400 to-teal-600",
+			iconShadow: "shadow-[0_8px_20px_-6px_rgba(58,157,184,0.55)]",
+			glow: "bg-teal-200",
+			chip: "bg-teal-50 text-teal-700",
+			bar: "from-teal-300 to-teal-500",
+			progress:
+				stats.totalMessages > 0
+					? Math.round(
+							((stats.totalMessages - stats.unreadMessages) /
+								stats.totalMessages) *
+								100,
+						)
+					: 100,
+		},
+	];
+
+	return (
+		<div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+			{cards.map((card) => {
+				const Icon = card.icon;
+				return (
+					<Link
+						key={card.label}
+						href={card.href}
+						className="group relative flex flex-col overflow-hidden rounded-3xl bg-white p-4 ring-1 ring-stone-200/70 shadow-[0_2px_16px_-6px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgba(15,23,42,0.28)] hover:ring-stone-300/80 sm:p-6"
+					>
+						{/* Decorative glow */}
+						<div
+							className={`pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-90 ${card.glow}`}
+						/>
+
+						<div className="relative flex items-start justify-between">
+							<div
+								className={`flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br text-white sm:h-12 sm:w-12 ${card.iconBg} ${card.iconShadow}`}
+							>
+								<Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+							</div>
+							<span className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-50 text-slate-400 ring-1 ring-stone-200/70 transition-all duration-300 group-hover:rotate-45 group-hover:bg-slate-900 group-hover:text-white group-hover:ring-slate-900">
+								<ArrowUpRight className="h-4 w-4" />
+							</span>
+						</div>
+
+						<div className="relative mt-5 sm:mt-6">
+							<p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">
+								{card.label}
+							</p>
+							<p className="mt-1 text-3xl font-black tracking-[-0.05em] text-slate-900 sm:text-[2.6rem] sm:leading-none">
+								{String(card.value).padStart(2, "0")}
+							</p>
+						</div>
+
+						<div className="relative mt-4 space-y-2.5">
+							<div className="h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
+								<div
+									className={`h-full rounded-full bg-gradient-to-r transition-all duration-700 ${card.bar}`}
+									style={{ width: `${Math.max(card.progress, 6)}%` }}
+								/>
+							</div>
+							<span
+								className={`inline-flex max-w-full items-center truncate rounded-full px-2.5 py-1 text-[10px] font-bold sm:text-[11px] ${card.chip}`}
+							>
+								{card.note}
+							</span>
+						</div>
+					</Link>
+				);
+			})}
+		</div>
+	);
 }

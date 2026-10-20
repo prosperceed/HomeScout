@@ -111,9 +111,9 @@ export function SpendingChart() {
 	const lastPeriodSpend = spendingData[spendingData.length - 1]?.amount ?? 0;
 
 	return (
-		<div className="overflow-hidden rounded-3xl bg-white ring-1 ring-stone-200/60 shadow-[0_2px_16px_-4px_rgba(15,23,42,0.08)]">
+		<div className="flex h-full flex-col overflow-hidden rounded-3xl bg-white ring-1 ring-stone-200/70 shadow-[0_2px_16px_-6px_rgba(15,23,42,0.08)]">
 			{/* ── Header ── */}
-			<div className="flex flex-wrap items-start justify-between gap-4 border-b border-stone-100 px-6 py-5">
+			<div className="flex flex-wrap items-start justify-between gap-4 border-b border-stone-100 px-5 py-5 sm:px-6">
 				<div>
 					<h2 className="text-lg font-black tracking-[-0.03em] text-slate-900">
 						Spending Analytics
@@ -145,8 +145,8 @@ export function SpendingChart() {
 			</div>
 
 			{/* ── Chart Toggle & Chart ── */}
-			<div className="px-6 pb-6 pt-5">
-				<div className="mb-5 flex items-center gap-1 rounded-2xl bg-stone-50 p-1 w-fit">
+			<div className="flex-1 px-3 pb-5 pt-5 sm:px-6 sm:pb-6">
+				<div className="mb-5 ml-2 flex w-fit items-center gap-1 rounded-2xl bg-stone-100/80 p-1 sm:ml-0">
 					<TabBtn active={mode === "bar"} onClick={() => setMode("bar")}>
 						Per Period
 					</TabBtn>
@@ -155,11 +155,11 @@ export function SpendingChart() {
 					</TabBtn>
 				</div>
 
-				<ResponsiveContainer width="100%" height={220}>
+				<ResponsiveContainer width="100%" height={240}>
 					{mode === "bar" ? (
 						<BarChart
 							data={spendingData}
-							barSize={36}
+							maxBarSize={36}
 							margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
 						>
 							<defs>

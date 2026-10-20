@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/shared/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
@@ -9,6 +10,12 @@ import EcosystemSection from "@/components/landing/EcosystemSection";
 import CtaBanner from "@/components/landing/CtaBanner";
 
 export default function HomePage() {
+	const [year, setYear] = useState(2026);
+
+	useEffect(() => {
+		setYear(new Date().getFullYear());
+	}, []);
+
 	return (
 		<div className="min-h-screen bg-[#f6f5f3] text-slate-900">
 			<Navbar />
@@ -127,7 +134,7 @@ export default function HomePage() {
 					</div>
 
 					<div className="mt-10 border-t border-white/5 pt-6 text-center text-xs text-slate-600">
-						© {new Date().getFullYear()} HomeScout. All rights reserved.
+						© {year} HomeScout. All rights reserved.
 					</div>
 				</div>
 			</footer>

@@ -348,7 +348,7 @@ export default function ExplorePage() {
 											State
 										</p>
 										<div className="relative">
-											<MapPin className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+											{/* <MapPin className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" /> */}
 											<select
 												value={selectedState}
 												onChange={(e) => setSelectedState(e.target.value)}

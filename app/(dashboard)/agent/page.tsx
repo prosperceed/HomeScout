@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAgentStats, getAgentBookings } from "@/lib/supabase/queries";
@@ -7,7 +8,7 @@ import { AgentPerformanceChart } from "@/components/agent/AgentPerformanceChart"
 import { AgentDealGrowthChart } from "@/components/agent/AgentDealGrowthChart";
 import { Calendar, Download } from "lucide-react";
 
-export default async function AgentDashboardPage() {
+async function AgentDashboardContent() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -56,5 +57,13 @@ export default async function AgentDashboardPage() {
         <AgentListingsTableDB bookings={bookings} />
       </div>
     </div>
+  );
+}
+
+export default function AgentDashboardPage() {
+  return (
+    <Suspense>
+      <AgentDashboardContent />
+    </Suspense>
   );
 }
