@@ -49,7 +49,7 @@ export default function HeroSection() {
 						</div>
 					</div>
 
-					<div className="relative hidden h-[400px] lg:flex lg:items-center lg:justify-center">
+					<div className="relative mx-auto flex w-full max-w-[540px] items-center justify-center pb-8 lg:max-w-none lg:pb-12">
 						<NetworkSVG />
 					</div>
 				</div>
