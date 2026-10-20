@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { LISTING_TAGS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "@/lib/toast";
 
 const periodLabel: Record<string, string> = {
 	per_year: "/ year",
@@ -83,6 +84,18 @@ function PropertyDetailPageInner() {
 				return;
 			}
 			setCheckingAuth(false);
+
+			if (propertyId) {
+				const { data: savedData } = await supabase
+					.from("saved_properties")
+					.select("id")
+					.eq("client_id", userData.user.id)
+					.eq("property_id", propertyId)
+					.maybeSingle();
+				if (isActive && savedData) {
+					setSaved(true);
+				}
+			}
 		}
 
 		async function loadProperty() {
@@ -118,6 +131,49 @@ function PropertyDetailPageInner() {
 			isActive = false;
 		};
 	}, [propertyId, router]);
+
+	const handleToggleSave = async () => {
+		const supabase = createClient();
+		const {
+			data: { user },
+		} = await supabase.auth.getUser();
+		if (!user) {
+			router.push(`/login?next=/property/${propertyId}`);
+			return;
+		}
+
+		const nextState = !saved;
+		setSaved(nextState);
+
+		try {
+			if (nextState) {
+				const { error } = await supabase.from("saved_properties").insert({
+					client_id: user.id,
+					property_id: propertyId,
+				});
+				if (error && error.code !== "23505") throw error;
+				toast.success("Property bookmarked", {
+					description: "Saved to your shortlisted homes.",
+				});
+			} else {
+				const { error } = await supabase
+					.from("saved_properties")
+					.delete()
+					.eq("client_id", user.id)
+					.eq("property_id", propertyId);
+				if (error) throw error;
+				toast.info("Bookmark removed", {
+					description: "Removed from your saved homes.",
+				});
+			}
+		} catch (err) {
+			setSaved(!nextState);
+			toast.error("Failed to update bookmark", {
+				description:
+					err instanceof Error ? err.message : "Please try again later.",
+			});
+		}
+	};
 
 	const images = useMemo(() => {
 		if (!property) return [];
@@ -176,14 +232,14 @@ function PropertyDetailPageInner() {
 
 					<div className="mt-4 flex flex-wrap items-start justify-between gap-4">
 						<div>
-							{tag && (
+							{/* {tag && (
 								<span
 									className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${tagStyle[tag.value] ?? "bg-slate-600 text-white"}`}
 								>
 									<span className="h-1.5 w-1.5 rounded-full bg-white/70" />
 									{tag.label}
 								</span>
-							)}
+							)} */}
 							<h1 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white md:text-3xl">
 								{property.title}
 							</h1>
@@ -197,7 +253,7 @@ function PropertyDetailPageInner() {
 
 						<div className="flex items-center gap-2">
 							<button
-								onClick={() => setSaved((v) => !v)}
+								onClick={handleToggleSave}
 								className={`flex h-10 w-10 items-center justify-center rounded-xl border transition ${saved ? "border-coral-400 bg-coral-50 text-coral-500" : "border-white/20 bg-white/10 text-white hover:bg-white/20"}`}
 								aria-label="Save property"
 							>
@@ -214,7 +270,7 @@ function PropertyDetailPageInner() {
 				</div>
 			</div>
 
-			<div className="container-shell -mt-6">
+			<div className="container-shell mt-12">
 				<div className="grid gap-8 lg:grid-cols-[1fr_340px]">
 					<div className="space-y-6">
 						<div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-100 shadow-sm">
@@ -249,7 +305,7 @@ function PropertyDetailPageInner() {
 									</>
 								)}
 
-								<div className="absolute bottom-3 right-3 rounded-lg bg-slate-950/60 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
+								<div className="absolute bottom-3 right-3 rounded-lg bg-slate-950/65 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-md">
 									{imgIdx + 1} / {images.length}
 								</div>
 

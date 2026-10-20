@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Logo } from "@/components/shared/Logo";
 
 const publicNavLinks = [
 	{ label: "Home", href: "/" },
@@ -118,19 +119,10 @@ function NavbarInner() {
 				<div className="container-shell flex items-center justify-between gap-4 py-4">
 					<Link
 						href={homeHref}
-						className="flex shrink-0 items-center gap-2.5"
+						className="flex shrink-0 items-center transition-opacity hover:opacity-90"
 						aria-label="HomeScout home"
 					>
-						<span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white">
-							H
-						</span>
-						<span
-							className={`text-lg font-extrabold tracking-tight transition-colors ${
-								scrolled ? "text-slate-900" : "text-white"
-							}`}
-						>
-							HomeScout
-						</span>
+						<Logo variant={scrolled ? "light" : "dark"} size="sm" />
 					</Link>
 
 					<nav

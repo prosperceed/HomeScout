@@ -17,6 +17,7 @@ import {
 	X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { Logo } from "@/components/shared/Logo";
 
 const clientNav = [
 	{ href: "/client", label: "Overview", icon: LayoutGrid, exact: true },
@@ -64,7 +65,11 @@ function SidebarLink({
 	);
 }
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -79,14 +84,17 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 	};
 
 	const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
-		<aside className={`flex bg-slate-900 ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}>
-			<div className="flex h-16 shrink-0 items-center justify-center border-b border-white/10">
+		<aside
+			className={`flex bg-slate-900 ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}
+		>
+			<div className="flex h-16 shrink-0 items-center justify-center border-b border-white/10 px-5">
 				<Link
 					href="/client"
 					onClick={() => setSidebarOpen(false)}
-					className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-coral-400 to-coral-600 text-lg font-black text-white shadow-[0_4px_20px_rgba(249,93,46,0.45)] transition-transform hover:scale-105"
+					className="inline-flex items-center transition-transform hover:scale-105"
+					aria-label="HomeScout home"
 				>
-					H
+					<Logo variant="dark" size="sm" />
 				</Link>
 			</div>
 
@@ -119,10 +127,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 				))}
 				<button
 					onClick={handleLogout}
-					className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
+					className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-400 transition hover:bg-red-500/20 hover:text-red-300 cursor-pointer"
 				>
-					<svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-						<path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+					<svg
+						className="h-[18px] w-[18px] shrink-0"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						strokeWidth={2}
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+						/>
 					</svg>
 					Logout
 				</button>
@@ -177,18 +195,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 					</div>
 
 					<div className="flex items-center gap-2.5">
-						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/80 text-slate-500 shadow-sm ring-1 ring-stone-200/60 transition hover:text-slate-800">
+						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/80 text-slate-500 ring-1 ring-stone-200/60 transition hover:text-slate-800">
 							<Search className="h-4 w-4" />
 						</button>
-						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/80 text-slate-500 shadow-sm ring-1 ring-stone-200/60 transition hover:text-slate-800">
+						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/80 text-slate-500 ring-1 ring-stone-200/60 transition hover:text-slate-800">
 							<Bell className="h-4 w-4" />
 							<span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-coral-500 ring-2 ring-[#f0ece8]" />
 						</button>
-						<div className="hidden items-center gap-2.5 rounded-xl bg-white/80 px-3 py-1.5 shadow-sm ring-1 ring-stone-200/60 sm:flex">
+						<div className="hidden items-center gap-2.5 rounded-xl bg-white/80 px-3 py-1.5 ring-1 ring-stone-200/60 sm:flex">
 							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white">
 								<UserRound className="h-4 w-4" />
 							</div>
-							<span className="text-sm font-semibold text-slate-700">My Account</span>
+							<span className="text-sm font-semibold text-slate-700">
+								My Account
+							</span>
 						</div>
 					</div>
 				</header>

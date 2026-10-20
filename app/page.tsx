@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/shared/Navbar";
+import { Logo } from "@/components/shared/Logo";
 import HeroSection from "@/components/landing/HeroSection";
 import TrustSection from "@/components/landing/TrustSection";
 import PropertyCardsSection from "@/components/landing/PropertyCardsSection";
@@ -36,13 +37,8 @@ export default function HomePage() {
 				<div className="container-shell py-12">
 					<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_0.7fr_0.7fr]">
 						<div>
-							<Link href="/" className="flex items-center gap-2.5">
-								<span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white">
-									H
-								</span>
-								<span className="text-lg font-extrabold tracking-tight text-white">
-									HomeScout
-								</span>
+							<Link href="/" className="inline-flex items-center transition-opacity hover:opacity-90" aria-label="HomeScout home">
+								<Logo variant="dark" size="md" />
 							</Link>
 							<p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
 								Verified homes. Direct connections. No exploitation. HomeScout

@@ -17,6 +17,7 @@ import {
 	X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { Logo } from "@/components/shared/Logo";
 
 const landlordNav = [
 	{ href: "/landlord", label: "Overview", icon: LayoutGrid, exact: true },
@@ -75,11 +76,15 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 
 	const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
 		<aside className={`flex bg-white ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}>
-			<div className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-100 px-5">
-				<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 text-sm font-black text-white shadow-[0_2px_10px_rgba(58,157,184,0.4)]">
-					H
-				</div>
-				<span className="text-sm font-black tracking-tight text-slate-900">HomeScout</span>
+			<div className="flex h-16 shrink-0 items-center border-b border-slate-100 px-5">
+				<Link
+					href="/landlord"
+					onClick={() => setSidebarOpen(false)}
+					className="inline-flex items-center transition-opacity hover:opacity-90"
+					aria-label="HomeScout home"
+				>
+					<Logo variant="light" size="sm" />
+				</Link>
 			</div>
 			<nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
 				<p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Main</p>

@@ -66,6 +66,9 @@ export default function ExplorePage() {
 
 	// properties fetched from Supabase
 	const [properties, setProperties] = useState<any[]>([]);
+	const [savedPropertyIds, setSavedPropertyIds] = useState<Set<string>>(
+		new Set(),
+	);
 	useEffect(() => {
 		const supabase = createClient();
 		let channel: any;
@@ -84,7 +87,29 @@ export default function ExplorePage() {
 			}
 		}
 
+		async function fetchSavedProperties() {
+			try {
+				const {
+					data: { user },
+				} = await supabase.auth.getUser();
+				if (!user) return;
+				const { data, error } = await supabase
+					.from("saved_properties")
+					.select("property_id")
+					.eq("client_id", user.id);
+				if (error) throw error;
+				if (data) {
+					setSavedPropertyIds(
+						new Set(data.map((item: any) => item.property_id)),
+					);
+				}
+			} catch (err) {
+				console.error("Failed to fetch saved properties", err);
+			}
+		}
+
 		fetchProperties();
+		fetchSavedProperties();
 
 		channel = supabase
 			.channel("public:property_listings")
@@ -459,7 +484,19 @@ export default function ExplorePage() {
 										</div>
 										<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
 											{recent.map((p) => (
-												<PropertyCard key={p.id} {...p} />
+												<PropertyCard
+													key={p.id}
+													{...p}
+													isBookmarked={savedPropertyIds.has(p.id)}
+													onBookmarkToggle={(propertyId, isBookmarked) => {
+														setSavedPropertyIds((prev) => {
+															const next = new Set(prev);
+															if (isBookmarked) next.add(propertyId);
+															else next.delete(propertyId);
+															return next;
+														});
+													}}
+												/>
 											))}
 										</div>
 									</section>
@@ -477,7 +514,19 @@ export default function ExplorePage() {
 										</div>
 										<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
 											{rest.map((p) => (
-												<PropertyCard key={p.id} {...p} />
+												<PropertyCard
+													key={p.id}
+													{...p}
+													isBookmarked={savedPropertyIds.has(p.id)}
+													onBookmarkToggle={(propertyId, isBookmarked) => {
+														setSavedPropertyIds((prev) => {
+															const next = new Set(prev);
+															if (isBookmarked) next.add(propertyId);
+															else next.delete(propertyId);
+															return next;
+														});
+													}}
+												/>
 											))}
 										</div>
 									</section>

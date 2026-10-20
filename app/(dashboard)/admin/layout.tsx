@@ -17,6 +17,7 @@ import {
 	X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { Logo } from "@/components/shared/Logo";
 
 const adminNav = [
 	{ href: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
@@ -74,14 +75,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 	const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
 		<aside className={`flex bg-white ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}>
-			<div className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-100 px-5">
-				<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-sm font-black text-white">
-					H
-				</div>
-				<div>
-					<p className="text-sm font-black tracking-tight text-slate-900">HomeScout</p>
-					<p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Admin</p>
-				</div>
+			<div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-5">
+				<Link
+					href="/admin"
+					onClick={() => setSidebarOpen(false)}
+					className="inline-flex items-center transition-opacity hover:opacity-90"
+					aria-label="HomeScout home"
+				>
+					<Logo variant="light" size="sm" />
+				</Link>
+				<span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+					Admin
+				</span>
 			</div>
 			<nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
 				<p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Control Panel</p>

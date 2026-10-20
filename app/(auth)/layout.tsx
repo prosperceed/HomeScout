@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Logo } from "@/components/shared/Logo";
 
 export default function AuthLayout({
 	children,
@@ -23,15 +24,10 @@ export default function AuthLayout({
 					<div className="relative z-10 flex h-full flex-col items-center justify-center p-10 text-center xl:p-14">
 						<Link
 							href="/"
-							className="flex items-center gap-3 mb-12"
+							className="mb-10 inline-flex items-center transition-transform hover:scale-105"
 							aria-label="HomeScout home"
 						>
-							<span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white">
-								H
-							</span>
-							<span className="text-2xl font-black tracking-[-0.04em] text-white">
-								HomeScout
-							</span>
+							<Logo variant="dark" size="lg" />
 						</Link>
 
 						<div className="max-w-xs">
@@ -53,15 +49,10 @@ export default function AuthLayout({
 						<div className="mb-8 flex justify-center lg:hidden">
 							<Link
 								href="/"
-								className="flex items-center gap-2.5"
+								className="inline-flex items-center"
 								aria-label="HomeScout home"
 							>
-								<span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white">
-									H
-								</span>
-								<span className="text-xl font-black tracking-[-0.04em] text-slate-900">
-									HomeScout
-								</span>
+								<Logo variant="light" size="md" />
 							</Link>
 						</div>
 
