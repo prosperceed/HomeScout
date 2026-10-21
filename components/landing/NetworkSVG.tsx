@@ -1,748 +1,533 @@
+"use client";
+
+interface StepConfig {
+	num: string;
+	title: string;
+	line1: string;
+	line2: string;
+	cx: number;
+	cy: number;
+	isBottom: boolean;
+	accent: string;
+	lipColor: string;
+	glowId: string;
+}
+
+const STEPS: StepConfig[] = [
+	{
+		num: "01",
+		title: "SEARCH",
+		line1: "Filter homes by",
+		line2: "city & budget.",
+		cx: 86,
+		cy: 116,
+		isBottom: false,
+		accent: "#3a9db8",
+		lipColor: "#2d7f96",
+		glowId: "iso-glow-1",
+	},
+	{
+		num: "02",
+		title: "VERIFY",
+		line1: "Owner ID & title",
+		line2: "checked upfront.",
+		cx: 213,
+		cy: 190,
+		isBottom: true,
+		accent: "#33a674",
+		lipColor: "#268660",
+		glowId: "iso-glow-2",
+	},
+	{
+		num: "03",
+		title: "CONNECT",
+		line1: "Chat with owner",
+		line2: "or vetted agent.",
+		cx: 340,
+		cy: 116,
+		isBottom: false,
+		accent: "#0ea5e9",
+		lipColor: "#0284c7",
+		glowId: "iso-glow-3",
+	},
+	{
+		num: "04",
+		title: "INSPECT",
+		line1: "Book a live tour",
+		line2: "at your time.",
+		cx: 467,
+		cy: 190,
+		isBottom: true,
+		accent: "#f59e0b",
+		lipColor: "#d97706",
+		glowId: "iso-glow-4",
+	},
+	{
+		num: "05",
+		title: "MOVE IN",
+		line1: "Sign lease safely",
+		line2: "& get your keys.",
+		cx: 594,
+		cy: 116,
+		isBottom: false,
+		accent: "#f95d2e",
+		lipColor: "#e04520",
+		glowId: "iso-glow-5",
+	},
+];
+
+// Rounded isometric diamond top face (half-width 52, half-height 30)
+const ISO_TOP_PATH =
+	"M -6 -26.5 Q 0 -30 6 -26.5 L 46 -3.5 Q 52 0 46 3.5 L 6 26.5 Q 0 30 -6 26.5 L -46 3.5 Q -52 0 -46 -3.5 Z";
+
+// 3D extruded lower rim / thickness lip (6.5px depth)
+const ISO_LIP_PATH =
+	"M -49.5 1.5 Q -52 0 -46 3.5 L -6 26.5 Q 0 30 6 26.5 L 46 3.5 Q 52 0 49.5 1.5 L 49.5 7.5 Q 52 6 46 9.5 L 6 32.5 Q 0 36 -6 32.5 L -46 9.5 Q -52 6 -49.5 7.5 Z";
+
+function StepHeroIcon({ index, color }: { index: number; color: string }) {
+	switch (index) {
+		case 0:
+			// Heroicons: magnifying-glass
+			return (
+				<g
+					stroke={color}
+					strokeWidth="1.9"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					fill="none"
+				>
+					<circle cx="11" cy="11" r="6.5" />
+					<circle cx="11" cy="11" r="2.5" strokeWidth="1.5" opacity="0.55" />
+					<path d="M20 20L15.65 15.65" strokeWidth="2.2" />
+				</g>
+			);
+		case 1:
+			// Heroicons: shield-check
+			return (
+				<g
+					stroke={color}
+					strokeWidth="1.85"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					fill="none"
+				>
+					<path d="M12 2.75c-2.8 2.1-5.8 3.25-8.5 3.5v5.25c0 5.25 3.6 9.75 8.5 11 4.9-1.25 8.5-5.75 8.5-11V6.25c-2.7-.25-5.7-1.4-8.5-3.5z" />
+					<path d="M8.75 12.25l2.25 2.25 4.5-4.75" strokeWidth="2.1" />
+				</g>
+			);
+		case 2:
+			// Heroicons: chat-bubble-left-ellipsis
+			return (
+				<g
+					stroke={color}
+					strokeWidth="1.85"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					fill="none"
+				>
+					<path d="M12 3.75c-4.97 0-9 3.47-9 7.75 0 1.98.86 3.79 2.28 5.16.28.27.4.67.3 1.05l-.58 2.14a.5.5 0 00.61.61l2.26-.57c.33-.08.68-.05 1 .06.98.33 2.04.5 3.13.5 4.97 0 9-3.47 9-7.75s-4.03-7.75-9-7.75z" />
+					<circle cx="8.5" cy="11.5" r="1" fill={color} stroke="none" />
+					<circle cx="12" cy="11.5" r="1" fill={color} stroke="none" />
+					<circle cx="15.5" cy="11.5" r="1" fill={color} stroke="none" />
+				</g>
+			);
+		case 3:
+			// Heroicons: map-pin + home inspection
+			return (
+				<g
+					stroke={color}
+					strokeWidth="1.85"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					fill="none"
+				>
+					<path d="M19.5 10.5c0 6.5-7.5 11-7.5 11S4.5 17 4.5 10.5a7.5 7.5 0 1115 0z" />
+					<circle cx="12" cy="10.5" r="2.75" />
+				</g>
+			);
+		default:
+			// Heroicons: check-badge / confirmed handover (matches reference tile 05)
+			return (
+				<g
+					stroke={color}
+					strokeWidth="1.9"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					fill="none"
+				>
+					<rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+					<path d="M8.25 12.25l2.5 2.5 5.25-5.5" strokeWidth="2.2" />
+				</g>
+			);
+	}
+}
+
 export default function NetworkSVG() {
 	return (
 		<div className="relative w-full select-none">
+			<style>{`
+				@keyframes hsTileLift {
+					0%, 100% { transform: translateY(0px); }
+					6%, 18% { transform: translateY(-9px); }
+					26% { transform: translateY(0px); }
+				}
+				@keyframes hsShadowPulse {
+					0%, 100% { transform: scale(1); opacity: 0.42; }
+					6%, 18% { transform: scale(1.14); opacity: 0.78; }
+					26% { transform: scale(1); opacity: 0.42; }
+				}
+				@keyframes hsCheckBadge {
+					0%, 4% { transform: scale(0); opacity: 0; }
+					10%, 88% { transform: scale(1); opacity: 1; }
+					96%, 100% { transform: scale(0); opacity: 0; }
+				}
+				@keyframes hsTrackBeam {
+					0%, 8% { stroke-dashoffset: 160; opacity: 0; }
+					12% { opacity: 1; }
+					24%, 88% { stroke-dashoffset: 0; opacity: 1; }
+					96%, 100% { stroke-dashoffset: -160; opacity: 0; }
+				}
+				@keyframes hsCycleRing {
+					0%, 72% { transform: scale(0.85); opacity: 0; }
+					80% { transform: scale(1.18); opacity: 0.75; }
+					94%, 100% { transform: scale(1.45); opacity: 0; }
+				}
+				.hs-tile-0 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 0s; }
+				.hs-tile-1 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 1.5s; }
+				.hs-tile-2 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 3.0s; }
+				.hs-tile-3 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 4.5s; }
+				.hs-tile-4 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 6.0s; }
+
+				.hs-shadow-0 { animation: hsShadowPulse 9s ease-in-out infinite 0s; transform-box: fill-box; transform-origin: center; }
+				.hs-shadow-1 { animation: hsShadowPulse 9s ease-in-out infinite 1.5s; transform-box: fill-box; transform-origin: center; }
+				.hs-shadow-2 { animation: hsShadowPulse 9s ease-in-out infinite 3.0s; transform-box: fill-box; transform-origin: center; }
+				.hs-shadow-3 { animation: hsShadowPulse 9s ease-in-out infinite 4.5s; transform-box: fill-box; transform-origin: center; }
+				.hs-shadow-4 { animation: hsShadowPulse 9s ease-in-out infinite 6.0s; transform-box: fill-box; transform-origin: center; }
+
+				.hs-check-0 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.35s; transform-box: fill-box; transform-origin: center; }
+				.hs-check-1 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 1.85s; transform-box: fill-box; transform-origin: center; }
+				.hs-check-2 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 3.35s; transform-box: fill-box; transform-origin: center; }
+				.hs-check-3 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 4.85s; transform-box: fill-box; transform-origin: center; }
+				.hs-check-4 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 6.35s; transform-box: fill-box; transform-origin: center; }
+
+				.hs-beam-0 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 0.4s; }
+				.hs-beam-1 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 1.9s; }
+				.hs-beam-2 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 3.4s; }
+				.hs-beam-3 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 4.9s; }
+
+				.hs-cycle-ring { animation: hsCycleRing 9s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+			`}</style>
+
 			<svg
-				viewBox="0 0 560 460"
+				viewBox="0 0 680 350"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
-				className="h-auto w-full overflow-visible drop-shadow-[0_24px_48px_rgba(6,11,22,0.55)]"
+				className="h-auto w-full overflow-visible"
 				role="img"
-				aria-label="HomeScout network connecting House Hunters, Verified Landlords, and Licensed Agents through a central verification hub"
+				aria-label="HomeScout 5-step home finding flow: Search, Verify, Connect, Inspect, and Move In"
 			>
 				<defs>
-					{/* Ambient Stage Glows */}
-					<radialGradient id="hs-stage-glow" cx="50%" cy="48%" r="50%">
-						<stop offset="0%" stopColor="#33a674" stopOpacity="0.22" />
-						<stop offset="45%" stopColor="#3a9db8" stopOpacity="0.1" />
-						<stop offset="100%" stopColor="#0c1220" stopOpacity="0" />
-					</radialGradient>
-					<radialGradient id="hs-teal-glow" cx="50%" cy="50%" r="50%">
-						<stop offset="0%" stopColor="#3a9db8" stopOpacity="0.28" />
-						<stop offset="100%" stopColor="#3a9db8" stopOpacity="0" />
-					</radialGradient>
-					<radialGradient id="hs-sage-glow" cx="50%" cy="50%" r="50%">
-						<stop offset="0%" stopColor="#33a674" stopOpacity="0.28" />
-						<stop offset="100%" stopColor="#33a674" stopOpacity="0" />
-					</radialGradient>
-					<radialGradient id="hs-coral-glow" cx="50%" cy="50%" r="50%">
-						<stop offset="0%" stopColor="#f95d2e" stopOpacity="0.26" />
-						<stop offset="100%" stopColor="#f95d2e" stopOpacity="0" />
-					</radialGradient>
+					{/* Isometric Floor Glow Gradients */}
+					{STEPS.map((step) => (
+						<radialGradient
+							key={step.glowId}
+							id={step.glowId}
+							cx="50%"
+							cy="50%"
+							r="50%"
+						>
+							<stop offset="0%" stopColor={step.accent} stopOpacity="0.52" />
+							<stop offset="55%" stopColor={step.accent} stopOpacity="0.16" />
+							<stop offset="100%" stopColor={step.accent} stopOpacity="0" />
+						</radialGradient>
+					))}
 
-					{/* Card Surfaces */}
-					<linearGradient id="hs-card-surface" x1="0%" y1="0%" x2="100%" y2="100%">
-						<stop offset="0%" stopColor="#162133" stopOpacity="0.95" />
-						<stop offset="100%" stopColor="#0d1524" stopOpacity="0.95" />
-					</linearGradient>
-					<linearGradient id="hs-hub-surface" x1="0%" y1="0%" x2="100%" y2="100%">
-						<stop offset="0%" stopColor="#1e293b" />
-						<stop offset="55%" stopColor="#0f172a" />
-						<stop offset="100%" stopColor="#090e1a" />
+					{/* Clean White-to-Snow Isometric Tile Surface */}
+					<linearGradient id="iso-tile-top" x1="0%" y1="0%" x2="100%" y2="100%">
+						<stop offset="0%" stopColor="#ffffff" />
+						<stop offset="100%" stopColor="#f1f5f9" />
 					</linearGradient>
 
-					{/* Role Accent Gradients */}
-					<linearGradient id="hs-teal-badge" x1="0%" y1="0%" x2="100%" y2="100%">
-						<stop offset="0%" stopColor="#5ec8e0" />
-						<stop offset="100%" stopColor="#2d7f96" />
+					{/* Track Gradients between consecutive steps */}
+					<linearGradient
+						id="iso-track-0"
+						x1="86"
+						y1="116"
+						x2="213"
+						y2="190"
+						gradientUnits="userSpaceOnUse"
+					>
+						<stop offset="0%" stopColor="#3a9db8" />
+						<stop offset="100%" stopColor="#33a674" />
 					</linearGradient>
-					<linearGradient id="hs-sage-badge" x1="0%" y1="0%" x2="100%" y2="100%">
-						<stop offset="0%" stopColor="#4aba8a" />
-						<stop offset="100%" stopColor="#268660" />
+					<linearGradient
+						id="iso-track-1"
+						x1="213"
+						y1="190"
+						x2="340"
+						y2="116"
+						gradientUnits="userSpaceOnUse"
+					>
+						<stop offset="0%" stopColor="#33a674" />
+						<stop offset="100%" stopColor="#0ea5e9" />
 					</linearGradient>
-					<linearGradient id="hs-coral-badge" x1="0%" y1="0%" x2="100%" y2="100%">
-						<stop offset="0%" stopColor="#ff7a52" />
-						<stop offset="100%" stopColor="#e04520" />
+					<linearGradient
+						id="iso-track-2"
+						x1="340"
+						y1="116"
+						x2="467"
+						y2="190"
+						gradientUnits="userSpaceOnUse"
+					>
+						<stop offset="0%" stopColor="#0ea5e9" />
+						<stop offset="100%" stopColor="#f59e0b" />
 					</linearGradient>
-
-					{/* Conduit Gradients */}
-					<linearGradient id="hs-wire-client" x1="112" y1="120" x2="280" y2="218" gradientUnits="userSpaceOnUse">
-						<stop offset="0%" stopColor="#5ec8e0" stopOpacity="0.85" />
-						<stop offset="100%" stopColor="#33a674" stopOpacity="0.45" />
+					<linearGradient
+						id="iso-track-3"
+						x1="467"
+						y1="190"
+						x2="594"
+						y2="116"
+						gradientUnits="userSpaceOnUse"
+					>
+						<stop offset="0%" stopColor="#f59e0b" />
+						<stop offset="100%" stopColor="#f95d2e" />
 					</linearGradient>
-					<linearGradient id="hs-wire-landlord" x1="448" y1="120" x2="280" y2="218" gradientUnits="userSpaceOnUse">
-						<stop offset="0%" stopColor="#4aba8a" stopOpacity="0.85" />
-						<stop offset="100%" stopColor="#3a9db8" stopOpacity="0.45" />
-					</linearGradient>
-					<linearGradient id="hs-wire-agent" x1="280" y1="344" x2="280" y2="218" gradientUnits="userSpaceOnUse">
-						<stop offset="0%" stopColor="#ff7a52" stopOpacity="0.9" />
-						<stop offset="100%" stopColor="#33a674" stopOpacity="0.5" />
-					</linearGradient>
-					<linearGradient id="hs-wire-bridge" x1="204" y1="72" x2="356" y2="72" gradientUnits="userSpaceOnUse">
-						<stop offset="0%" stopColor="#5ec8e0" stopOpacity="0.55" />
-						<stop offset="50%" stopColor="#ffffff" stopOpacity="0.35" />
-						<stop offset="100%" stopColor="#4aba8a" stopOpacity="0.55" />
-					</linearGradient>
-
-					{/* Reusable Motion Paths (Strictly Non-Overlapping) */}
-					<path id="path-client-to-hub" d="M 112 120 C 112 178, 198 196, 236 212" />
-					<path id="path-hub-to-landlord" d="M 324 212 C 362 196, 448 178, 448 120" />
-					<path id="path-landlord-to-client" d="M 356 72 C 306 52, 254 52, 204 72" />
-					<path id="path-agent-to-hub" d="M 280 344 L 280 264" />
-					<path id="path-client-to-agent" d="M 96 120 C 96 268, 132 372, 170 392" />
-					<path id="path-landlord-to-agent" d="M 464 120 C 464 268, 428 372, 390 392" />
 				</defs>
 
-				{/* ── 1. Ambient Background Field & Architectural Grid ── */}
-				<ellipse cx="280" cy="222" rx="235" ry="185" fill="url(#hs-stage-glow)" />
-				<circle cx="112" cy="72" r="85" fill="url(#hs-teal-glow)" />
-				<circle cx="448" cy="72" r="85" fill="url(#hs-sage-glow)" />
-				<circle cx="280" cy="390" r="95" fill="url(#hs-coral-glow)" />
-
-				{/* Subtle Architectural Coordinate Rings */}
-				<circle
-					cx="280"
-					cy="218"
-					r="138"
-					stroke="rgba(255,255,255,0.05)"
-					strokeWidth="1"
-					strokeDasharray="3 7"
-				/>
-				<circle
-					cx="280"
-					cy="218"
-					r="96"
-					stroke="rgba(255,255,255,0.07)"
-					strokeWidth="1"
-				/>
-
-				{/* ── 2. Network Conduits (Static Base Tracks + Animated Flow) ── */}
-				{/* Outer Perimeter Arcs (Client <-> Agent & Landlord <-> Agent) */}
-				<use
-					href="#path-client-to-agent"
-					stroke="rgba(94,200,224,0.2)"
-					strokeWidth="1.5"
-					strokeDasharray="4 6"
-				/>
-				<use
-					href="#path-landlord-to-agent"
-					stroke="rgba(74,186,138,0.2)"
-					strokeWidth="1.5"
-					strokeDasharray="4 6"
-				/>
-
-				{/* Direct Top Bridge (Landlord <-> Client) */}
-				<use
-					href="#path-landlord-to-client"
-					stroke="url(#hs-wire-bridge)"
-					strokeWidth="1.75"
-					strokeDasharray="5 5"
-				/>
-
-				{/* Primary Tri-Core Conduits into HomeScout Hub */}
-				<use
-					href="#path-client-to-hub"
-					stroke="url(#hs-wire-client)"
-					strokeWidth="2.25"
-				/>
-				<use
-					href="#path-hub-to-landlord"
-					stroke="url(#hs-wire-landlord)"
-					strokeWidth="2.25"
-				/>
-				<use
-					href="#path-agent-to-hub"
-					stroke="url(#hs-wire-agent)"
-					strokeWidth="2.25"
-				/>
-
-				{/* Animated Data Packets Acting Out the Platform Workflow */}
-				{/* Packet 1: Client Search Request -> HomeScout Hub */}
-				<g>
-					<circle r="6" fill="#5ec8e0" opacity="0.28">
-						<animate
-							attributeName="r"
-							values="4;8;4"
-							dur="2.8s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<circle r="3.2" fill="#e8f7fb" />
-					<animateMotion dur="2.8s" repeatCount="indefinite" rotate="auto">
-						<mpath href="#path-client-to-hub" />
-					</animateMotion>
-				</g>
-
-				{/* Packet 2: Verified Match -> Landlord */}
-				<g>
-					<circle r="6" fill="#4aba8a" opacity="0.28">
-						<animate
-							attributeName="r"
-							values="4;8;4"
-							dur="3.1s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<circle r="3.2" fill="#edf8f3" />
-					<animateMotion
-						dur="3.1s"
-						begin="0.6s"
-						repeatCount="indefinite"
-						rotate="auto"
-					>
-						<mpath href="#path-hub-to-landlord" />
-					</animateMotion>
-				</g>
-
-				{/* Packet 3: Direct Verified Listing Stream (Landlord -> Client) */}
-				<g>
-					<circle r="5" fill="#4aba8a" opacity="0.3" />
-					<circle r="2.8" fill="#ffffff" />
-					<animateMotion dur="3.6s" begin="1.1s" repeatCount="indefinite">
-						<mpath href="#path-landlord-to-client" />
-					</animateMotion>
-				</g>
-
-				{/* Packet 4: Agent Tour & Key Handover -> Hub */}
-				<g>
-					<circle r="6" fill="#ff7a52" opacity="0.3">
-						<animate
-							attributeName="r"
-							values="4;8;4"
-							dur="2.5s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<circle r="3.2" fill="#fff4f0" />
-					<animateMotion dur="2.5s" begin="0.3s" repeatCount="indefinite">
-						<mpath href="#path-agent-to-hub" />
-					</animateMotion>
-				</g>
-
-				{/* Packet 5: Inspection Sync (Client -> Agent) */}
-				<g>
-					<circle r="4.5" fill="#5ec8e0" opacity="0.25" />
-					<circle r="2.5" fill="#5ec8e0" />
-					<animateMotion dur="4.2s" begin="0.4s" repeatCount="indefinite">
-						<mpath href="#path-client-to-agent" />
-					</animateMotion>
-				</g>
-
-				{/* Packet 6: Mandate & Key Release (Landlord -> Agent) */}
-				<g>
-					<circle r="4.5" fill="#4aba8a" opacity="0.25" />
-					<circle r="2.5" fill="#4aba8a" />
-					<animateMotion dur="4.2s" begin="1.8s" repeatCount="indefinite">
-						<mpath href="#path-landlord-to-agent" />
-					</animateMotion>
-				</g>
-
-				{/* ── 3. Top Bridge Pill: Direct Match (x: 222..338, y: 46..72) ── */}
-				<g transform="translate(222, 46)">
-					<rect
-						width="116"
-						height="26"
-						rx="13"
-						fill="#0f172a"
-						fillOpacity="0.9"
+				{/* ── 1. Isometric Zig-Zag Connecting Tracks (01 -> 02 -> 03 -> 04 -> 05) ── */}
+				<g strokeLinecap="round">
+					{/* Base static tracks (matching the subtle gray/white isometric bars in reference) */}
+					<line
+						x1="86"
+						y1="120"
+						x2="213"
+						y2="194"
 						stroke="rgba(255,255,255,0.16)"
-						strokeWidth="1"
+						strokeWidth="7"
 					/>
-					<circle cx="15" cy="13" r="3.5" fill="#4aba8a">
-						<animate
-							attributeName="opacity"
-							values="1;0.35;1"
-							dur="2s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<text
-						x="25"
-						y="16.5"
-						fill="#f8fafc"
-						fontSize="8.5"
-						fontWeight="700"
-						letterSpacing="0.06em"
-					>
-						DIRECT MATCH
-					</text>
-				</g>
-
-				{/* ── 4. Central HomeScout Verification Hub (cx: 280, cy: 218) ── */}
-				<g>
-					{/* Animated Expanding Trust Pulse */}
-					<circle
-						cx="280"
-						cy="218"
-						r="46"
-						stroke="#33a674"
-						strokeWidth="1.5"
-						fill="none"
-						opacity="0.45"
-					>
-						<animate
-							attributeName="r"
-							values="44;66;44"
-							dur="3.6s"
-							repeatCount="indefinite"
-						/>
-						<animate
-							attributeName="opacity"
-							values="0.5;0;0.5"
-							dur="3.6s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-
-					{/* Rotating Segmented Verification Ring */}
-					<g>
-						<circle
-							cx="280"
-							cy="218"
-							r="54"
-							stroke="rgba(94,200,224,0.35)"
-							strokeWidth="1.5"
-							strokeDasharray="18 10 6 10"
-							fill="none"
-						/>
-						<animateTransform
-							attributeName="transform"
-							type="rotate"
-							from="0 280 218"
-							to="360 280 218"
-							dur="24s"
-							repeatCount="indefinite"
-						/>
-					</g>
-
-					{/* Hub Outer Bezel */}
-					<circle
-						cx="280"
-						cy="218"
-						r="44"
-						fill="url(#hs-hub-surface)"
-						stroke="rgba(255,255,255,0.2)"
-						strokeWidth="1.5"
+					<line
+						x1="213"
+						y1="194"
+						x2="340"
+						y2="120"
+						stroke="rgba(255,255,255,0.16)"
+						strokeWidth="7"
 					/>
-					<circle
-						cx="280"
-						cy="218"
-						r="36"
-						fill="#0f172a"
-						stroke="rgba(51,166,116,0.45)"
-						strokeWidth="1"
+					<line
+						x1="340"
+						y1="120"
+						x2="467"
+						y2="194"
+						stroke="rgba(255,255,255,0.16)"
+						strokeWidth="7"
+					/>
+					<line
+						x1="467"
+						y1="194"
+						x2="594"
+						y2="120"
+						stroke="rgba(255,255,255,0.16)"
+						strokeWidth="7"
 					/>
 
-					{/* Architectural Home + Verification Check Emblem */}
-					<path
-						d="M266 216 L280 204 L294 216 V229 C294 230.5 292.8 231.5 291.5 231.5 H268.5 C267.2 231.5 266 230.5 266 229 V216 Z"
-						fill="rgba(51,166,116,0.16)"
-						stroke="#4aba8a"
-						strokeWidth="1.75"
-						strokeLinejoin="round"
+					{/* Animated sequential flow beams */}
+					<line
+						x1="86"
+						y1="120"
+						x2="213"
+						y2="194"
+						stroke="url(#iso-track-0)"
+						strokeWidth="7"
+						className="hs-beam-0"
 					/>
-					<path
-						d="M275 219.5 L278.8 223.2 L286 215.5"
-						stroke="#ffffff"
-						strokeWidth="2.2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
+					<line
+						x1="213"
+						y1="194"
+						x2="340"
+						y2="120"
+						stroke="url(#iso-track-1)"
+						strokeWidth="7"
+						className="hs-beam-1"
 					/>
-
-					{/* Hub Connection Ports */}
-					<circle cx="236" cy="212" r="3.5" fill="#5ec8e0" />
-					<circle cx="324" cy="212" r="3.5" fill="#4aba8a" />
-					<circle cx="280" cy="262" r="3.5" fill="#ff7a52" />
-
-					{/* Hub Nameplate Pill (x: 204..356, y: 274..300) */}
-					<rect
-						x="204"
-						y="274"
-						width="152"
-						height="26"
-						rx="13"
-						fill="#0c1322"
-						stroke="rgba(51,166,116,0.45)"
-						strokeWidth="1"
+					<line
+						x1="340"
+						y1="120"
+						x2="467"
+						y2="194"
+						stroke="url(#iso-track-2)"
+						strokeWidth="7"
+						className="hs-beam-2"
 					/>
-					<circle cx="219" cy="287" r="3.5" fill="#33a674" />
-					<text
-						x="286"
-						y="290.5"
-						textAnchor="middle"
-						fill="#ffffff"
-						fontSize="8.5"
-						fontWeight="800"
-						letterSpacing="0.1em"
-					>
-						HOMESCOUT CORE
-					</text>
-				</g>
-
-				{/* ── 5. Mid-Stage Telemetry Callouts (Left & Right, Non-Overlapping) ── */}
-				{/* Left Telemetry Pill: GPS & ID Verified (x: 16..182, y: 204..242) */}
-				<g transform="translate(16, 204)">
-					<rect
-						width="166"
-						height="38"
-						rx="12"
-						fill="#111b2d"
-						fillOpacity="0.92"
-						stroke="rgba(94,200,224,0.32)"
-						strokeWidth="1"
-					/>
-					<rect
-						x="8"
-						y="8"
-						width="22"
-						height="22"
-						rx="7"
-						fill="rgba(94,200,224,0.16)"
-					/>
-					<path
-						d="M19 13.5 C16.8 13.5 15 15.2 15 17.4 C15 20.2 19 24.2 19 24.2 C19 24.2 23 20.2 23 17.4 C23 15.2 21.2 13.5 19 13.5 Z"
-						stroke="#5ec8e0"
-						strokeWidth="1.4"
-						fill="none"
-					/>
-					<circle cx="19" cy="17.3" r="1.4" fill="#5ec8e0" />
-					<text x="37" y="18" fill="#f8fafc" fontSize="9.5" fontWeight="700">
-						GPS-Pinned Address
-					</text>
-					<text x="37" y="29.5" fill="#94a3b8" fontSize="8" fontWeight="500">
-						Real photos · Live map
-					</text>
-				</g>
-
-				{/* Right Telemetry Pill: Transparent Pricing (x: 378..544, y: 204..242) */}
-				<g transform="translate(378, 204)">
-					<rect
-						width="166"
-						height="38"
-						rx="12"
-						fill="#111b2d"
-						fillOpacity="0.92"
-						stroke="rgba(74,186,138,0.32)"
-						strokeWidth="1"
-					/>
-					<rect
-						x="8"
-						y="8"
-						width="22"
-						height="22"
-						rx="7"
-						fill="rgba(74,186,138,0.16)"
-					/>
-					<path
-						d="M19 13 L24 15.2 V19.2 C24 22.2 21.8 24.4 19 25.2 C16.2 24.4 14 22.2 14 19.2 V15.2 L19 13 Z"
-						stroke="#4aba8a"
-						strokeWidth="1.4"
-						fill="none"
-					/>
-					<path
-						d="M16.8 19 L18.4 20.6 L21.4 17.5"
-						stroke="#4aba8a"
-						strokeWidth="1.4"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					/>
-					<text x="37" y="18" fill="#f8fafc" fontSize="9.5" fontWeight="700">
-						Zero Exploitation
-					</text>
-					<text x="37" y="29.5" fill="#94a3b8" fontSize="8" fontWeight="500">
-						Clear ₦ rent &amp; fee terms
-					</text>
-				</g>
-
-				{/* ── 6. Role Node 1: CLIENT / HOUSE HUNTER (Top-Left, x: 16..204, y: 20..120) ── */}
-				<g transform="translate(16, 20)">
-					<rect
-						width="188"
-						height="100"
-						rx="18"
-						fill="url(#hs-card-surface)"
-						stroke="rgba(94,200,224,0.45)"
-						strokeWidth="1.25"
-					/>
-					{/* Top Accent Line */}
-					<path
-						d="M 18 0.75 H 170"
-						stroke="url(#hs-teal-badge)"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-					/>
-
-					{/* Icon Tile */}
-					<rect
-						x="14"
-						y="14"
-						width="36"
-						height="36"
-						rx="11"
-						fill="url(#hs-teal-badge)"
-					/>
-					{/* Custom House Hunter / Search Person Vector Icon */}
-					<circle
-						cx="30"
-						cy="28"
-						r="5.5"
-						stroke="white"
-						strokeWidth="1.8"
-						fill="none"
-					/>
-					<path
-						d="M21.5 41 C22.8 36.8 26 35 30 35 C34 35 37.2 36.8 38.5 41"
-						stroke="white"
-						strokeWidth="1.8"
-						strokeLinecap="round"
-						fill="none"
-					/>
-					<circle cx="38.5" cy="24.5" r="2.2" fill="#e8f7fb" />
-
-					{/* Role Meta & Title */}
-					<text
-						x="60"
-						y="25"
-						fill="#5ec8e0"
-						fontSize="8"
-						fontWeight="800"
-						letterSpacing="0.12em"
-					>
-						HOUSE HUNTER
-					</text>
-					<text x="60" y="41" fill="#ffffff" fontSize="13" fontWeight="800">
-						Client &amp; Tenant
-					</text>
-
-					{/* Status Pill inside Card */}
-					<rect
-						x="14"
-						y="60"
-						width="160"
-						height="26"
-						rx="8"
-						fill="rgba(94,200,224,0.12)"
-						stroke="rgba(94,200,224,0.24)"
-						strokeWidth="1"
-					/>
-					<circle cx="25" cy="73" r="3" fill="#5ec8e0">
-						<animate
-							attributeName="opacity"
-							values="1;0.3;1"
-							dur="2.2s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<text x="34" y="76.5" fill="#e2e8f0" fontSize="8.8" fontWeight="600">
-						Finds verified 2-Bed · Lekki
-					</text>
-
-					{/* Connection Port at Bottom Center (local 96, 100 -> global 112, 120) */}
-					<circle
-						cx="96"
-						cy="100"
-						r="4.5"
-						fill="#0d1524"
-						stroke="#5ec8e0"
-						strokeWidth="2"
+					<line
+						x1="467"
+						y1="194"
+						x2="594"
+						y2="120"
+						stroke="url(#iso-track-3)"
+						strokeWidth="7"
+						className="hs-beam-3"
 					/>
 				</g>
 
-				{/* ── 7. Role Node 2: LANDLORD / PROPERTY OWNER (Top-Right, x: 356..544, y: 20..120) ── */}
-				<g transform="translate(356, 20)">
-					<rect
-						width="188"
-						height="100"
-						rx="18"
-						fill="url(#hs-card-surface)"
-						stroke="rgba(74,186,138,0.45)"
-						strokeWidth="1.25"
-					/>
-					{/* Top Accent Line */}
-					<path
-						d="M 18 0.75 H 170"
-						stroke="url(#hs-sage-badge)"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-					/>
+				{/* ── 2. Five Isometric 3D Step Cards, Perspective Numbers & Labels ── */}
+				{STEPS.map((step, idx) => {
+					const labelY = step.isBottom ? 262 : 188;
 
-					{/* Icon Tile */}
-					<rect
-						x="14"
-						y="14"
-						width="36"
-						height="36"
-						rx="11"
-						fill="url(#hs-sage-badge)"
-					/>
-					{/* Custom Verified Building Vector Icon */}
-					<path
-						d="M23 39 V25 L32 20 L41 25 V39"
-						stroke="white"
-						strokeWidth="1.8"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						fill="none"
-					/>
-					<path
-						d="M29 39 V32 H35 V39"
-						stroke="white"
-						strokeWidth="1.6"
-						strokeLinejoin="round"
-						fill="none"
-					/>
-					<rect x="27" y="26" width="2.5" height="2.5" rx="0.5" fill="white" />
-					<rect x="34.5" y="26" width="2.5" height="2.5" rx="0.5" fill="white" />
+					return (
+						<g key={step.num}>
+							{/* Ambient Colored Shadow Underneath Tile */}
+							<ellipse
+								cx={step.cx}
+								cy={step.cy + 24}
+								rx="54"
+								ry="30"
+								fill={`url(#${step.glowId})`}
+								className={`hs-shadow-${idx}`}
+							/>
 
-					{/* Role Meta & Title */}
-					<text
-						x="60"
-						y="25"
-						fill="#4aba8a"
-						fontSize="8"
-						fontWeight="800"
-						letterSpacing="0.12em"
-					>
-						PROPERTY OWNER
-					</text>
-					<text x="60" y="41" fill="#ffffff" fontSize="13" fontWeight="800">
-						Verified Landlord
-					</text>
+							{/* Final Step Cycle-Complete Pulse Ring */}
+							{idx === 4 && (
+								<ellipse
+									cx={step.cx}
+									cy={step.cy + 2}
+									rx="56"
+									ry="33"
+									stroke="#33a674"
+									strokeWidth="2"
+									fill="none"
+									className="hs-cycle-ring"
+								/>
+							)}
 
-					{/* Status Pill inside Card */}
-					<rect
-						x="14"
-						y="60"
-						width="160"
-						height="26"
-						rx="8"
-						fill="rgba(74,186,138,0.12)"
-						stroke="rgba(74,186,138,0.24)"
-						strokeWidth="1"
-					/>
-					<circle cx="25" cy="73" r="3" fill="#4aba8a">
-						<animate
-							attributeName="opacity"
-							values="1;0.3;1"
-							dur="2.6s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<text x="34" y="76.5" fill="#e2e8f0" fontSize="8.8" fontWeight="600">
-						ID &amp; Title Confirmed · ₦1.8M
-					</text>
+							{/* Animated Lifting Group (3D Tile + Perspective Number + Icon + Confirmation Check) */}
+							<g className={`hs-tile-${idx}`}>
+								<g transform={`translate(${step.cx}, ${step.cy})`}>
+									{/* Isometric Perspective Number (01 - 05) Floating at Top-Left Edge */}
+									<g transform="translate(-38, -22) skewY(-30)">
+										<text
+											x="0"
+											y="0"
+											fill={step.accent}
+											fontSize="20"
+											fontWeight="900"
+											letterSpacing="-0.03em"
+											style={{
+												fontFamily:
+													"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
+											}}
+										>
+											{step.num}
+										</text>
+									</g>
 
-					{/* Connection Port at Bottom Center (local 92, 100 -> global 448, 120) */}
-					<circle
-						cx="92"
-						cy="100"
-						r="4.5"
-						fill="#0d1524"
-						stroke="#4aba8a"
-						strokeWidth="2"
-					/>
-				</g>
+									{/* 3D Extruded Colored Bottom Rim */}
+									<path d={ISO_LIP_PATH} fill={step.lipColor} />
 
-				{/* ── 8. Role Node 3: LICENSED AGENT (Bottom-Center, x: 170..390, y: 344..444) ── */}
-				<g transform="translate(170, 344)">
-					<rect
-						width="220"
-						height="100"
-						rx="18"
-						fill="url(#hs-card-surface)"
-						stroke="rgba(255,122,82,0.48)"
-						strokeWidth="1.25"
-					/>
-					{/* Top Accent Line */}
-					<path
-						d="M 22 0.75 H 198"
-						stroke="url(#hs-coral-badge)"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-					/>
+									{/* Crisp White Isometric Top Surface */}
+									<path
+										d={ISO_TOP_PATH}
+										fill="url(#iso-tile-top)"
+										stroke="rgba(255,255,255,0.95)"
+										strokeWidth="1"
+									/>
 
-					{/* Connection Port at Top Center (local 110, 0 -> global 280, 344) */}
-					<circle
-						cx="110"
-						cy="0"
-						r="4.5"
-						fill="#0d1524"
-						stroke="#ff7a52"
-						strokeWidth="2"
-					/>
+									{/* Subtle Colored Inner Rim Highlight on Bottom Edges */}
+									<path
+										d="M -46 3.5 L -6 26.5 Q 0 30 6 26.5 L 46 3.5"
+										stroke={step.accent}
+										strokeWidth="2"
+										strokeLinecap="round"
+										fill="none"
+									/>
 
-					{/* Icon Tile */}
-					<rect
-						x="14"
-						y="16"
-						width="36"
-						height="36"
-						rx="11"
-						fill="url(#hs-coral-badge)"
-					/>
-					{/* Custom Key / Deal Handover Vector Icon */}
-					<circle
-						cx="28"
-						cy="34"
-						r="4.5"
-						stroke="white"
-						strokeWidth="1.8"
-						fill="none"
-					/>
-					<path
-						d="M32.5 34 H41 M38 34 V37.5 M41 34 V38.5"
-						stroke="white"
-						strokeWidth="1.8"
-						strokeLinecap="round"
-					/>
+									{/* Heroicon Projected Flat onto Isometric Tile Surface */}
+									<g transform="translate(0, -1) scale(1, 0.58) rotate(-32) scale(1.25) translate(-12, -12)">
+										<StepHeroIcon index={idx} color={step.accent} />
+									</g>
 
-					{/* Role Meta & Title */}
-					<text
-						x="60"
-						y="27"
-						fill="#ff9d7a"
-						fontSize="8"
-						fontWeight="800"
-						letterSpacing="0.12em"
-					>
-						FIELD PARTNER
-					</text>
-					<text x="60" y="43" fill="#ffffff" fontSize="13" fontWeight="800">
-						Licensed Agent
-					</text>
+									{/* Step Confirmation Checkmark Badge (Pops in as step completes) */}
+									<g transform="translate(34, -14)">
+										<g className={`hs-check-${idx}`}>
+											<circle
+												cx="0"
+												cy="0"
+												r="9.5"
+												fill="#33a674"
+												stroke="#ffffff"
+												strokeWidth="1.8"
+											/>
+											<path
+												d="M -3.5 0.2 L -1 2.7 L 4 -2.5"
+												stroke="#ffffff"
+												strokeWidth="2"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												fill="none"
+											/>
+										</g>
+									</g>
+								</g>
+							</g>
 
-					{/* Verified Tag Pill on Top Right of Agent Card */}
-					<rect
-						x="154"
-						y="15"
-						width="52"
-						height="18"
-						rx="9"
-						fill="rgba(249,93,46,0.18)"
-					/>
-					<text
-						x="180"
-						y="27"
-						textAnchor="middle"
-						fill="#ff9d7a"
-						fontSize="7.5"
-						fontWeight="800"
-					>
-						VETTED
-					</text>
+							{/* Concise Step Heading, Accent Bar & 2-Line Description */}
+							<g transform={`translate(${step.cx - 48}, ${labelY})`}>
+								<text
+									x="0"
+									y="0"
+									fill={step.accent}
+									fontSize="11.5"
+									fontWeight="800"
+									letterSpacing="0.08em"
+									style={{
+										fontFamily:
+											"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
+									}}
+								>
+									{step.title}
+								</text>
 
-					{/* Status Pill inside Card */}
-					<rect
-						x="14"
-						y="62"
-						width="192"
-						height="26"
-						rx="8"
-						fill="rgba(249,93,46,0.12)"
-						stroke="rgba(249,93,46,0.25)"
-						strokeWidth="1"
-					/>
-					<circle cx="25" cy="75" r="3" fill="#ff7a52">
-						<animate
-							attributeName="opacity"
-							values="1;0.3;1"
-							dur="2s"
-							repeatCount="indefinite"
-						/>
-					</circle>
-					<text x="34" y="78.5" fill="#e2e8f0" fontSize="8.8" fontWeight="600">
-						Hosts viewing &amp; closes deal safely
-					</text>
-				</g>
+								{/* Colored Underline Bar (matching reference image) */}
+								<rect
+									x="0"
+									y="7"
+									width="32"
+									height="2.5"
+									rx="1.25"
+									fill={step.accent}
+								/>
+
+								{/* Apt, Precise 2-Line Description */}
+								<text
+									x="0"
+									y="24"
+									fill="#e2e8f0"
+									fontSize="9.5"
+									fontWeight="500"
+									style={{
+										fontFamily:
+											"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
+									}}
+								>
+									{step.line1}
+								</text>
+								<text
+									x="0"
+									y="37"
+									fill="#94a3b8"
+									fontSize="9.5"
+									fontWeight="500"
+									style={{
+										fontFamily:
+											"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
+									}}
+								>
+									{step.line2}
+								</text>
+							</g>
+						</g>
+					);
+				})}
 			</svg>
 		</div>
 	);

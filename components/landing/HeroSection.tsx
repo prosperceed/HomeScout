@@ -20,8 +20,8 @@ export default function HeroSection() {
 			</div>
 
 			<div className="relative container-shell pt-16 pb-0 lg:pt-20">
-				<div className="grid items-center gap-10 lg:grid-cols-[1fr_0.95fr] lg:gap-12">
-					<div className="max-w-xl pb-10 lg:pb-16">
+				<div className="grid items-center gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10">
+					<div className="max-w-xl pb-6 lg:pb-16">
 						<h1 className="text-5xl font-black leading-[1.04] tracking-[-0.04em] text-white sm:text-6xl xl:text-[4.5rem]">
 							Your home is
 							<br />
@@ -49,7 +49,7 @@ export default function HeroSection() {
 						</div>
 					</div>
 
-					<div className="relative mx-auto flex w-full max-w-[540px] items-center justify-center pb-8 lg:max-w-none lg:pb-12">
+					<div className="relative mx-auto flex w-full max-w-[640px] items-center justify-center pb-8 lg:max-w-none lg:pb-12">
 						<NetworkSVG />
 					</div>
 				</div>
