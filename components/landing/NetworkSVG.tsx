@@ -98,8 +98,7 @@ const SLAB_BEVEL_RIGHT =
 	"M 0 31.2 Q 3.1 31.2 6.2 29.4 L 50.8 3.6 Q 57 0 55 1.4 L 55 7.7 Q 57 6.3 50.8 9.9 L 6.2 35.7 Q 3.1 37.5 0 37.5 Z";
 
 // Front-bottom luminous bevel crease
-const SLAB_RIM_LINE =
-	"M -52 3 L -6.2 29.4 Q 0 33 6.2 29.4 L 52 3";
+const SLAB_RIM_LINE = "M -52 3 L -6.2 29.4 Q 0 33 6.2 29.4 L 52 3";
 
 function StepHeroIcon({ index }: { index: number }) {
 	switch (index) {
@@ -143,9 +142,21 @@ function StepHeroIcon({ index }: { index: number }) {
 					fill="none"
 				>
 					<path d="M12 4.25c-4.7 0-8.5 3.25-8.5 7.25 0 1.85.8 3.55 2.15 4.84.26.25.37.62.28.98l-.52 1.95a.45.45 0 00.55.55l2.08-.52c.3-.07.63-.05.93.05.92.3 1.92.47 2.95.47 4.7 0 8.5-3.25 8.5-7.25S16.7 4.25 12 4.25z" />
-					<circle cx="8.75" cy="11.5" r="0.9" fill="currentColor" stroke="none" />
+					<circle
+						cx="8.75"
+						cy="11.5"
+						r="0.9"
+						fill="currentColor"
+						stroke="none"
+					/>
 					<circle cx="12" cy="11.5" r="0.9" fill="currentColor" stroke="none" />
-					<circle cx="15.25" cy="11.5" r="0.9" fill="currentColor" stroke="none" />
+					<circle
+						cx="15.25"
+						cy="11.5"
+						r="0.9"
+						fill="currentColor"
+						stroke="none"
+					/>
 				</g>
 			);
 		case 3:
@@ -163,17 +174,16 @@ function StepHeroIcon({ index }: { index: number }) {
 				</g>
 			);
 		default:
-			// Heroicons 24/outline: check-badge / verified completion
+			// Heroicons 24/outline: home
 			return (
 				<g
 					stroke="currentColor"
-					strokeWidth="1.7"
+					strokeWidth="1.75"
 					strokeLinecap="round"
 					strokeLinejoin="round"
 					fill="none"
 				>
-					<rect x="4" y="4" width="16" height="16" rx="4" />
-					<path d="M8.5 12.15l2.35 2.35 4.75-5" strokeWidth="2" />
+					<path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
 				</g>
 			);
 	}
@@ -256,13 +266,7 @@ export default function NetworkSVG() {
 			>
 				<defs>
 					{/* True Isometric Diamond Floor Blur Filter */}
-					<filter
-						id="hs-iso-blur"
-						x="-50%"
-						y="-50%"
-						width="200%"
-						height="200%"
-					>
+					<filter id="hs-iso-blur" x="-50%" y="-50%" width="200%" height="200%">
 						<feGaussianBlur stdDeviation="10" />
 					</filter>
 
@@ -530,13 +534,7 @@ export default function NetworkSVG() {
 									{/* Integrated Isometric Step Confirmation Check (Top-Right Facet) */}
 									<g transform="translate(27, -15)">
 										{/* Subtle Recessed Socket */}
-										<ellipse
-											cx="0"
-											cy="0"
-											rx="7"
-											ry="4.2"
-											fill="#e2e8f0"
-										/>
+										<ellipse cx="0" cy="0" rx="7" ry="4.2" fill="#e2e8f0" />
 										{/* Confirmed Check State */}
 										<g className={`hs-confirm-${idx}`}>
 											<ellipse
