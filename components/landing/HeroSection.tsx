@@ -19,9 +19,9 @@ export default function HeroSection() {
 				<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgb(15, 23, 42),transparent)]" />
 			</div>
 
-			<div className="relative container-shell pt-16 pb-0 lg:pt-20">
-				<div className="grid items-center gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:gap-10">
-					<div className="max-w-xl pb-6 lg:pb-16">
+			<div className="relative container-shell pt-14 pb-0 lg:pt-20">
+				<div className="grid items-center gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:gap-8">
+					<div className="max-w-xl pb-2 lg:pb-16">
 						<h1 className="text-5xl font-black leading-[1.04] tracking-[-0.04em] text-white sm:text-6xl xl:text-[4.5rem]">
 							Your home is
 							<br />
@@ -49,7 +49,7 @@ export default function HeroSection() {
 						</div>
 					</div>
 
-					<div className="relative mx-auto flex w-full max-w-[640px] items-center justify-center pb-8 lg:max-w-none lg:pb-12">
+					<div className="relative -mx-2 flex w-[calc(100%+1rem)] items-center justify-center pb-6 sm:mx-0 sm:w-full lg:pb-12">
 						<NetworkSVG />
 					</div>
 				</div>
