@@ -9,154 +9,171 @@ interface StepConfig {
 	cy: number;
 	isBottom: boolean;
 	accent: string;
-	lipColor: string;
-	glowId: string;
+	accentSoft: string;
+	bevelLeft: string;
+	bevelRight: string;
 }
 
 const STEPS: StepConfig[] = [
 	{
 		num: "01",
 		title: "SEARCH",
-		line1: "Filter homes by",
-		line2: "city & budget.",
+		line1: "Filter by location,",
+		line2: "property type & budget.",
 		cx: 86,
-		cy: 116,
+		cy: 114,
 		isBottom: false,
-		accent: "#3a9db8",
-		lipColor: "#2d7f96",
-		glowId: "iso-glow-1",
+		accent: "#38bdf8",
+		accentSoft: "rgba(56, 189, 248, 0.22)",
+		bevelLeft: "#3a9db8",
+		bevelRight: "#246478",
 	},
 	{
 		num: "02",
 		title: "VERIFY",
-		line1: "Owner ID & title",
-		line2: "checked upfront.",
+		line1: "Landlord ID & title",
+		line2: "authenticated upfront.",
 		cx: 213,
-		cy: 190,
+		cy: 188,
 		isBottom: true,
-		accent: "#33a674",
-		lipColor: "#268660",
-		glowId: "iso-glow-2",
+		accent: "#5ec8e0",
+		accentSoft: "rgba(94, 200, 224, 0.22)",
+		bevelLeft: "#2d7f96",
+		bevelRight: "#1e293b",
 	},
 	{
 		num: "03",
 		title: "CONNECT",
-		line1: "Chat with owner",
-		line2: "or vetted agent.",
+		line1: "Direct chat with owner",
+		line2: "or licensed agent.",
 		cx: 340,
-		cy: 116,
+		cy: 114,
 		isBottom: false,
-		accent: "#0ea5e9",
-		lipColor: "#0284c7",
-		glowId: "iso-glow-3",
+		accent: "#4aba8a",
+		accentSoft: "rgba(74, 186, 138, 0.24)",
+		bevelLeft: "#33a674",
+		bevelRight: "#1e6a4d",
 	},
 	{
 		num: "04",
 		title: "INSPECT",
-		line1: "Book a live tour",
-		line2: "at your time.",
+		line1: "Schedule a private",
+		line2: "on-site viewing.",
 		cx: 467,
-		cy: 190,
+		cy: 188,
 		isBottom: true,
-		accent: "#f59e0b",
-		lipColor: "#d97706",
-		glowId: "iso-glow-4",
+		accent: "#ff7a52",
+		accentSoft: "rgba(255, 122, 82, 0.22)",
+		bevelLeft: "#f95d2e",
+		bevelRight: "#bb3316",
 	},
 	{
 		num: "05",
 		title: "MOVE IN",
-		line1: "Sign lease safely",
-		line2: "& get your keys.",
+		line1: "Sign terms transparently",
+		line2: "& receive your keys.",
 		cx: 594,
-		cy: 116,
+		cy: 114,
 		isBottom: false,
-		accent: "#f95d2e",
-		lipColor: "#e04520",
-		glowId: "iso-glow-5",
+		accent: "#33a674",
+		accentSoft: "rgba(51, 166, 116, 0.28)",
+		bevelLeft: "#33a674",
+		bevelRight: "#18543d",
 	},
 ];
 
-// Rounded isometric diamond top face (half-width 52, half-height 30)
-const ISO_TOP_PATH =
-	"M -6 -26.5 Q 0 -30 6 -26.5 L 46 -3.5 Q 52 0 46 3.5 L 6 26.5 Q 0 30 -6 26.5 L -46 3.5 Q -52 0 -46 -3.5 Z";
+// Precision 30-degree isometric rounded slab (half-width 50, half-height 29)
+const SLAB_TOP =
+	"M -5.5 -25.8 Q 0 -29 5.5 -25.8 L 44.5 -3.2 Q 50 0 44.5 3.2 L 5.5 25.8 Q 0 29 -5.5 25.8 L -44.5 3.2 Q -50 0 -44.5 -3.2 Z";
 
-// 3D extruded lower rim / thickness lip (6.5px depth)
-const ISO_LIP_PATH =
-	"M -49.5 1.5 Q -52 0 -46 3.5 L -6 26.5 Q 0 30 6 26.5 L 46 3.5 Q 52 0 49.5 1.5 L 49.5 7.5 Q 52 6 46 9.5 L 6 32.5 Q 0 36 -6 32.5 L -46 9.5 Q -52 6 -49.5 7.5 Z";
+// Inner recessed isometric frame on top face
+const SLAB_INNER =
+	"M -4.2 -19.8 Q 0 -22.2 4.2 -19.8 L 34 -2.4 Q 38.2 0 34 2.4 L 4.2 19.8 Q 0 22.2 -4.2 19.8 L -34 2.4 Q -38.2 0 -34 -2.4 Z";
 
-function StepHeroIcon({ index, color }: { index: number; color: string }) {
+// 3D Extruded thickness (5.5px vertical depth, split at front apex x=0 for directional studio lighting)
+const SLAB_BEVEL_LEFT =
+	"M -48.2 1.2 Q -50 0 -44.5 3.2 L -5.5 25.8 Q -2.8 27.4 0 27.4 L 0 32.9 Q -2.8 32.9 -5.5 31.3 L -44.5 8.7 Q -50 5.5 -48.2 6.7 Z";
+
+const SLAB_BEVEL_RIGHT =
+	"M 0 27.4 Q 2.8 27.4 5.5 25.8 L 44.5 3.2 Q 50 0 48.2 1.2 L 48.2 6.7 Q 50 5.5 44.5 8.7 L 5.5 31.3 Q 2.8 32.9 0 32.9 Z";
+
+// Front-bottom luminous bevel crease
+const SLAB_RIM_LINE =
+	"M -45.5 2.6 L -5.5 25.8 Q 0 29 5.5 25.8 L 45.5 2.6";
+
+function StepHeroIcon({ index }: { index: number }) {
 	switch (index) {
 		case 0:
-			// Heroicons: magnifying-glass
+			// Heroicons 24/outline: magnifying-glass / target
 			return (
 				<g
-					stroke={color}
-					strokeWidth="1.9"
+					stroke="currentColor"
+					strokeWidth="1.65"
 					strokeLinecap="round"
 					strokeLinejoin="round"
 					fill="none"
 				>
-					<circle cx="11" cy="11" r="6.5" />
-					<circle cx="11" cy="11" r="2.5" strokeWidth="1.5" opacity="0.55" />
-					<path d="M20 20L15.65 15.65" strokeWidth="2.2" />
+					<circle cx="11" cy="11" r="6.25" />
+					<circle cx="11" cy="11" r="2.25" strokeWidth="1.35" opacity="0.6" />
+					<path d="M19.25 19.25L15.5 15.5" strokeWidth="1.9" />
 				</g>
 			);
 		case 1:
-			// Heroicons: shield-check
+			// Heroicons 24/outline: shield-check
 			return (
 				<g
-					stroke={color}
-					strokeWidth="1.85"
+					stroke="currentColor"
+					strokeWidth="1.65"
 					strokeLinecap="round"
 					strokeLinejoin="round"
 					fill="none"
 				>
-					<path d="M12 2.75c-2.8 2.1-5.8 3.25-8.5 3.5v5.25c0 5.25 3.6 9.75 8.5 11 4.9-1.25 8.5-5.75 8.5-11V6.25c-2.7-.25-5.7-1.4-8.5-3.5z" />
-					<path d="M8.75 12.25l2.25 2.25 4.5-4.75" strokeWidth="2.1" />
+					<path d="M12 3c-2.6 1.95-5.4 3.05-8 3.28v4.97c0 4.95 3.38 9.2 8 10.4 4.62-1.2 8-5.45 8-10.4V6.28C17.4 6.05 14.6 4.95 12 3z" />
+					<path d="M8.85 12.15l2.1 2.1 4.25-4.4" strokeWidth="1.85" />
 				</g>
 			);
 		case 2:
-			// Heroicons: chat-bubble-left-ellipsis
+			// Heroicons 24/outline: chat-bubble-left-right
 			return (
 				<g
-					stroke={color}
-					strokeWidth="1.85"
+					stroke="currentColor"
+					strokeWidth="1.65"
 					strokeLinecap="round"
 					strokeLinejoin="round"
 					fill="none"
 				>
-					<path d="M12 3.75c-4.97 0-9 3.47-9 7.75 0 1.98.86 3.79 2.28 5.16.28.27.4.67.3 1.05l-.58 2.14a.5.5 0 00.61.61l2.26-.57c.33-.08.68-.05 1 .06.98.33 2.04.5 3.13.5 4.97 0 9-3.47 9-7.75s-4.03-7.75-9-7.75z" />
-					<circle cx="8.5" cy="11.5" r="1" fill={color} stroke="none" />
-					<circle cx="12" cy="11.5" r="1" fill={color} stroke="none" />
-					<circle cx="15.5" cy="11.5" r="1" fill={color} stroke="none" />
+					<path d="M12 4.25c-4.7 0-8.5 3.25-8.5 7.25 0 1.85.8 3.55 2.15 4.84.26.25.37.62.28.98l-.52 1.95a.45.45 0 00.55.55l2.08-.52c.3-.07.63-.05.93.05.92.3 1.92.47 2.95.47 4.7 0 8.5-3.25 8.5-7.25S16.7 4.25 12 4.25z" />
+					<circle cx="8.75" cy="11.5" r="0.85" fill="currentColor" stroke="none" />
+					<circle cx="12" cy="11.5" r="0.85" fill="currentColor" stroke="none" />
+					<circle cx="15.25" cy="11.5" r="0.85" fill="currentColor" stroke="none" />
 				</g>
 			);
 		case 3:
-			// Heroicons: map-pin + home inspection
+			// Heroicons 24/outline: map-pin
 			return (
 				<g
-					stroke={color}
-					strokeWidth="1.85"
+					stroke="currentColor"
+					strokeWidth="1.65"
 					strokeLinecap="round"
 					strokeLinejoin="round"
 					fill="none"
 				>
-					<path d="M19.5 10.5c0 6.5-7.5 11-7.5 11S4.5 17 4.5 10.5a7.5 7.5 0 1115 0z" />
-					<circle cx="12" cy="10.5" r="2.75" />
+					<path d="M19 10.5c0 6.1-7 10.25-7 10.25S5 16.6 5 10.5a7 7 0 1114 0z" />
+					<circle cx="12" cy="10.5" r="2.5" />
 				</g>
 			);
 		default:
-			// Heroicons: check-badge / confirmed handover (matches reference tile 05)
+			// Heroicons 24/outline: check-badge / verified completion (matches reference step 05)
 			return (
 				<g
-					stroke={color}
-					strokeWidth="1.9"
+					stroke="currentColor"
+					strokeWidth="1.65"
 					strokeLinecap="round"
 					strokeLinejoin="round"
 					fill="none"
 				>
-					<rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
-					<path d="M8.25 12.25l2.5 2.5 5.25-5.5" strokeWidth="2.2" />
+					<rect x="4" y="4" width="16" height="16" rx="4" />
+					<path d="M8.5 12.15l2.35 2.35 4.75-5" strokeWidth="1.95" />
 				</g>
 			);
 	}
@@ -166,301 +183,373 @@ export default function NetworkSVG() {
 	return (
 		<div className="relative w-full select-none">
 			<style>{`
-				@keyframes hsTileLift {
+				@keyframes hsSlabElevate {
 					0%, 100% { transform: translateY(0px); }
-					6%, 18% { transform: translateY(-9px); }
-					26% { transform: translateY(0px); }
+					5%, 16% { transform: translateY(-5.5px); }
+					24% { transform: translateY(0px); }
 				}
-				@keyframes hsShadowPulse {
-					0%, 100% { transform: scale(1); opacity: 0.42; }
-					6%, 18% { transform: scale(1.14); opacity: 0.78; }
-					26% { transform: scale(1); opacity: 0.42; }
+				@keyframes hsFloorCast {
+					0%, 100% { opacity: 0.38; transform: scale(0.96); }
+					5%, 16% { opacity: 0.72; transform: scale(1.06); }
+					24% { opacity: 0.38; transform: scale(0.96); }
 				}
-				@keyframes hsCheckBadge {
-					0%, 4% { transform: scale(0); opacity: 0; }
-					10%, 88% { transform: scale(1); opacity: 1; }
-					96%, 100% { transform: scale(0); opacity: 0; }
+				@keyframes hsConduitFlow {
+					0%, 6% { stroke-dashoffset: 148; opacity: 0; }
+					10% { opacity: 1; }
+					20%, 86% { stroke-dashoffset: 0; opacity: 0.9; }
+					95%, 100% { stroke-dashoffset: -148; opacity: 0; }
 				}
-				@keyframes hsTrackBeam {
-					0%, 8% { stroke-dashoffset: 160; opacity: 0; }
-					12% { opacity: 1; }
-					24%, 88% { stroke-dashoffset: 0; opacity: 1; }
-					96%, 100% { stroke-dashoffset: -160; opacity: 0; }
+				@keyframes hsCheckConfirm {
+					0%, 5% { opacity: 0; transform: scale(0.75); }
+					10%, 86% { opacity: 1; transform: scale(1); }
+					95%, 100% { opacity: 0; transform: scale(0.85); }
 				}
-				@keyframes hsCycleRing {
-					0%, 72% { transform: scale(0.85); opacity: 0; }
-					80% { transform: scale(1.18); opacity: 0.75; }
-					94%, 100% { transform: scale(1.45); opacity: 0; }
+				@keyframes hsFinalPulse {
+					0%, 66% { opacity: 0; transform: scale(0.94); }
+					74% { opacity: 0.65; transform: scale(1.08); }
+					88%, 100% { opacity: 0; transform: scale(1.22); }
 				}
-				.hs-tile-0 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 0s; }
-				.hs-tile-1 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 1.5s; }
-				.hs-tile-2 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 3.0s; }
-				.hs-tile-3 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 4.5s; }
-				.hs-tile-4 { animation: hsTileLift 9s cubic-bezier(0.22, 1, 0.36, 1) infinite 6.0s; }
 
-				.hs-shadow-0 { animation: hsShadowPulse 9s ease-in-out infinite 0s; transform-box: fill-box; transform-origin: center; }
-				.hs-shadow-1 { animation: hsShadowPulse 9s ease-in-out infinite 1.5s; transform-box: fill-box; transform-origin: center; }
-				.hs-shadow-2 { animation: hsShadowPulse 9s ease-in-out infinite 3.0s; transform-box: fill-box; transform-origin: center; }
-				.hs-shadow-3 { animation: hsShadowPulse 9s ease-in-out infinite 4.5s; transform-box: fill-box; transform-origin: center; }
-				.hs-shadow-4 { animation: hsShadowPulse 9s ease-in-out infinite 6.0s; transform-box: fill-box; transform-origin: center; }
+				.hs-slab-0 { animation: hsSlabElevate 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 0s; }
+				.hs-slab-1 { animation: hsSlabElevate 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 1.6s; }
+				.hs-slab-2 { animation: hsSlabElevate 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 3.2s; }
+				.hs-slab-3 { animation: hsSlabElevate 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 4.8s; }
+				.hs-slab-4 { animation: hsSlabElevate 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 6.4s; }
 
-				.hs-check-0 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.35s; transform-box: fill-box; transform-origin: center; }
-				.hs-check-1 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 1.85s; transform-box: fill-box; transform-origin: center; }
-				.hs-check-2 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 3.35s; transform-box: fill-box; transform-origin: center; }
-				.hs-check-3 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 4.85s; transform-box: fill-box; transform-origin: center; }
-				.hs-check-4 { animation: hsCheckBadge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 6.35s; transform-box: fill-box; transform-origin: center; }
+				.hs-cast-0 { animation: hsFloorCast 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 0s; transform-box: fill-box; transform-origin: center; }
+				.hs-cast-1 { animation: hsFloorCast 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 1.6s; transform-box: fill-box; transform-origin: center; }
+				.hs-cast-2 { animation: hsFloorCast 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 3.2s; transform-box: fill-box; transform-origin: center; }
+				.hs-cast-3 { animation: hsFloorCast 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 4.8s; transform-box: fill-box; transform-origin: center; }
+				.hs-cast-4 { animation: hsFloorCast 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 6.4s; transform-box: fill-box; transform-origin: center; }
 
-				.hs-beam-0 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 0.4s; }
-				.hs-beam-1 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 1.9s; }
-				.hs-beam-2 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 3.4s; }
-				.hs-beam-3 { stroke-dasharray: 160; animation: hsTrackBeam 9s ease-out infinite 4.9s; }
+				.hs-conduit-0 { stroke-dasharray: 148; animation: hsConduitFlow 10s cubic-bezier(0.22, 1, 0.36, 1) infinite 0.35s; }
+				.hs-conduit-1 { stroke-dasharray: 148; animation: hsConduitFlow 10s cubic-bezier(0.22, 1, 0.36, 1) infinite 1.95s; }
+				.hs-conduit-2 { stroke-dasharray: 148; animation: hsConduitFlow 10s cubic-bezier(0.22, 1, 0.36, 1) infinite 3.55s; }
+				.hs-conduit-3 { stroke-dasharray: 148; animation: hsConduitFlow 10s cubic-bezier(0.22, 1, 0.36, 1) infinite 5.15s; }
 
-				.hs-cycle-ring { animation: hsCycleRing 9s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+				.hs-confirm-0 { animation: hsCheckConfirm 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 0.3s; transform-box: fill-box; transform-origin: center; }
+				.hs-confirm-1 { animation: hsCheckConfirm 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 1.9s; transform-box: fill-box; transform-origin: center; }
+				.hs-confirm-2 { animation: hsCheckConfirm 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 3.5s; transform-box: fill-box; transform-origin: center; }
+				.hs-confirm-3 { animation: hsCheckConfirm 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 5.1s; transform-box: fill-box; transform-origin: center; }
+				.hs-confirm-4 { animation: hsCheckConfirm 10s cubic-bezier(0.16, 1, 0.3, 1) infinite 6.7s; transform-box: fill-box; transform-origin: center; }
+
+				.hs-final-wave { animation: hsFinalPulse 10s cubic-bezier(0.16, 1, 0.3, 1) infinite; transform-box: fill-box; transform-origin: center; }
+
+				@media (prefers-reduced-motion: reduce) {
+					.hs-slab-0, .hs-slab-1, .hs-slab-2, .hs-slab-3, .hs-slab-4,
+					.hs-cast-0, .hs-cast-1, .hs-cast-2, .hs-cast-3, .hs-cast-4,
+					.hs-conduit-0, .hs-conduit-1, .hs-conduit-2, .hs-conduit-3,
+					.hs-confirm-0, .hs-confirm-1, .hs-confirm-2, .hs-confirm-3, .hs-confirm-4,
+					.hs-final-wave {
+						animation: none !important;
+					}
+				}
 			`}</style>
 
 			<svg
-				viewBox="0 0 680 350"
+				viewBox="0 0 680 340"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
 				className="h-auto w-full overflow-visible"
 				role="img"
-				aria-label="HomeScout 5-step home finding flow: Search, Verify, Connect, Inspect, and Move In"
+				aria-label="HomeScout 5-step architectural workflow: Search, Verify, Connect, Inspect, and Move In"
 			>
 				<defs>
-					{/* Isometric Floor Glow Gradients */}
-					{STEPS.map((step) => (
-						<radialGradient
-							key={step.glowId}
-							id={step.glowId}
-							cx="50%"
-							cy="50%"
-							r="50%"
-						>
-							<stop offset="0%" stopColor={step.accent} stopOpacity="0.52" />
-							<stop offset="55%" stopColor={step.accent} stopOpacity="0.16" />
-							<stop offset="100%" stopColor={step.accent} stopOpacity="0" />
-						</radialGradient>
-					))}
+					{/* True Isometric Diamond Floor Blur Filter */}
+					<filter
+						id="hs-iso-blur"
+						x="-50%"
+						y="-50%"
+						width="200%"
+						height="200%"
+					>
+						<feGaussianBlur stdDeviation="9" />
+					</filter>
 
-					{/* Clean White-to-Snow Isometric Tile Surface */}
-					<linearGradient id="iso-tile-top" x1="0%" y1="0%" x2="100%" y2="100%">
+					{/* Crisp Studio Top Plate Gradient */}
+					<linearGradient
+						id="hs-plate-surface"
+						x1="0%"
+						y1="0%"
+						x2="100%"
+						y2="100%"
+					>
 						<stop offset="0%" stopColor="#ffffff" />
+						<stop offset="65%" stopColor="#f8fafc" />
 						<stop offset="100%" stopColor="#f1f5f9" />
 					</linearGradient>
 
-					{/* Track Gradients between consecutive steps */}
+					{/* Conduit Gradients */}
 					<linearGradient
-						id="iso-track-0"
+						id="hs-grad-0"
 						x1="86"
-						y1="116"
+						y1="114"
 						x2="213"
-						y2="190"
+						y2="188"
 						gradientUnits="userSpaceOnUse"
 					>
-						<stop offset="0%" stopColor="#3a9db8" />
-						<stop offset="100%" stopColor="#33a674" />
+						<stop offset="0%" stopColor="#38bdf8" />
+						<stop offset="100%" stopColor="#5ec8e0" />
 					</linearGradient>
 					<linearGradient
-						id="iso-track-1"
+						id="hs-grad-1"
 						x1="213"
-						y1="190"
+						y1="188"
 						x2="340"
-						y2="116"
+						y2="114"
 						gradientUnits="userSpaceOnUse"
 					>
-						<stop offset="0%" stopColor="#33a674" />
-						<stop offset="100%" stopColor="#0ea5e9" />
+						<stop offset="0%" stopColor="#5ec8e0" />
+						<stop offset="100%" stopColor="#4aba8a" />
 					</linearGradient>
 					<linearGradient
-						id="iso-track-2"
+						id="hs-grad-2"
 						x1="340"
-						y1="116"
+						y1="114"
 						x2="467"
-						y2="190"
+						y2="188"
 						gradientUnits="userSpaceOnUse"
 					>
-						<stop offset="0%" stopColor="#0ea5e9" />
-						<stop offset="100%" stopColor="#f59e0b" />
+						<stop offset="0%" stopColor="#4aba8a" />
+						<stop offset="100%" stopColor="#ff7a52" />
 					</linearGradient>
 					<linearGradient
-						id="iso-track-3"
+						id="hs-grad-3"
 						x1="467"
-						y1="190"
+						y1="188"
 						x2="594"
-						y2="116"
+						y2="114"
 						gradientUnits="userSpaceOnUse"
 					>
-						<stop offset="0%" stopColor="#f59e0b" />
-						<stop offset="100%" stopColor="#f95d2e" />
+						<stop offset="0%" stopColor="#ff7a52" />
+						<stop offset="100%" stopColor="#33a674" />
 					</linearGradient>
 				</defs>
 
-				{/* ── 1. Isometric Zig-Zag Connecting Tracks (01 -> 02 -> 03 -> 04 -> 05) ── */}
+				{/* ── 1. Precision Isometric Connecting Channels (01 -> 02 -> 03 -> 04 -> 05) ── */}
 				<g strokeLinecap="round">
-					{/* Base static tracks (matching the subtle gray/white isometric bars in reference) */}
+					{/* Recessed Isometric Channel Tracks */}
 					<line
 						x1="86"
-						y1="120"
+						y1="118"
 						x2="213"
-						y2="194"
-						stroke="rgba(255,255,255,0.16)"
-						strokeWidth="7"
+						y2="192"
+						stroke="rgba(255, 255, 255, 0.14)"
+						strokeWidth="4.5"
 					/>
 					<line
 						x1="213"
-						y1="194"
+						y1="192"
 						x2="340"
-						y2="120"
-						stroke="rgba(255,255,255,0.16)"
-						strokeWidth="7"
+						y2="118"
+						stroke="rgba(255, 255, 255, 0.14)"
+						strokeWidth="4.5"
 					/>
 					<line
 						x1="340"
-						y1="120"
+						y1="118"
 						x2="467"
-						y2="194"
-						stroke="rgba(255,255,255,0.16)"
-						strokeWidth="7"
+						y2="192"
+						stroke="rgba(255, 255, 255, 0.14)"
+						strokeWidth="4.5"
 					/>
 					<line
 						x1="467"
-						y1="194"
+						y1="192"
 						x2="594"
-						y2="120"
-						stroke="rgba(255,255,255,0.16)"
-						strokeWidth="7"
+						y2="118"
+						stroke="rgba(255, 255, 255, 0.14)"
+						strokeWidth="4.5"
 					/>
 
-					{/* Animated sequential flow beams */}
+					{/* Hairline Center Guide */}
 					<line
 						x1="86"
-						y1="120"
+						y1="118"
 						x2="213"
-						y2="194"
-						stroke="url(#iso-track-0)"
-						strokeWidth="7"
-						className="hs-beam-0"
+						y2="192"
+						stroke="rgba(255, 255, 255, 0.24)"
+						strokeWidth="1"
+						strokeDasharray="2 4"
 					/>
 					<line
 						x1="213"
-						y1="194"
+						y1="192"
 						x2="340"
-						y2="120"
-						stroke="url(#iso-track-1)"
-						strokeWidth="7"
-						className="hs-beam-1"
+						y2="118"
+						stroke="rgba(255, 255, 255, 0.24)"
+						strokeWidth="1"
+						strokeDasharray="2 4"
 					/>
 					<line
 						x1="340"
-						y1="120"
+						y1="118"
 						x2="467"
-						y2="194"
-						stroke="url(#iso-track-2)"
-						strokeWidth="7"
-						className="hs-beam-2"
+						y2="192"
+						stroke="rgba(255, 255, 255, 0.24)"
+						strokeWidth="1"
+						strokeDasharray="2 4"
 					/>
 					<line
 						x1="467"
-						y1="194"
+						y1="192"
 						x2="594"
-						y2="120"
-						stroke="url(#iso-track-3)"
-						strokeWidth="7"
-						className="hs-beam-3"
+						y2="118"
+						stroke="rgba(255, 255, 255, 0.24)"
+						strokeWidth="1"
+						strokeDasharray="2 4"
+					/>
+
+					{/* Sequential Active Signal Beams */}
+					<line
+						x1="86"
+						y1="118"
+						x2="213"
+						y2="192"
+						stroke="url(#hs-grad-0)"
+						strokeWidth="3.5"
+						className="hs-conduit-0"
+					/>
+					<line
+						x1="213"
+						y1="192"
+						x2="340"
+						y2="118"
+						stroke="url(#hs-grad-1)"
+						strokeWidth="3.5"
+						className="hs-conduit-1"
+					/>
+					<line
+						x1="340"
+						y1="118"
+						x2="467"
+						y2="192"
+						stroke="url(#hs-grad-2)"
+						strokeWidth="3.5"
+						className="hs-conduit-2"
+					/>
+					<line
+						x1="467"
+						y1="192"
+						x2="594"
+						y2="118"
+						stroke="url(#hs-grad-3)"
+						strokeWidth="3.5"
+						className="hs-conduit-3"
 					/>
 				</g>
 
-				{/* ── 2. Five Isometric 3D Step Cards, Perspective Numbers & Labels ── */}
+				{/* ── 2. Five Isometric 3D Architectural Slabs ── */}
 				{STEPS.map((step, idx) => {
-					const labelY = step.isBottom ? 262 : 188;
+					const labelY = step.isBottom ? 254 : 180;
 
 					return (
 						<g key={step.num}>
-							{/* Ambient Colored Shadow Underneath Tile */}
-							<ellipse
-								cx={step.cx}
-								cy={step.cy + 24}
-								rx="54"
-								ry="30"
-								fill={`url(#${step.glowId})`}
-								className={`hs-shadow-${idx}`}
-							/>
-
-							{/* Final Step Cycle-Complete Pulse Ring */}
-							{idx === 4 && (
-								<ellipse
-									cx={step.cx}
-									cy={step.cy + 2}
-									rx="56"
-									ry="33"
-									stroke="#33a674"
-									strokeWidth="2"
-									fill="none"
-									className="hs-cycle-ring"
+							{/* True Isometric Diamond Floor Shadow */}
+							<g transform={`translate(${step.cx}, ${step.cy + 18})`}>
+								<path
+									d={SLAB_TOP}
+									fill={step.accent}
+									filter="url(#hs-iso-blur)"
+									className={`hs-cast-${idx}`}
 								/>
+							</g>
+
+							{/* Cycle-Complete Isometric Confirmation Wave on Step 05 */}
+							{idx === 4 && (
+								<g transform={`translate(${step.cx}, ${step.cy})`}>
+									<path
+										d={SLAB_TOP}
+										stroke="#4aba8a"
+										strokeWidth="1.5"
+										fill="none"
+										className="hs-final-wave"
+									/>
+								</g>
 							)}
 
-							{/* Animated Lifting Group (3D Tile + Perspective Number + Icon + Confirmation Check) */}
-							<g className={`hs-tile-${idx}`}>
+							{/* Elevating 3D Slab Assembly */}
+							<g className={`hs-slab-${idx}`}>
 								<g transform={`translate(${step.cx}, ${step.cy})`}>
-									{/* Isometric Perspective Number (01 - 05) Floating at Top-Left Edge */}
-									<g transform="translate(-38, -22) skewY(-30)">
+									{/* Isometric Perspective Step Numeral (01 - 05) */}
+									<g transform="translate(-39, -20) matrix(0.866, -0.5, 0, 1, 0, 0)">
 										<text
 											x="0"
 											y="0"
 											fill={step.accent}
-											fontSize="20"
-											fontWeight="900"
-											letterSpacing="-0.03em"
+											fontSize="16.5"
+											fontWeight="800"
+											letterSpacing="-0.02em"
 											style={{
 												fontFamily:
 													"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
+												fontVariantNumeric: "tabular-nums",
 											}}
 										>
 											{step.num}
 										</text>
 									</g>
 
-									{/* 3D Extruded Colored Bottom Rim */}
-									<path d={ISO_LIP_PATH} fill={step.lipColor} />
+									{/* 3D Left & Right Extruded Bevel Faces (Directional Lighting) */}
+									<path d={SLAB_BEVEL_LEFT} fill={step.bevelLeft} />
+									<path d={SLAB_BEVEL_RIGHT} fill={step.bevelRight} />
 
-									{/* Crisp White Isometric Top Surface */}
+									{/* Crisp Alabaster Top Surface */}
 									<path
-										d={ISO_TOP_PATH}
-										fill="url(#iso-tile-top)"
-										stroke="rgba(255,255,255,0.95)"
+										d={SLAB_TOP}
+										fill="url(#hs-plate-surface)"
+										stroke="#ffffff"
+										strokeWidth="0.8"
+									/>
+
+									{/* Inner Keycap Isometric Frame */}
+									<path
+										d={SLAB_INNER}
+										fill="none"
+										stroke={step.accentSoft}
 										strokeWidth="1"
 									/>
 
-									{/* Subtle Colored Inner Rim Highlight on Bottom Edges */}
+									{/* Front-Bottom Colored Rim Edge Highlight */}
 									<path
-										d="M -46 3.5 L -6 26.5 Q 0 30 6 26.5 L 46 3.5"
+										d={SLAB_RIM_LINE}
 										stroke={step.accent}
-										strokeWidth="2"
+										strokeWidth="1.75"
 										strokeLinecap="round"
 										fill="none"
 									/>
 
-									{/* Heroicon Projected Flat onto Isometric Tile Surface */}
-									<g transform="translate(0, -1) scale(1, 0.58) rotate(-32) scale(1.25) translate(-12, -12)">
-										<StepHeroIcon index={idx} color={step.accent} />
+									{/* Heroicon Projected onto the Isometric Top Plane */}
+									<g
+										transform="translate(0, -0.5) scale(1, 0.577) rotate(-45) scale(1.18) translate(-12, -12)"
+										style={{ color: "#1e293b" }}
+									>
+										<StepHeroIcon index={idx} />
 									</g>
 
-									{/* Step Confirmation Checkmark Badge (Pops in as step completes) */}
-									<g transform="translate(34, -14)">
-										<g className={`hs-check-${idx}`}>
-											<circle
+									{/* Integrated Isometric Step Confirmation Check (Top-Right Facet) */}
+									<g transform="translate(24, -13)">
+										{/* Subtle Recessed Socket */}
+										<ellipse
+											cx="0"
+											cy="0"
+											rx="6.2"
+											ry="3.8"
+											fill="#e2e8f0"
+										/>
+										{/* Confirmed Check State */}
+										<g className={`hs-confirm-${idx}`}>
+											<ellipse
 												cx="0"
 												cy="0"
-												r="9.5"
-												fill="#33a674"
-												stroke="#ffffff"
-												strokeWidth="1.8"
+												rx="6.5"
+												ry="4"
+												fill={step.accent}
 											/>
 											<path
-												d="M -3.5 0.2 L -1 2.7 L 4 -2.5"
+												d="M -2.3 0 L -0.6 1.3 L 2.5 -1.2"
 												stroke="#ffffff"
-												strokeWidth="2"
+												strokeWidth="1.4"
 												strokeLinecap="round"
 												strokeLinejoin="round"
 												fill="none"
@@ -470,15 +559,15 @@ export default function NetworkSVG() {
 								</g>
 							</g>
 
-							{/* Concise Step Heading, Accent Bar & 2-Line Description */}
-							<g transform={`translate(${step.cx - 48}, ${labelY})`}>
+							{/* ── 3. Precision Editorial Typography Below Each Step ── */}
+							<g transform={`translate(${step.cx - 46}, ${labelY})`}>
 								<text
 									x="0"
 									y="0"
 									fill={step.accent}
-									fontSize="11.5"
+									fontSize="10"
 									fontWeight="800"
-									letterSpacing="0.08em"
+									letterSpacing="0.14em"
 									style={{
 										fontFamily:
 											"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
@@ -487,23 +576,24 @@ export default function NetworkSVG() {
 									{step.title}
 								</text>
 
-								{/* Colored Underline Bar (matching reference image) */}
+								{/* Crisp Architectural Rule */}
 								<rect
 									x="0"
-									y="7"
-									width="32"
-									height="2.5"
-									rx="1.25"
+									y="6.5"
+									width="24"
+									height="1.75"
+									rx="0.875"
 									fill={step.accent}
 								/>
 
-								{/* Apt, Precise 2-Line Description */}
+								{/* Concise 2-Line Copy */}
 								<text
 									x="0"
-									y="24"
-									fill="#e2e8f0"
-									fontSize="9.5"
+									y="21.5"
+									fill="#f1f5f9"
+									fontSize="9"
 									fontWeight="500"
+									letterSpacing="-0.01em"
 									style={{
 										fontFamily:
 											"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
@@ -513,10 +603,11 @@ export default function NetworkSVG() {
 								</text>
 								<text
 									x="0"
-									y="37"
+									y="33.5"
 									fill="#94a3b8"
-									fontSize="9.5"
-									fontWeight="500"
+									fontSize="9"
+									fontWeight="400"
+									letterSpacing="-0.01em"
 									style={{
 										fontFamily:
 											"var(--font-sans), 'Plus Jakarta Sans', sans-serif",
