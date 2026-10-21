@@ -119,7 +119,7 @@ function NavbarInner() {
 				<div className="container-shell flex items-center justify-between gap-4 py-4">
 					<Link
 						href={homeHref}
-						className="flex shrink-0 items-center transition-opacity hover:opacity-90"
+						className="flex shrink-0 items-center"
 						aria-label="HomeScout home"
 					>
 						<Logo variant={scrolled ? "light" : "dark"} size="sm" />

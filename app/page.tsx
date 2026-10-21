@@ -37,7 +37,7 @@ export default function HomePage() {
 				<div className="container-shell py-12">
 					<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_0.7fr_0.7fr]">
 						<div>
-							<Link href="/" className="inline-flex items-center transition-opacity hover:opacity-90" aria-label="HomeScout home">
+							<Link href="/" className="inline-flex items-center" aria-label="HomeScout home">
 								<Logo variant="dark" size="md" />
 							</Link>
 							<p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">

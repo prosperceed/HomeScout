@@ -21,7 +21,7 @@ export default function Footer() {
 					<div>
 						<Link
 							href="/"
-							className="inline-flex items-center transition-opacity hover:opacity-90"
+							className="inline-flex items-center"
 							aria-label="HomeScout home"
 						>
 							<Logo variant="dark" size="md" />

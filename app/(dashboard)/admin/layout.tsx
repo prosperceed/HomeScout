@@ -75,11 +75,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 	const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
 		<aside className={`flex bg-white ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}>
-			<div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-5">
+			<div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-6">
 				<Link
 					href="/admin"
 					onClick={() => setSidebarOpen(false)}
-					className="inline-flex items-center transition-opacity hover:opacity-90"
+					className="inline-flex items-center"
 					aria-label="HomeScout home"
 				>
 					<Logo variant="light" size="sm" />

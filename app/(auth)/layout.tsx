@@ -24,7 +24,7 @@ export default function AuthLayout({
 					<div className="relative z-10 flex h-full flex-col items-center justify-center p-10 text-center xl:p-14">
 						<Link
 							href="/"
-							className="mb-10 inline-flex items-center transition-transform hover:scale-105"
+							className="mb-10 inline-flex items-center"
 							aria-label="HomeScout home"
 						>
 							<Logo variant="dark" size="lg" />

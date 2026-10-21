@@ -87,11 +87,11 @@ export default function ClientLayout({
 		<aside
 			className={`flex bg-slate-900 ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}
 		>
-			<div className="flex h-16 shrink-0 items-center justify-center border-b border-white/10 px-5">
+			<div className="flex h-16 shrink-0 items-center border-b border-white/10 px-6">
 				<Link
 					href="/client"
 					onClick={() => setSidebarOpen(false)}
-					className="inline-flex items-center transition-transform hover:scale-105"
+					className="inline-flex items-center"
 					aria-label="HomeScout home"
 				>
 					<Logo variant="dark" size="sm" />
