@@ -91,7 +91,7 @@ export function AgentListingsTableDB({ bookings }: Props) {
                 <tr key={booking.id} className="group border-b border-slate-50 transition hover:bg-blue-50/40">
                   <td className="px-4 py-3.5">
                     <p className="max-w-[200px] truncate text-sm font-semibold text-slate-800">
-                      {booking.property?.title ?? "—"}
+                      {booking.property?.title ?? "-"}
                     </p>
                     <p className="mt-0.5 truncate text-xs text-slate-400">
                       {booking.property?.formatted_address ?? booking.property?.state ?? ""}
@@ -104,7 +104,7 @@ export function AgentListingsTableDB({ bookings }: Props) {
                     {new Date(booking.created_at).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
                   <td className="px-4 py-3.5 text-sm font-medium text-slate-700">
-                    {booking.client_profile?.full_name ?? "—"}
+                    {booking.client_profile?.full_name ?? "-"}
                   </td>
                   <td className="px-4 py-3.5">
                     <StatusBadge status={booking.status as BookingStatus} />

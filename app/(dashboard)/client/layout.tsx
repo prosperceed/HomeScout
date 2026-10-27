@@ -127,7 +127,7 @@ export default function ClientLayout({
 				))}
 				<button
 					onClick={handleLogout}
-					className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-400 transition hover:bg-red-500/20 hover:text-red-300 cursor-pointer"
+					className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-white/5 hover:text-slate-200 cursor-pointer"
 				>
 					<svg
 						className="h-[18px] w-[18px] shrink-0"
@@ -178,35 +178,41 @@ export default function ClientLayout({
 
 			{/* Main */}
 			<div className="flex min-w-0 flex-1 flex-col">
-				<header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-stone-200/50 bg-[#f0ece8]/90 px-4 backdrop-blur-sm sm:px-8">
+				<header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-stone-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-8">
 					<div className="flex items-center gap-3">
 						<button
 							onClick={() => setSidebarOpen(true)}
-							className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-white/60 lg:hidden"
+							className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 lg:hidden"
 							aria-label="Open menu"
 						>
 							<Menu className="h-5 w-5" />
 						</button>
-						<p className="hidden text-xs font-semibold text-slate-400 sm:block">
+						<p className="hidden text-xs font-semibold text-slate-500 sm:block">
 							{clientNav.find((n) => isActive(n.href, n.exact))?.label ??
 								clientNavBottom.find((n) => isActive(n.href))?.label ??
 								"Dashboard"}
 						</p>
 					</div>
 
-					<div className="flex items-center gap-2.5">
-						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/80 text-slate-500 ring-1 ring-stone-200/60 transition hover:text-slate-800">
+					<div className="flex items-center gap-2 sm:gap-2.5">
+						<button
+							aria-label="Search"
+							className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 hover:bg-slate-50"
+						>
 							<Search className="h-4 w-4" />
 						</button>
-						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/80 text-slate-500 ring-1 ring-stone-200/60 transition hover:text-slate-800">
+						<button
+							aria-label="Notifications"
+							className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:text-slate-900 hover:bg-slate-50"
+						>
 							<Bell className="h-4 w-4" />
-							<span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-coral-500 ring-2 ring-[#f0ece8]" />
+							<span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-coral-500" />
 						</button>
-						<div className="hidden items-center gap-2.5 rounded-xl bg-white/80 px-3 py-1.5 ring-1 ring-stone-200/60 sm:flex">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white">
+						<div className="hidden items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 sm:flex">
+							<div className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-800 text-white">
 								<UserRound className="h-4 w-4" />
 							</div>
-							<span className="text-sm font-semibold text-slate-700">
+							<span className="text-sm font-medium text-slate-700">
 								My Account
 							</span>
 						</div>

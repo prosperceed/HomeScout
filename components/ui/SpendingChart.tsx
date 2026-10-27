@@ -111,33 +111,33 @@ export function SpendingChart() {
 	const lastPeriodSpend = spendingData[spendingData.length - 1]?.amount ?? 0;
 
 	return (
-		<div className="flex h-full flex-col overflow-hidden rounded-3xl bg-white ring-1 ring-stone-200/70 shadow-[0_2px_16px_-6px_rgba(15,23,42,0.08)]">
+		<div className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white">
 			{/* ── Header ── */}
-			<div className="flex flex-wrap items-start justify-between gap-4 border-b border-stone-100 px-5 py-5 sm:px-6">
+			<div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
 				<div>
-					<h2 className="text-lg font-black tracking-[-0.03em] text-slate-900">
+					<h2 className="text-base font-bold tracking-tight text-slate-900">
 						Spending Analytics
 					</h2>
-					<p className="mt-0.5 text-sm text-slate-500">
+					<p className="mt-0.5 text-xs text-slate-500">
 						Your property spend over time
 					</p>
 				</div>
 
 				{/* KPI pills */}
-				<div className="flex flex-wrap items-center gap-3">
-					<div className="flex flex-col rounded-2xl bg-[#fff4f0] px-4 py-2">
-						<span className="text-[10px] font-bold uppercase tracking-widest text-coral-500">
+				<div className="flex flex-wrap items-center gap-2.5">
+					<div className="flex flex-col rounded-xl border border-slate-200/80 bg-slate-50 px-3.5 py-1.5">
+						<span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
 							Total Spent
 						</span>
-						<span className="text-lg font-black tracking-tight text-slate-900">
+						<span className="text-base font-bold tracking-tight text-slate-900">
 							{shortNaira(totalSpent)}
 						</span>
 					</div>
-					<div className="flex flex-col rounded-2xl bg-[#edf8f3] px-4 py-2">
-						<span className="text-[10px] font-bold uppercase tracking-widest text-sage-600">
+					<div className="flex flex-col rounded-xl border border-slate-200/80 bg-slate-50 px-3.5 py-1.5">
+						<span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
 							Last Period
 						</span>
-						<span className="text-lg font-black tracking-tight text-slate-900">
+						<span className="text-base font-bold tracking-tight text-slate-900">
 							{shortNaira(lastPeriodSpend)}
 						</span>
 					</div>

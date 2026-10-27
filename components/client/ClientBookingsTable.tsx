@@ -91,22 +91,19 @@ function CardHeader({ count }: { count?: number }) {
 export function ClientBookingsTable({ bookings }: Props) {
   if (bookings.length === 0) {
     return (
-      <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-stone-200/70 shadow-[0_2px_16px_-6px_rgba(15,23,42,0.08)]">
+      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white">
         <CardHeader />
-        <div className="flex flex-col items-center justify-center px-6 py-16 text-center sm:py-20">
-          <div className="relative mb-5">
-            <div className="absolute inset-0 rounded-3xl bg-coral-200 opacity-60 blur-xl" />
-            <div className="relative flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-coral-400 to-coral-600 text-white shadow-[0_10px_24px_-8px_rgba(249,93,46,0.6)]">
-              <Search className="h-7 w-7" />
-            </div>
+        <div className="flex flex-col items-center justify-center px-6 py-14 text-center sm:py-16">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+            <Search className="h-5 w-5" />
           </div>
-          <p className="text-base font-black tracking-tight text-slate-900">No applications yet</p>
-          <p className="mt-1 max-w-xs text-sm text-slate-500">
+          <p className="text-base font-bold text-slate-900">No applications yet</p>
+          <p className="mt-1 max-w-xs text-xs sm:text-sm text-slate-500">
             Browse verified properties and send your first booking request.
           </p>
           <Link
             href="/explore"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-700"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-xs sm:text-sm font-semibold text-white transition hover:bg-slate-700"
           >
             Explore properties <ArrowUpRight className="h-4 w-4" />
           </Link>
@@ -116,7 +113,7 @@ export function ClientBookingsTable({ bookings }: Props) {
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-stone-200/70 shadow-[0_2px_16px_-6px_rgba(15,23,42,0.08)]">
+    <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white">
       <CardHeader count={bookings.length} />
 
       {/* ── Mobile / tablet: card list ── */}
@@ -136,7 +133,7 @@ export function ClientBookingsTable({ bookings }: Props) {
                   </div>
                   <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-slate-400">
                     <MapPin className="h-3 w-3 shrink-0" />
-                    <span className="truncate">{property?.formatted_address ?? property?.state ?? "—"}</span>
+                    <span className="truncate">{property?.formatted_address ?? property?.state ?? "-"}</span>
                   </p>
                   <div className="mt-3 flex items-end justify-between gap-2">
                     <div className="min-w-0">
@@ -189,7 +186,7 @@ export function ClientBookingsTable({ bookings }: Props) {
                       <div className="min-w-0 max-w-[260px]">
                         <p className="truncate text-sm font-bold text-slate-900 group-hover:text-coral-600">{title}</p>
                         <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-slate-400">
-                          <span className="capitalize">{property?.type?.replace(/_/g, " ") ?? "—"}</span>
+                          <span className="capitalize">{property?.type?.replace(/_/g, " ") ?? "-"}</span>
                           <span className="text-slate-300">•</span>
                           <span className="truncate">{property?.formatted_address ?? property?.state ?? ""}</span>
                         </p>

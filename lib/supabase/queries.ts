@@ -16,7 +16,7 @@ export type PropertyWithOwner = PropertyRow & {
 export type BookingWithProperty = BookingRow & {
   property: Pick<PropertyRow, "id" | "title" | "formatted_address" | "state" | "images" | "type" | "price" | "price_period"> | null;
   agent_profile: Pick<ProfileRow, "id" | "full_name" | "avatar_url"> | null;
-  client_profile: Pick<ProfileRow, "id" | "full_name" | "avatar_url"> | null;
+  client_profile: Pick<ProfileRow, "id" | "full_name" | "avatar_url" | "phone" | "email"> | null;
 };
 
 export type PropertyFilter = {
@@ -83,7 +83,7 @@ export async function getAgentProperties(agentId: string): Promise<PropertyRow[]
   const { data, error } = await supabase
     .from("property_listings")
     .select("*")
-    .eq("owner_id", agentId)
+    .or(`owner_id.eq.${agentId},agent_id.eq.${agentId}`)
     .order("created_at", { ascending: false });
 
   if (error) { console.error("getAgentProperties:", error.message); return []; }
@@ -109,7 +109,7 @@ export async function getAgentStats(agentId: string) {
     supabase
       .from("property_listings")
       .select("id, status")
-      .eq("owner_id", agentId),
+      .or(`owner_id.eq.${agentId},agent_id.eq.${agentId}`),
     supabase
       .from("bookings")
       .select("id, status, price_at_booking, created_at")
@@ -147,20 +147,22 @@ export async function getAgentStats(agentId: string) {
   };
 }
 
-export async function getAgentBookings(agentId: string): Promise<BookingWithProperty[]> {
+export async function getAgentBookings(agentId: string, limit?: number): Promise<BookingWithProperty[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("bookings")
     .select(`
       *,
       property:property_listings ( id, title, formatted_address, state, images, type, price, price_period ),
       agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url ),
-      client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url )
+      client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url, phone, email )
     `)
     .eq("agent_id", agentId)
-    .order("created_at", { ascending: false })
-    .limit(20);
+    .order("created_at", { ascending: false });
 
+  if (limit) query = query.limit(limit);
+
+  const { data, error } = await query;
   if (error) { console.error("getAgentBookings:", error.message); return []; }
   return (data ?? []) as unknown as BookingWithProperty[];
 }
@@ -202,6 +204,31 @@ export async function getClientStats(clientId: string) {
     unreadMessages: messages.filter((m) => !m.is_read).length,
     totalMessages: messages.length,
   };
+}
+
+export async function getLandlordTenants(landlordId: string): Promise<BookingWithProperty[]> {
+  const supabase = await createClient();
+  const { data: props } = await supabase
+    .from("property_listings")
+    .select("id")
+    .eq("owner_id", landlordId);
+
+  const propIds = props?.map((p) => p.id) ?? [];
+  if (propIds.length === 0) return [];
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      property:property_listings ( id, title, formatted_address, state, images, type, price, price_period ),
+      agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url ),
+      client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url, phone, email )
+    `)
+    .in("property_id", propIds)
+    .order("created_at", { ascending: false });
+
+  if (error) { console.error("getLandlordTenants:", error.message); return []; }
+  return (data ?? []) as unknown as BookingWithProperty[];
 }
 
 export async function getLandlordStats(landlordId: string) {

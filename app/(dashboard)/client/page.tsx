@@ -29,11 +29,9 @@ async function ClientDashboardContent() {
       <ClientWelcomeHero firstName={firstName} />
 
       <section aria-label="Overview statistics" className="space-y-4">
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Your space</p>
-            <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-slate-900 sm:text-3xl">Overview</h2>
-          </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Your space</p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Overview</h2>
         </div>
         <ClientStatCards stats={stats} />
       </section>

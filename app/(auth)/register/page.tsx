@@ -31,19 +31,25 @@ import {
 import type { UserRole, PropertyType, FeeType } from "@/types";
 import { toast } from "@/lib/toast";
 
-const credentialsSchema = z.object({
-	full_name: z.string().min(2, "Enter your full name"),
-	email: z.string().email("Enter a valid email address"),
-	password: z
-		.string()
-		.min(8, "Password must be at least 8 characters")
-		.regex(/[A-Z]/, "Must contain at least one uppercase letter")
-		.regex(/[0-9]/, "Must contain at least one number"),
-	phone: z
-		.string()
-		.min(10, "Enter a valid phone number")
-		.regex(/^\+?[\d\s-]{10,}$/, "Enter a valid phone number"),
-});
+const credentialsSchema = z
+	.object({
+		full_name: z.string().min(2, "Enter your full name"),
+		email: z.string().email("Enter a valid email address"),
+		password: z
+			.string()
+			.min(8, "Password must be at least 8 characters")
+			.regex(/[A-Z]/, "Must contain at least one uppercase letter")
+			.regex(/[0-9]/, "Must contain at least one number"),
+		confirm_password: z.string().min(1, "Please confirm your password"),
+		phone: z
+			.string()
+			.min(10, "Enter a valid phone number")
+			.regex(/^\+?[\d\s-]{10,}$/, "Enter a valid phone number"),
+	})
+	.refine((data) => data.password === data.confirm_password, {
+		message: "Passwords do not match",
+		path: ["confirm_password"],
+	});
 
 type CredentialsForm = z.infer<typeof credentialsSchema>;
 
@@ -246,6 +252,7 @@ function RegisterPageInner() {
 		fee_value: "10",
 	});
 	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [serverError, setServerError] = useState<string | null>(null);
 	const [isPending, startTransition] = useTransition();
 
@@ -885,6 +892,42 @@ function RegisterPageInner() {
 												}
 											>
 												{showPassword ? (
+													<EyeOff size={16} />
+												) : (
+													<Eye size={16} />
+												)}
+											</button>
+										</div>
+									</Field>
+
+									<Field
+										label="Confirm Password"
+										id="confirm_password"
+										error={errors.confirm_password?.message}
+									>
+										<div className="relative">
+											<input
+												id="confirm_password"
+												type={showConfirmPassword ? "text" : "password"}
+												autoComplete="new-password"
+												placeholder="Re-enter your password"
+												{...register("confirm_password")}
+												className={cn(
+													errors.confirm_password ? errorInputClass : inputClass,
+													"pr-11",
+												)}
+											/>
+											<button
+												type="button"
+												onClick={() => setShowConfirmPassword((v) => !v)}
+												className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8494b8] hover:text-[#637099] transition-colors"
+												aria-label={
+													showConfirmPassword
+														? "Hide password confirmation"
+														: "Show password confirmation"
+												}
+											>
+												{showConfirmPassword ? (
 													<EyeOff size={16} />
 												) : (
 													<Eye size={16} />
