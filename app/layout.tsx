@@ -13,7 +13,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
 	title: {
-		default: `${SITE_NAME} — Find Your Space. Own Your Move.`,
+		default: `${SITE_NAME}. Find Your Space. Own Your Move.`,
 		template: `%s | ${SITE_NAME}`,
 	},
 	description: SITE_DESCRIPTION,
@@ -55,9 +55,9 @@ export default function RootLayout({
 	return (
 		<html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
 			<body>
-			{children}
-			<Toaster />
-		</body>
+				{children}
+				<Toaster />
+			</body>
 		</html>
 	);
 }

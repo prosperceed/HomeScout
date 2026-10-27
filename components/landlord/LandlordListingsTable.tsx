@@ -20,6 +20,37 @@ const tagConfig: Record<string, { label: string; classes: string }> = {
   shortlet: { label: "Shortlet",  classes: "bg-violet-100 text-violet-700" },
 };
 
+function getThumbnail(images: unknown, fallbackId?: string): string {
+  if (Array.isArray(images) && images.length > 0) {
+    const first = images[0];
+    if (typeof first === "string" && first.trim()) return first;
+    if (first && typeof first === "object" && "url" in first && typeof (first as { url?: string }).url === "string") {
+      return (first as { url: string }).url;
+    }
+  }
+  if (typeof images === "string" && images.trim()) {
+    try {
+      const parsed = JSON.parse(images);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return getThumbnail(parsed, fallbackId);
+      }
+    } catch {
+      return images;
+    }
+  }
+  const fallbackAssets = [
+    "/assets/house1.jpeg",
+    "/assets/house2.jpeg",
+    "/assets/house3.jpeg",
+    "/assets/house4.jpeg",
+  ];
+  if (fallbackId) {
+    const charCode = fallbackId.charCodeAt(fallbackId.length - 1) || 0;
+    return fallbackAssets[charCode % fallbackAssets.length];
+  }
+  return "/assets/house1.jpeg";
+}
+
 function formatPrice(n: number, period: string) {
   const val = n >= 1_000_000 ? `₦${(n / 1_000_000).toFixed(1)}M` : n >= 1_000 ? `₦${(n / 1_000).toFixed(0)}k` : `₦${n}`;
   const p = period === "per_year" ? "/yr" : period === "per_month" ? "/mo" : "/night";
@@ -62,18 +93,34 @@ export function LandlordListingsTable({ properties }: Props) {
             </thead>
             <tbody className="divide-y divide-stone-100">
               {properties.map((p) => {
+                const thumb = getThumbnail(p.images, p.id);
                 const status = statusConfig[p.status] ?? statusConfig.inactive;
                 const tag = tagConfig[p.listing_tag] ?? tagConfig.for_rent;
                 return (
                   <tr key={p.id} className="group transition-colors hover:bg-stone-50/60">
                     <td className="px-5 py-4">
-                      <p className="max-w-[220px] truncate text-sm font-semibold text-slate-800">{p.title}</p>
-                      {p.formatted_address && (
-                        <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-400">
-                          <MapPin className="h-3 w-3" />
-                          <span className="truncate">{p.formatted_address}</span>
-                        </p>
-                      )}
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={thumb}
+                            alt={p.title}
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/assets/house1.jpeg";
+                            }}
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="max-w-[200px] truncate text-sm font-semibold text-slate-800">{p.title}</p>
+                          {p.formatted_address && (
+                            <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-400">
+                              <MapPin className="h-3 w-3" />
+                              <span className="truncate">{p.formatted_address}</span>
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </td>
                     <td className="px-5 py-4">
                       <span className={`inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-bold ${tag.classes}`}>

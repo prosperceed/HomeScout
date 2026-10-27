@@ -59,11 +59,35 @@ function formatPrice(n: number, period: string) {
 	return `${val}${p}`;
 }
 
-function getThumbnail(images: unknown): string | null {
-	if (Array.isArray(images) && images.length > 0 && typeof images[0] === "string") {
-		return images[0];
+function getThumbnail(images: unknown, fallbackId?: string): string {
+	if (Array.isArray(images) && images.length > 0) {
+		const first = images[0];
+		if (typeof first === "string" && first.trim()) return first;
+		if (first && typeof first === "object" && "url" in first && typeof (first as { url?: string }).url === "string") {
+			return (first as { url: string }).url;
+		}
 	}
-	return null;
+	if (typeof images === "string" && images.trim()) {
+		try {
+			const parsed = JSON.parse(images);
+			if (Array.isArray(parsed) && parsed.length > 0) {
+				return getThumbnail(parsed, fallbackId);
+			}
+		} catch {
+			return images;
+		}
+	}
+	const fallbackAssets = [
+		"/assets/house1.jpeg",
+		"/assets/house2.jpeg",
+		"/assets/house3.jpeg",
+		"/assets/house4.jpeg",
+	];
+	if (fallbackId) {
+		const charCode = fallbackId.charCodeAt(fallbackId.length - 1) || 0;
+		return fallbackAssets[charCode % fallbackAssets.length];
+	}
+	return "/assets/house1.jpeg";
 }
 
 export default function AgentListingsTable() {
@@ -274,7 +298,7 @@ export default function AgentListingsTable() {
 						</thead>
 						<tbody className="divide-y divide-slate-100">
 							{filteredListings.map((p) => {
-								const thumb = getThumbnail(p.images);
+								const thumb = getThumbnail(p.images, p.id);
 								const status = statusConfig[p.status] ?? statusConfig.inactive;
 								const tag = tagConfig[p.listing_tag] ?? tagConfig.for_rent;
 
@@ -287,18 +311,15 @@ export default function AgentListingsTable() {
 										<td className="px-5 py-3.5">
 											<div className="flex items-center gap-3">
 												<div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-													{thumb ? (
-														// eslint-disable-next-line @next/next/no-img-element
-														<img
-															src={thumb}
-															alt={p.title}
-															className="h-full w-full object-cover"
-														/>
-													) : (
-														<div className="flex h-full w-full items-center justify-center text-slate-400">
-															<Building2 className="h-5 w-5" />
-														</div>
-													)}
+													{/* eslint-disable-next-line @next/next/no-img-element */}
+													<img
+														src={thumb}
+														alt={p.title}
+														className="h-full w-full object-cover"
+														onError={(e) => {
+															(e.target as HTMLImageElement).src = "/assets/house1.jpeg";
+														}}
+													/>
 												</div>
 												<div className="min-w-0 max-w-[240px]">
 													<p className="truncate font-bold text-slate-900">

@@ -40,11 +40,35 @@ function formatPrice(n: number, period: string) {
 	return `${val}${p}`;
 }
 
-function getThumbnail(images: unknown): string | null {
-	if (Array.isArray(images) && images.length > 0 && typeof images[0] === "string") {
-		return images[0];
+function getThumbnail(images: unknown, fallbackId?: string): string {
+	if (Array.isArray(images) && images.length > 0) {
+		const first = images[0];
+		if (typeof first === "string" && first.trim()) return first;
+		if (first && typeof first === "object" && "url" in first && typeof (first as { url?: string }).url === "string") {
+			return (first as { url: string }).url;
+		}
 	}
-	return null;
+	if (typeof images === "string" && images.trim()) {
+		try {
+			const parsed = JSON.parse(images);
+			if (Array.isArray(parsed) && parsed.length > 0) {
+				return getThumbnail(parsed, fallbackId);
+			}
+		} catch {
+			return images;
+		}
+	}
+	const fallbackAssets = [
+		"/assets/house1.jpeg",
+		"/assets/house2.jpeg",
+		"/assets/house3.jpeg",
+		"/assets/house4.jpeg",
+	];
+	if (fallbackId) {
+		const charCode = fallbackId.charCodeAt(fallbackId.length - 1) || 0;
+		return fallbackAssets[charCode % fallbackAssets.length];
+	}
+	return "/assets/house1.jpeg";
 }
 
 export function AgentPortfolioView({ properties }: { properties: PropertyRow[] }) {
@@ -152,7 +176,7 @@ export function AgentPortfolioView({ properties }: { properties: PropertyRow[] }
 			) : (
 				<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
 					{filtered.map((p) => {
-						const thumb = getThumbnail(p.images);
+						const thumb = getThumbnail(p.images, p.id);
 						const status = statusConfig[p.status] ?? statusConfig.inactive;
 
 						return (
@@ -162,18 +186,15 @@ export function AgentPortfolioView({ properties }: { properties: PropertyRow[] }
 							>
 								{/* Image */}
 								<div className="relative aspect-[16/10] w-full bg-slate-100 overflow-hidden">
-									{thumb ? (
-										// eslint-disable-next-line @next/next/no-img-element
-										<img
-											src={thumb}
-											alt={p.title}
-											className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-										/>
-									) : (
-										<div className="flex h-full w-full items-center justify-center text-slate-400">
-											<Building2 className="h-8 w-8" />
-										</div>
-									)}
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img
+										src={thumb}
+										alt={p.title}
+										className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+										onError={(e) => {
+											(e.target as HTMLImageElement).src = "/assets/house1.jpeg";
+										}}
+									/>
 									<span
 										className={`absolute right-3 top-3 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${status.classes}`}
 									>

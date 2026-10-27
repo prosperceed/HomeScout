@@ -126,7 +126,7 @@ export default function NewListingPage() {
 				price_period: form.price_period as any,
 				bedrooms: form.bedrooms ? Number(form.bedrooms) : 0,
 				bathrooms: form.bathrooms ? Number(form.bathrooms) : 0,
-				images: uploadedUrls,
+				images: uploadedUrls.length > 0 ? uploadedUrls : ["/assets/house1.jpeg"],
 				amenities: selectedAmenities,
 				lat: location?.lat ?? null,
 				lng: location?.lng ?? null,
