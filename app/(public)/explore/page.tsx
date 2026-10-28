@@ -71,7 +71,6 @@ export default function ExplorePage() {
 	);
 	useEffect(() => {
 		const supabase = createClient();
-		let channel: any;
 
 		async function fetchProperties() {
 			try {
@@ -111,7 +110,7 @@ export default function ExplorePage() {
 		fetchProperties();
 		fetchSavedProperties();
 
-		channel = supabase
+		const channel = supabase
 			.channel("public:property_listings")
 			.on(
 				"postgres_changes",
