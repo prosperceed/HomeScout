@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAgentBookings } from "@/lib/supabase/queries";
 import { AgentClientsView } from "@/components/agent/AgentClientsView";
 
-export default async function AgentClientsPage() {
+async function AgentClientsContent() {
 	const supabase = await createClient();
 	const {
 		data: { user },
@@ -31,5 +32,13 @@ export default async function AgentClientsPage() {
 
 			<AgentClientsView bookings={bookings} />
 		</div>
+	);
+}
+
+export default function AgentClientsPage() {
+	return (
+		<Suspense>
+			<AgentClientsContent />
+		</Suspense>
 	);
 }

@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAgentProperties } from "@/lib/supabase/queries";
 import { AgentPortfolioView } from "@/components/agent/AgentPortfolioView";
 
-export default async function AgentPortfolioPage() {
+async function AgentPortfolioContent() {
 	const supabase = await createClient();
 	const {
 		data: { user },
@@ -31,5 +32,13 @@ export default async function AgentPortfolioPage() {
 
 			<AgentPortfolioView properties={properties} />
 		</div>
+	);
+}
+
+export default function AgentPortfolioPage() {
+	return (
+		<Suspense>
+			<AgentPortfolioContent />
+		</Suspense>
 	);
 }

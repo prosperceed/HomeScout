@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAgentStats } from "@/lib/supabase/queries";
@@ -5,7 +6,7 @@ import { AgentPerformanceChart } from "@/components/agent/AgentPerformanceChart"
 import { AgentDealGrowthChart } from "@/components/agent/AgentDealGrowthChart";
 import { AgentStatCardsDB } from "@/components/agent/AgentStatCardsDB";
 
-export default async function AgentAnalyticsPage() {
+async function AgentAnalyticsContent() {
 	const supabase = await createClient();
 	const {
 		data: { user },
@@ -38,5 +39,13 @@ export default async function AgentAnalyticsPage() {
 				<AgentDealGrowthChart />
 			</div>
 		</div>
+	);
+}
+
+export default function AgentAnalyticsPage() {
+	return (
+		<Suspense>
+			<AgentAnalyticsContent />
+		</Suspense>
 	);
 }

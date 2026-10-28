@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAgentBookings } from "@/lib/supabase/queries";
 import { AgentDealsView } from "@/components/agent/AgentDealsView";
 
-export default async function AgentDealsPage() {
+async function AgentDealsContent() {
 	const supabase = await createClient();
 	const {
 		data: { user },
@@ -31,5 +32,13 @@ export default async function AgentDealsPage() {
 
 			<AgentDealsView bookings={bookings} />
 		</div>
+	);
+}
+
+export default function AgentDealsPage() {
+	return (
+		<Suspense>
+			<AgentDealsContent />
+		</Suspense>
 	);
 }
