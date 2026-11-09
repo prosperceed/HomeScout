@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Calendar, CheckCircle2, FileText, SendHorizontal } from "lucide-react";
+import {
+	Calendar,
+	CheckCircle2,
+	FileText,
+	SendHorizontal,
+	X,
+} from "lucide-react";
 import type { UserRole } from "@/lib/chat/types";
 
 interface ChatComposerProps {
@@ -21,6 +27,7 @@ export function ChatComposer({
 }: ChatComposerProps) {
 	const [draft, setDraft] = useState("");
 	const [isSending, setIsSending] = useState(false);
+	const [showSnippets, setShowSnippets] = useState(true);
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
 	const sendButtonClass =
@@ -71,7 +78,7 @@ export function ChatComposer({
 		const el = textareaRef.current;
 		if (!el) return;
 		el.style.height = "auto";
-		el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+		el.style.height = `${Math.min(el.scrollHeight, 130)}px`;
 	};
 
 	const handleSubmit = async () => {
@@ -110,57 +117,89 @@ export function ChatComposer({
 	};
 
 	return (
-		<div className="shrink-0 border-t border-slate-200/80 bg-white px-3 py-2 sm:px-6 sm:py-3">
+		<div className="shrink-0 border-t border-slate-200/80 bg-white px-3 py-2.5 sm:px-6 sm:py-3">
 			<div className="mx-auto max-w-3xl">
-				<div className="mb-2 flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
-					{quickSnippets.map((item) => {
-						const Icon = item.icon;
-						return (
-							<button
-								key={item.label}
-								type="button"
-								onClick={() => insertSnippet(item.text)}
-								className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200/90 bg-slate-50/80 px-2 py-1 sm:px-2.5 text-[10px] sm:text-[11px] font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-white hover:text-slate-900"
-							>
-								<Icon className="h-3 w-3 text-slate-400" />
-								<span>{item.label}</span>
-							</button>
-						);
-					})}
-				</div>
-
-				<div className="flex items-end gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-1.5 sm:p-2 transition focus-within:border-slate-400 focus-within:bg-white">
-					<textarea
-						ref={textareaRef}
-						rows={1}
-						maxLength={2000}
-						value={draft}
-						onChange={(e) => {
-							setDraft(e.target.value);
-							adjustHeight();
-							onTyping();
-						}}
-						onKeyDown={handleKeyDown}
-						placeholder={`Message ${partnerName.split(" ")[0]}...`}
-						className="max-h-[120px] min-h-[26px] sm:min-h-[28px] flex-1 resize-none bg-transparent px-2 py-1 text-sm sm:text-[13px] font-medium leading-relaxed text-slate-900 placeholder:text-slate-400 focus:outline-none"
-					/>
-
-					<div className="flex shrink-0 items-center gap-1 sm:gap-2">
-						{draft.length > 1600 && (
-							<span className="text-[10px] font-semibold text-slate-400">
-								{2000 - draft.length}
+				{showSnippets && (
+					<div className="mb-2 flex items-center justify-between gap-2 overflow-x-auto pb-0.5 no-scrollbar">
+						<div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+							<span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+								Prompts:
 							</span>
-						)}
+							{quickSnippets.map((item) => {
+								const Icon = item.icon;
+								return (
+									<button
+										key={item.label}
+										type="button"
+										onClick={() => insertSnippet(item.text)}
+										className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-slate-200/80 bg-white px-2.5 py-0.5 text-[11px] font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900"
+									>
+										<Icon className="h-2.5 w-2.5 text-slate-400" />
+										<span>{item.label}</span>
+									</button>
+								);
+							})}
+						</div>
+
 						<button
 							type="button"
-							onClick={handleSubmit}
-							disabled={!draft.trim() || isSending}
-							aria-label="Send message"
-							className={`flex h-8 w-8 sm:h-9 sm:w-9 cursor-pointer items-center justify-center rounded-xl transition disabled:cursor-not-allowed disabled:opacity-40 ${sendButtonClass}`}
+							onClick={() => setShowSnippets(false)}
+							title="Hide quick prompts"
+							aria-label="Hide quick prompts"
+							className="shrink-0 cursor-pointer rounded-md p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
 						>
-							<SendHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+							<X className="h-3 w-3" />
 						</button>
 					</div>
+				)}
+
+				<div className="relative rounded-2xl border border-slate-200/90 bg-white p-2 shadow-xs transition focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-900/5">
+					<div className="flex items-end gap-2">
+						<textarea
+							ref={textareaRef}
+							rows={1}
+							maxLength={2000}
+							value={draft}
+							onChange={(e) => {
+								setDraft(e.target.value);
+								adjustHeight();
+								onTyping();
+							}}
+							onKeyDown={handleKeyDown}
+							placeholder={`Write a message to ${partnerName.split(" ")[0]}...`}
+							className="max-h-[130px] min-h-[36px] flex-1 resize-none bg-transparent px-2 py-1.5 text-[13px] leading-5 text-slate-900 placeholder:text-slate-400 focus:outline-none"
+						/>
+
+						<div className="flex shrink-0 items-center gap-1.5 pb-0.5">
+							{draft.length > 1600 && (
+								<span className="text-[10px] font-medium text-slate-400 tabular-nums">
+									{2000 - draft.length}
+								</span>
+							)}
+							<button
+								type="button"
+								onClick={handleSubmit}
+								disabled={!draft.trim() || isSending}
+								aria-label="Send message"
+								className={`flex h-8 w-8 sm:h-8.5 sm:w-8.5 cursor-pointer items-center justify-center rounded-xl transition disabled:cursor-not-allowed disabled:opacity-35 ${sendButtonClass}`}
+							>
+								<SendHorizontal className="h-4 w-4" />
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div className="mt-1 hidden sm:flex items-center justify-between px-2 text-[10.5px] text-slate-400">
+					<span>Return to send, Shift + Return for new line</span>
+					{!showSnippets && (
+						<button
+							type="button"
+							onClick={() => setShowSnippets(true)}
+							className="cursor-pointer transition hover:text-slate-600 hover:underline underline-offset-2"
+						>
+							Show suggestions
+						</button>
+					)}
 				</div>
 			</div>
 		</div>

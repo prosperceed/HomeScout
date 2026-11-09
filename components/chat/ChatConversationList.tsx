@@ -145,7 +145,7 @@ export function ChatConversationList({
 			<div className="border-b border-slate-100 px-3.5 sm:px-4 pb-3 pt-3.5">
 				<div className="flex items-center justify-between gap-2">
 					<div>
-						<h2 className="text-sm sm:text-base font-black tracking-[-0.03em] text-slate-900">
+						<h2 className="text-[13px] sm:text-sm font-bold tracking-tight text-slate-900">
 							Messages
 						</h2>
 						<p className="text-[10px] sm:text-[11px] font-medium text-slate-400">
@@ -156,7 +156,7 @@ export function ChatConversationList({
 					<button
 						type="button"
 						onClick={() => setDirectoryOpen(true)}
-						className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-2.5 py-1.5 sm:px-3 text-[11px] sm:text-xs font-bold transition ${accentButtonClass}`}
+						className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold transition ${accentButtonClass}`}
 						title="Start a new conversation"
 					>
 						<MessageSquarePlus className="h-3.5 w-3.5" />
@@ -192,7 +192,7 @@ export function ChatConversationList({
 								key={tab.id}
 								type="button"
 								onClick={() => setFilterTab(tab.id)}
-								className={`cursor-pointer rounded-lg px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-bold shrink-0 transition ${
+								className={`cursor-pointer rounded-lg px-2 sm:px-2.5 py-1 text-[10.5px] sm:text-[11px] font-semibold shrink-0 transition ${
 									active
 										? "bg-slate-900 text-white"
 										: "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
@@ -278,10 +278,10 @@ export function ChatConversationList({
 									<div className="flex items-center justify-between gap-1.5">
 										<div className="flex min-w-0 items-center gap-1.5">
 											<span
-												className={`truncate text-xs ${
+												className={`truncate text-[12.5px] sm:text-[13px] ${
 													conv.unreadCount > 0
-														? "font-black text-slate-900"
-														: "font-bold text-slate-800"
+														? "font-bold text-slate-900"
+														: "font-semibold text-slate-800"
 												}`}
 											>
 												{conv.partner.full_name}
@@ -321,7 +321,7 @@ export function ChatConversationList({
 												<p
 													className={`flex items-center gap-1 truncate text-[11px] sm:text-xs ${
 														conv.unreadCount > 0
-															? "font-bold text-slate-900"
+															? "font-semibold text-slate-900"
 															: "font-normal text-slate-500"
 													}`}
 												>

@@ -44,12 +44,6 @@ export function ChatShell({ accentVariant = "sage" }: ChatShellProps) {
 	const [showContextPanel, setShowContextPanel] = useState(false);
 
 	useEffect(() => {
-		if (typeof window !== "undefined" && window.innerWidth >= 1280) {
-			setShowContextPanel(true);
-		}
-	}, []);
-
-	useEffect(() => {
 		if (!activeConversation && mobileView === "thread") {
 			setMobileView("list");
 		}
@@ -159,13 +153,13 @@ export function ChatShell({ accentVariant = "sage" }: ChatShellProps) {
 					</div>
 				) : (
 					<div className="flex h-full flex-col items-center justify-center bg-[#f8f7f4] p-6 sm:p-8 text-center">
-						<div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-400">
+						<div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl border border-stone-200 bg-white text-slate-400">
 							<MessageSquare className="h-5 w-5" />
 						</div>
-						<h3 className="mt-3 text-sm sm:text-base font-black tracking-[-0.02em] text-slate-900">
+						<h3 className="mt-3 text-xs sm:text-[13px] font-bold tracking-tight text-slate-900">
 							Select a conversation
 						</h3>
-						<p className="mt-1 max-w-xs text-[11px] sm:text-xs leading-relaxed text-slate-500">
+						<p className="mt-1 max-w-xs text-[11px] leading-relaxed text-slate-500">
 							Choose a thread from the list or start a new conversation with an agent, landlord, or client.
 						</p>
 					</div>

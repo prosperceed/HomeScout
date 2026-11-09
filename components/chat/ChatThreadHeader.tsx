@@ -6,6 +6,7 @@ import {
 	ExternalLink,
 	MapPin,
 	PanelRight,
+	PanelRightClose,
 	Phone,
 	ShieldCheck,
 } from "lucide-react";
@@ -101,7 +102,7 @@ export function ChatThreadHeader({
 
 					<div className="min-w-0">
 						<div className="flex items-center gap-1.5 sm:gap-2">
-							<h3 className="truncate max-w-[125px] xs:max-w-[170px] sm:max-w-[240px] md:max-w-none text-xs sm:text-sm font-black tracking-[-0.02em] text-slate-900">
+							<h3 className="truncate max-w-[125px] xs:max-w-[170px] sm:max-w-[240px] md:max-w-none text-xs sm:text-[13px] font-bold tracking-tight text-slate-900">
 								{partner.full_name}
 							</h3>
 							{partner.verification_status === "verified" && (
@@ -136,7 +137,7 @@ export function ChatThreadHeader({
 					{partner.phone && (
 						<a
 							href={`tel:${partner.phone}`}
-							className="inline-flex h-8 w-8 sm:h-9 sm:w-auto items-center justify-center sm:justify-start gap-1.5 rounded-xl border border-slate-200/90 bg-white sm:px-3 text-xs font-bold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
+							className="inline-flex h-8 sm:h-9 items-center justify-center gap-1.5 rounded-xl border border-slate-200/90 bg-white px-2.5 sm:px-3 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
 							title={`Call ${partner.phone}`}
 						>
 							<Phone className="h-3.5 w-3.5 text-slate-500" />
@@ -147,15 +148,21 @@ export function ChatThreadHeader({
 					<button
 						type="button"
 						onClick={onToggleContextPanel}
-						aria-label="Toggle details panel"
-						className={`inline-flex h-8 w-8 sm:h-9 sm:w-auto cursor-pointer items-center justify-center sm:justify-start gap-1.5 rounded-xl border sm:px-3 text-xs font-bold transition ${
+						aria-label={showContextPanel ? "Collapse details panel" : "Expand details panel"}
+						className={`inline-flex h-8 sm:h-9 cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-2.5 sm:px-3 text-xs font-semibold transition ${
 							showContextPanel
 								? "border-slate-900 bg-slate-900 text-white"
 								: "border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50"
 						}`}
 					>
-						<PanelRight className="h-3.5 w-3.5" />
-						<span className="hidden sm:inline">Details</span>
+						{showContextPanel ? (
+							<PanelRightClose className="h-3.5 w-3.5" />
+						) : (
+							<PanelRight className="h-3.5 w-3.5" />
+						)}
+						<span className="hidden sm:inline">
+							{showContextPanel ? "Close" : "Details"}
+						</span>
 					</button>
 				</div>
 			</div>
@@ -176,10 +183,10 @@ export function ChatThreadHeader({
 						</div>
 						<div className="min-w-0">
 							<div className="flex items-center gap-1.5 sm:gap-2">
-								<span className="truncate max-w-[130px] xs:max-w-[200px] sm:max-w-none text-[11px] sm:text-xs font-bold text-slate-900">
+								<span className="truncate max-w-[130px] xs:max-w-[200px] sm:max-w-none text-[11px] sm:text-xs font-semibold text-slate-900">
 									{property.title}
 								</span>
-								<span className="shrink-0 rounded bg-white px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black text-slate-800 border border-slate-200/80">
+								<span className="shrink-0 rounded bg-white px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-slate-800 border border-slate-200/80">
 									{formatChatPrice(property.price, property.price_period)}
 								</span>
 							</div>
@@ -194,7 +201,7 @@ export function ChatThreadHeader({
 
 					<Link
 						href={`/property/${property.id}`}
-						className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 sm:px-2.5 sm:py-1.5 text-[10px] sm:text-[11px] font-bold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
+						className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 sm:px-2.5 sm:py-1.5 text-[10px] sm:text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
 					>
 						<span className="hidden xs:inline">Listing</span>
 						<ExternalLink className="h-3 w-3" />

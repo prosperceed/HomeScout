@@ -100,24 +100,24 @@ export function ChatMessageStream({
 				</div>
 
 				{conversation.messages.length === 0 ? (
-					<div className="mx-auto mt-4 sm:mt-8 max-w-md rounded-2xl border border-stone-200/90 bg-white p-5 sm:p-6 text-center">
-						<p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+					<div className="mx-auto mt-4 sm:mt-6 max-w-md rounded-2xl border border-stone-200/90 bg-white p-4 sm:p-5 text-center">
+						<p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
 							Start the conversation
 						</p>
-						<h4 className="mt-1 text-sm sm:text-base font-black tracking-[-0.02em] text-slate-900">
+						<h4 className="mt-1 text-xs sm:text-[13px] font-bold tracking-tight text-slate-900">
 							Message {conversation.partner.full_name}
 						</h4>
-						<p className="mt-1 text-[11px] sm:text-xs leading-relaxed text-slate-500">
-							Select a quick prompt below or type your message to begin in real time.
+						<p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+							Select a prompt below or type your message to begin in real time.
 						</p>
 
-						<div className="mt-4 flex flex-col gap-2 text-left">
+						<div className="mt-3.5 flex flex-col gap-1.5 text-left">
 							{quickStarters.map((prompt) => (
 								<button
 									key={prompt}
 									type="button"
 									onClick={() => onSendQuickStarter(prompt)}
-									className="cursor-pointer rounded-xl border border-slate-200/90 bg-slate-50/70 p-2.5 sm:px-3.5 sm:py-2.5 text-[11px] sm:text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-white hover:text-slate-900"
+									className="cursor-pointer rounded-xl border border-slate-200/80 bg-slate-50/60 p-2.5 sm:px-3 sm:py-2 text-[11px] font-medium text-slate-700 transition hover:border-slate-300 hover:bg-white hover:text-slate-900"
 								>
 									&ldquo;{prompt}&rdquo;
 								</button>
@@ -129,7 +129,7 @@ export function ChatMessageStream({
 						<div key={group.dayLabel} className="space-y-3">
 							<div className="relative flex items-center justify-center py-1">
 								<div className="absolute inset-x-0 top-1/2 h-px bg-stone-200/80" />
-								<span className="relative rounded-full border border-stone-200/90 bg-[#f8f7f4] px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">
+								<span className="relative rounded-full border border-stone-200/90 bg-[#f8f7f4] px-2.5 py-0.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-slate-400">
 									{group.dayLabel}
 								</span>
 							</div>
@@ -153,7 +153,7 @@ export function ChatMessageStream({
 											} ${isLastInCluster ? "pb-1.5" : ""}`}
 										>
 											<div
-												className={`max-w-[88%] xs:max-w-[80%] sm:max-w-[70%] rounded-2xl px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-[13px] leading-relaxed break-words [overflow-wrap:anywhere] ${
+												className={`max-w-[88%] xs:max-w-[80%] sm:max-w-[68%] rounded-2xl px-3 py-2 sm:px-3.5 sm:py-2 text-[12.5px] sm:text-[13px] leading-relaxed break-words [overflow-wrap:anywhere] ${
 													isMine
 														? `${outgoingBubbleClass} ${
 																isLastInCluster ? "rounded-br-sm" : ""
@@ -166,7 +166,7 @@ export function ChatMessageStream({
 												<p className="whitespace-pre-wrap">{msg.body}</p>
 
 												<div
-													className={`mt-1 flex items-center gap-1 text-[9px] sm:text-[10px] font-medium ${
+													className={`mt-1 flex items-center gap-1 text-[9px] sm:text-[9.5px] font-medium ${
 														isMine ? "text-white/75 justify-end" : "text-slate-400 justify-start"
 													}`}
 												>
