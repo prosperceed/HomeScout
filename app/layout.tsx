@@ -1,15 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
-
-const plusJakarta = Plus_Jakarta_Sans({
-	variable: "--font-sans",
-	subsets: ["latin"],
-	weight: ["300", "400", "500", "600", "700", "800"],
-	display: "swap",
-});
 
 export const metadata: Metadata = {
 	title: {
@@ -53,7 +45,19 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" className={plusJakarta.variable} suppressHydrationWarning>
+		<html lang="en" suppressHydrationWarning>
+			<head>
+				<link rel="preconnect" href="https://fonts.googleapis.com" />
+				<link
+					rel="preconnect"
+					href="https://fonts.gstatic.com"
+					crossOrigin="anonymous"
+				/>
+				<link
+					rel="stylesheet"
+					href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+				/>
+			</head>
 			<body>
 				{children}
 				<Toaster />

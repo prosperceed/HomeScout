@@ -51,8 +51,8 @@ export function ChatContextPanel({
 	const { partner, property } = conversation;
 
 	return (
-		<aside className="flex h-full w-full flex-col border-l border-slate-200/80 bg-white lg:w-80">
-			<div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-5">
+		<aside className="flex h-full w-full flex-col bg-white">
+			<div className="flex h-15 sm:h-16 shrink-0 items-center justify-between border-b border-slate-100 px-4 sm:px-5">
 				<h3 className="text-xs font-black uppercase tracking-wider text-slate-500">
 					Conversation Context
 				</h3>
@@ -66,23 +66,23 @@ export function ChatContextPanel({
 				</button>
 			</div>
 
-			<div className="flex-1 overflow-y-auto p-5 space-y-6">
+			<div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
 				<div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4 text-center">
-					<div className="relative mx-auto h-14 w-14">
+					<div className="relative mx-auto h-12 w-12 sm:h-14 sm:w-14">
 						{partner.avatar_url ? (
 							// eslint-disable-next-line @next/next/no-img-element
 							<img
 								src={partner.avatar_url}
 								alt={partner.full_name}
-								className="h-14 w-14 rounded-2xl border border-slate-200 object-cover"
+								className="h-full w-full rounded-2xl border border-slate-200 object-cover"
 							/>
 						) : (
-							<div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-base font-black text-slate-800">
+							<div className="flex h-full w-full items-center justify-center rounded-2xl border border-slate-200 bg-white text-sm sm:text-base font-black text-slate-800">
 								{getInitials(partner.full_name)}
 							</div>
 						)}
 						<span
-							className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ${
+							className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 sm:h-3.5 sm:w-3.5 rounded-full border-2 border-white ${
 								isOnline ? "bg-emerald-500" : "bg-slate-300"
 							}`}
 						/>
@@ -102,11 +102,11 @@ export function ChatContextPanel({
 						</div>
 					)}
 
-					<div className="mt-4 space-y-2 border-t border-slate-200/70 pt-3 text-left text-xs">
+					<div className="mt-4 space-y-1.5 border-t border-slate-200/70 pt-3 text-left text-xs">
 						{partner.email && (
 							<a
 								href={`mailto:${partner.email}`}
-								className="flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
+								className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
 							>
 								<Mail className="h-3.5 w-3.5 shrink-0 text-slate-400" />
 								<span className="truncate font-medium">{partner.email}</span>
@@ -115,7 +115,7 @@ export function ChatContextPanel({
 						{partner.phone && (
 							<a
 								href={`tel:${partner.phone}`}
-								className="flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
+								className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
 							>
 								<Phone className="h-3.5 w-3.5 shrink-0 text-slate-400" />
 								<span className="truncate font-medium">{partner.phone}</span>
@@ -125,8 +125,8 @@ export function ChatContextPanel({
 				</div>
 
 				{property ? (
-					<div className="space-y-3">
-						<p className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+					<div className="space-y-2.5">
+						<p className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400">
 							Referenced Property
 						</p>
 						<div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white">
@@ -145,7 +145,7 @@ export function ChatContextPanel({
 								</span>
 							</div>
 
-							<div className="p-4">
+							<div className="p-3.5 sm:p-4">
 								<p className="text-sm font-black text-slate-900">
 									{formatChatPrice(property.price, property.price_period)}
 								</p>
@@ -161,7 +161,7 @@ export function ChatContextPanel({
 
 								{(property.bedrooms !== undefined ||
 									property.bathrooms !== undefined) && (
-									<div className="mt-3 flex items-center gap-3 border-t border-slate-100 pt-2.5 text-[11px] font-semibold text-slate-600">
+									<div className="mt-2.5 flex items-center gap-3 border-t border-slate-100 pt-2 text-[11px] font-semibold text-slate-600">
 										<span className="inline-flex items-center gap-1">
 											<Bed className="h-3.5 w-3.5 text-slate-400" />
 											{property.bedrooms ?? 0} bed
@@ -175,7 +175,7 @@ export function ChatContextPanel({
 
 								<Link
 									href={`/property/${property.id}`}
-									className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+									className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
 								>
 									<span>Open Full Listing</span>
 									<ExternalLink className="h-3.5 w-3.5" />
@@ -187,24 +187,23 @@ export function ChatContextPanel({
 					<div className="rounded-2xl border border-dashed border-slate-200 p-4 text-center">
 						<Building2 className="mx-auto h-5 w-5 text-slate-300" />
 						<p className="mt-2 text-xs font-bold text-slate-700">
-							General Conversation
+							Direct Conversation
 						</p>
 						<p className="mt-0.5 text-[11px] text-slate-400">
-							Not tied to a specific property listing yet.
+							Not attached to a specific property listing.
 						</p>
 					</div>
 				)}
 
-				<div className="rounded-2xl border border-stone-200/80 bg-stone-50/70 p-3.5">
+				<div className="rounded-2xl border border-stone-200/80 bg-stone-50/70 p-3 sm:p-3.5">
 					<p className="text-[11px] font-bold text-slate-700">
-						HomeScout Protection
+						HomeScout Security
 					</p>
 					<p className="mt-1 text-[11px] leading-relaxed text-slate-500">
-						Always inspect properties in person before authorizing any rent or deposit transfer.
+						Always verify property identity in person before making any financial commitment.
 					</p>
 				</div>
 			</div>
 		</aside>
 	);
 }
-

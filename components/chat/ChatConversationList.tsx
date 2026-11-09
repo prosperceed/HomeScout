@@ -142,22 +142,21 @@ export function ChatConversationList({
 
 	return (
 		<aside className="relative flex h-full w-full flex-col border-r border-slate-200/80 bg-white">
-			<div className="border-b border-slate-100 px-4 pb-3.5 pt-4">
+			<div className="border-b border-slate-100 px-3.5 sm:px-4 pb-3 pt-3.5">
 				<div className="flex items-center justify-between gap-2">
 					<div>
-						<h2 className="text-base font-black tracking-[-0.03em] text-slate-900">
+						<h2 className="text-sm sm:text-base font-black tracking-[-0.03em] text-slate-900">
 							Messages
 						</h2>
-						<p className="text-[11px] font-medium text-slate-400">
-							{conversations.length} active{" "}
-							{conversations.length === 1 ? "conversation" : "conversations"}
+						<p className="text-[10px] sm:text-[11px] font-medium text-slate-400">
+							{conversations.length} {conversations.length === 1 ? "conversation" : "conversations"}
 						</p>
 					</div>
 
 					<button
 						type="button"
 						onClick={() => setDirectoryOpen(true)}
-						className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition ${accentButtonClass}`}
+						className={`inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-2.5 py-1.5 sm:px-3 text-[11px] sm:text-xs font-bold transition ${accentButtonClass}`}
 						title="Start a new conversation"
 					>
 						<MessageSquarePlus className="h-3.5 w-3.5" />
@@ -165,14 +164,14 @@ export function ChatConversationList({
 					</button>
 				</div>
 
-				<div className="relative mt-3">
+				<div className="relative mt-2.5">
 					<Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
 					<input
 						type="text"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Search name, role, or property..."
-						className="h-9 w-full rounded-xl border border-slate-200/90 bg-slate-50/70 pl-8 pr-8 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:outline-none"
+						placeholder="Search messages..."
+						className="h-8.5 sm:h-9 w-full rounded-xl border border-slate-200/90 bg-slate-50/70 pl-8 pr-8 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:outline-none"
 					/>
 					{search && (
 						<button
@@ -185,7 +184,7 @@ export function ChatConversationList({
 					)}
 				</div>
 
-				<div className="mt-2.5 flex items-center gap-1 overflow-x-auto pb-0.5 no-scrollbar">
+				<div className="mt-2 flex items-center gap-1 overflow-x-auto pb-0.5 no-scrollbar">
 					{availableTabs.map((tab) => {
 						const active = filterTab === tab.id;
 						return (
@@ -193,7 +192,7 @@ export function ChatConversationList({
 								key={tab.id}
 								type="button"
 								onClick={() => setFilterTab(tab.id)}
-								className={`cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-bold transition ${
+								className={`cursor-pointer rounded-lg px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-bold shrink-0 transition ${
 									active
 										? "bg-slate-900 text-white"
 										: "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
@@ -208,25 +207,25 @@ export function ChatConversationList({
 
 			<div className="flex-1 overflow-y-auto divide-y divide-slate-100/80">
 				{filteredConversations.length === 0 ? (
-					<div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-						<div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-50 text-slate-400">
+					<div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+						<div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-50 text-slate-400">
 							<UserPlus className="h-5 w-5" />
 						</div>
 						<p className="mt-3 text-xs font-bold text-slate-800">
 							{conversations.length === 0
 								? "No conversations yet"
-								: "No conversations match filter"}
+								: "No results match filter"}
 						</p>
-						<p className="mt-1 max-w-[210px] text-[11px] leading-relaxed text-slate-400">
+						<p className="mt-1 max-w-[200px] text-[11px] leading-relaxed text-slate-400">
 							{conversations.length === 0
-								? "Connect directly with verified agents, landlords, or prospective tenants."
+								? "Connect with agents, landlords, or tenants."
 								: "Try clearing your search or switching tabs."}
 						</p>
 						{conversations.length === 0 && (
 							<button
 								type="button"
 								onClick={() => setDirectoryOpen(true)}
-								className={`mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${accentButtonClass}`}
+								className={`mt-3.5 inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition ${accentButtonClass}`}
 							>
 								<MessageSquarePlus className="h-3.5 w-3.5" />
 								Start Conversation
@@ -248,27 +247,27 @@ export function ChatConversationList({
 								key={conv.key}
 								type="button"
 								onClick={() => onSelectThread(conv.key)}
-								className={`group flex w-full cursor-pointer items-start gap-3 px-4 py-3.5 text-left transition ${
+								className={`group flex w-full cursor-pointer items-start gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-3 text-left transition ${
 									isSelected
 										? activeRowIndicatorClass
 										: "border-l-[3px] border-l-transparent hover:bg-slate-50/70"
 								}`}
 							>
-								<div className="relative mt-0.5 h-10 w-10 shrink-0">
+								<div className="relative mt-0.5 h-9 w-9 sm:h-10 sm:w-10 shrink-0">
 									{conv.partner.avatar_url ? (
 										// eslint-disable-next-line @next/next/no-img-element
 										<img
 											src={conv.partner.avatar_url}
 											alt={conv.partner.full_name}
-											className="h-10 w-10 rounded-xl object-cover border border-slate-200/80"
+											className="h-full w-full rounded-xl object-cover border border-slate-200/80"
 										/>
 									) : (
-										<div className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-slate-100 text-xs font-black text-slate-700">
+										<div className="flex h-full w-full items-center justify-center rounded-xl border border-slate-200/80 bg-slate-100 text-[11px] sm:text-xs font-black text-slate-700">
 											{getInitials(conv.partner.full_name)}
 										</div>
 									)}
 									<span
-										className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white ${
+										className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full border-2 border-white ${
 											isOnline ? "bg-emerald-500" : "bg-slate-300"
 										}`}
 										title={isOnline ? "Online now" : "Offline"}
@@ -291,7 +290,7 @@ export function ChatConversationList({
 												<ShieldCheck className="h-3.5 w-3.5 shrink-0 text-sage-600" />
 											)}
 											<span
-												className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${roleBadge.classes}`}
+												className={`hidden xs:inline-flex shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${roleBadge.classes}`}
 											>
 												{roleBadge.label}
 											</span>
@@ -305,7 +304,7 @@ export function ChatConversationList({
 									</div>
 
 									{conv.property && (
-										<div className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-slate-500">
+										<div className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold text-slate-500">
 											<Building2 className="h-3 w-3 shrink-0 text-slate-400" />
 											<span className="truncate">{conv.property.title}</span>
 										</div>
@@ -314,13 +313,13 @@ export function ChatConversationList({
 									<div className="mt-1 flex items-center justify-between gap-2">
 										<div className="min-w-0 flex-1">
 											{isTyping ? (
-												<span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+												<span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-emerald-600">
 													<span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-													Typing a message...
+													Typing...
 												</span>
 											) : lastMsg ? (
 												<p
-													className={` flex items-center gap-1 truncate text-xs ${
+													className={`flex items-center gap-1 truncate text-[11px] sm:text-xs ${
 														conv.unreadCount > 0
 															? "font-bold text-slate-900"
 															: "font-normal text-slate-500"
@@ -329,16 +328,16 @@ export function ChatConversationList({
 													{isMine && (
 														<span className="shrink-0 text-slate-400">
 															{lastMsg.is_read ? (
-																<CheckCheck className="h-3.5 w-3.5 text-emerald-600" />
+																<CheckCheck className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-600" />
 															) : (
-																<Check className="h-3.5 w-3.5" />
+																<Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
 															)}
 														</span>
 													)}
 													<span className="truncate">{lastMsg.body}</span>
 												</p>
 											) : (
-												<p className="truncate text-[11px] italic text-slate-400">
+												<p className="truncate text-[10px] sm:text-[11px] italic text-slate-400">
 													New conversation ready
 												</p>
 											)}
@@ -346,7 +345,7 @@ export function ChatConversationList({
 
 										{conv.unreadCount > 0 && (
 											<span
-												className={`inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 text-[10px] font-black ${unreadBadgeClass}`}
+												className={`inline-flex h-4.5 min-w-4.5 sm:h-5 sm:min-w-5 shrink-0 items-center justify-center rounded-full px-1 text-[9px] sm:text-[10px] font-black ${unreadBadgeClass}`}
 											>
 												{conv.unreadCount}
 											</span>
@@ -360,15 +359,15 @@ export function ChatConversationList({
 			</div>
 
 			{directoryOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-[1px]">
-					<div className="flex max-h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
-						<div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-3 sm:p-4 backdrop-blur-[2px]">
+					<div className="flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
+						<div className="flex items-center justify-between border-b border-slate-100 px-4 py-3.5 sm:px-5 sm:py-4">
 							<div>
-								<h3 className="text-sm font-black tracking-[-0.02em] text-slate-900">
+								<h3 className="text-xs sm:text-sm font-black tracking-[-0.02em] text-slate-900">
 									Start a Conversation
 								</h3>
-								<p className="text-[11px] text-slate-400">
-									Message an agent, landlord, or client directly
+								<p className="text-[10px] sm:text-[11px] text-slate-400">
+									Message verified members directly
 								</p>
 							</div>
 							<button
@@ -380,14 +379,14 @@ export function ChatConversationList({
 							</button>
 						</div>
 
-						<div className="border-b border-slate-100 p-3">
+						<div className="border-b border-slate-100 p-2.5 sm:p-3">
 							<div className="relative">
 								<Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
 								<input
 									type="text"
 									value={directoryQuery}
 									onChange={(e) => setDirectoryQuery(e.target.value)}
-									placeholder="Search directory by name or role..."
+									placeholder="Search by name or role..."
 									className="h-9 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:outline-none"
 									autoFocus
 								/>
@@ -396,7 +395,7 @@ export function ChatConversationList({
 
 						<div className="flex-1 overflow-y-auto divide-y divide-slate-100 p-2">
 							{filteredDirectory.length === 0 ? (
-								<div className="py-10 text-center text-xs text-slate-400">
+								<div className="py-8 text-center text-xs text-slate-400">
 									No contacts found matching your search.
 								</div>
 							) : (
@@ -413,28 +412,28 @@ export function ChatConversationList({
 												onStartConversation(person);
 												setDirectoryOpen(false);
 											}}
-											className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-slate-50"
+											className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl px-2.5 py-2 sm:px-3 sm:py-2.5 text-left transition hover:bg-slate-50"
 										>
-											<div className="flex min-w-0 items-center gap-3">
-												<div className="relative h-9 w-9 shrink-0">
-													<div className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-xs font-black text-slate-700">
+											<div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+												<div className="relative h-8 w-8 sm:h-9 sm:w-9 shrink-0">
+													<div className="flex h-full w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-[11px] sm:text-xs font-black text-slate-700">
 														{getInitials(person.full_name)}
 													</div>
 													{isOnline && (
-														<span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
+														<span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full border-2 border-white bg-emerald-500" />
 													)}
 												</div>
 												<div className="min-w-0">
 													<p className="truncate text-xs font-bold text-slate-900">
 														{person.full_name}
 													</p>
-													<p className="truncate text-[11px] text-slate-400">
+													<p className="truncate text-[10px] sm:text-[11px] text-slate-400">
 														{person.email || "Verified member"}
 													</p>
 												</div>
 											</div>
 											<span
-												className={`shrink-0 rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${badge.classes}`}
+												className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase ${badge.classes}`}
 											>
 												{badge.label}
 											</span>
@@ -449,4 +448,3 @@ export function ChatConversationList({
 		</aside>
 	);
 }
-
