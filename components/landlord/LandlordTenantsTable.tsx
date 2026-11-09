@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Users, Mail, Phone, MapPin, Building2 } from "lucide-react";
+import { Search, Users, Mail, Phone, MapPin, MessageSquare } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
 
 type BookingStatus = "pending" | "approved" | "viewing" | "rejected" | "cancelled" | "completed";
@@ -174,6 +174,13 @@ export function LandlordTenantsTable({ tenants }: { tenants: BookingWithProperty
 
 											<td className="px-4 py-3.5">
 												<div className="flex items-center gap-2">
+													<Link
+														href={`/landlord/messages?recipient=${item.client_id}&property=${item.property_id}`}
+														className="flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 text-slate-500 hover:border-teal-400 hover:text-teal-600"
+														title="Message tenant"
+													>
+														<MessageSquare className="h-3.5 w-3.5" />
+													</Link>
 													{item.client_profile?.phone && (
 														<a
 															href={`tel:${item.client_profile.phone}`}

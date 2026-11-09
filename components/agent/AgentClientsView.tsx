@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Users, Mail, Phone, MapPin, Building2, ExternalLink } from "lucide-react";
+import { Search, Users, Mail, Phone, MessageSquare } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
 
 const statusConfig: Record<string, { label: string; classes: string }> = {
@@ -216,6 +216,13 @@ export function AgentClientsView({ bookings }: { bookings: BookingWithProperty[]
 
 											<td className="px-4 py-3.5">
 												<div className="flex items-center gap-2">
+													<Link
+														href={`/agent/messages?recipient=${c.id}`}
+														className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:border-blue-400 hover:text-blue-600"
+														title="Message client"
+													>
+														<MessageSquare className="h-3.5 w-3.5" />
+													</Link>
 													{c.phone && c.phone !== "No phone" && (
 														<a
 															href={`tel:${c.phone}`}

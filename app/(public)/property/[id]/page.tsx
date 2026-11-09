@@ -69,6 +69,7 @@ function PropertyDetailPageInner() {
 	const [property, setProperty] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [checkingAuth, setCheckingAuth] = useState(true);
+	const [userRole, setUserRole] = useState<string>("client");
 	const [imgIdx, setImgIdx] = useState(0);
 	const [saved, setSaved] = useState(false);
 
@@ -82,6 +83,10 @@ function PropertyDetailPageInner() {
 			if (!userData.user) {
 				router.replace(`/login?next=/property/${propertyId}`);
 				return;
+			}
+			const metaRole = userData.user.user_metadata?.role;
+			if (metaRole && ["client", "agent", "landlord"].includes(metaRole)) {
+				setUserRole(metaRole);
 			}
 			setCheckingAuth(false);
 
@@ -110,7 +115,7 @@ function PropertyDetailPageInner() {
 			try {
 				const { data, error } = await supabase
 					.from("property_listings")
-					.select("*")
+					.select("*, owner:profiles!property_listings_owner_id_fkey(id, full_name, phone, role)")
 					.eq("id", propertyId)
 					.single();
 
@@ -474,11 +479,35 @@ function PropertyDetailPageInner() {
 							</p>
 
 							<div className="mt-5 space-y-3">
-								<button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600">
-									<Phone className="h-4 w-4" />
-									Call agent
-								</button>
-								<button className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-sage-500 py-3.5 text-sm font-bold text-sage-600 transition hover:bg-sage-50">
+								{property.owner?.phone ? (
+									<a
+										href={`tel:${property.owner.phone}`}
+										className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600"
+									>
+										<Phone className="h-4 w-4" />
+										Call {property.owner?.role === "landlord" ? "landlord" : "agent"}
+									</a>
+								) : (
+									<button
+										type="button"
+										onClick={() => {
+											const targetId = property.agent_id || property.owner_id;
+											router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
+										}}
+										className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600"
+									>
+										<Phone className="h-4 w-4" />
+										Contact {property.owner?.role === "landlord" ? "landlord" : "agent"}
+									</button>
+								)}
+								<button
+									type="button"
+									onClick={() => {
+										const targetId = property.agent_id || property.owner_id;
+										router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
+									}}
+									className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-sage-500 py-3.5 text-sm font-bold text-sage-600 transition hover:bg-sage-50"
+								>
 									<MessageCircle className="h-4 w-4" />
 									Send message
 								</button>
@@ -490,15 +519,22 @@ function PropertyDetailPageInner() {
 								Listed by
 							</p>
 							<div className="flex items-center gap-3">
-								<div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-sm font-black text-brand-700">
-									{(property.owner_id ?? "A").slice(0, 2).toUpperCase()}
+								<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-xs font-black text-brand-700">
+									{(property.owner?.full_name ?? "HS")
+										.split(" ")
+										.map((n: string) => n[0])
+										.slice(0, 2)
+										.join("")
+										.toUpperCase()}
 								</div>
 								<div>
 									<p className="text-sm font-bold text-slate-900">
-										HomeScout Agent
+										{property.owner?.full_name || "HomeScout Partner"}
 									</p>
 									<p className="text-xs text-slate-400">
-										Verified property partner
+										{property.owner?.role === "landlord"
+											? "Verified property owner"
+											: "Verified property agent"}
 									</p>
 								</div>
 							</div>

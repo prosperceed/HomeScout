@@ -153,16 +153,63 @@ export type Database = {
       messages: {
         Row: {
           id: string;
+          conversation_id?: string | null;
           booking_id: string | null;
           property_id: string | null;
           sender_id: string;
           recipient_id: string;
           body: string;
           is_read: boolean;
+          read_at?: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["messages"]["Row"], "id" | "is_read" | "created_at">;
-        Update: Partial<Pick<Database["public"]["Tables"]["messages"]["Row"], "is_read">>;
+        Insert: {
+          id?: string;
+          conversation_id?: string | null;
+          booking_id?: string | null;
+          property_id?: string | null;
+          sender_id: string;
+          recipient_id: string;
+          body: string;
+          is_read?: boolean;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Pick<Database["public"]["Tables"]["messages"]["Row"], "is_read" | "read_at">>;
+      };
+
+      conversations: {
+        Row: {
+          id: string;
+          participant_one_id: string;
+          participant_two_id: string;
+          property_id: string | null;
+          booking_id: string | null;
+          last_message_id: string | null;
+          last_message_body: string | null;
+          last_message_sender_id: string | null;
+          last_message_at: string;
+          participant_one_unread: number;
+          participant_two_unread: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["conversations"]["Row"], "id" | "created_at" | "updated_at">;
+        Update: Partial<Database["public"]["Tables"]["conversations"]["Insert"]>;
+      };
+
+      message_attachments: {
+        Row: {
+          id: string;
+          message_id: string;
+          file_url: string;
+          file_name: string;
+          file_type: string;
+          file_size: number | null;
+          created_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["message_attachments"]["Row"], "id" | "created_at">;
+        Update: Partial<Database["public"]["Tables"]["message_attachments"]["Insert"]>;
       };
 
       notifications: {
