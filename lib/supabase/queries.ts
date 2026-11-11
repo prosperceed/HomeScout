@@ -14,8 +14,8 @@ export type PropertyWithOwner = PropertyRow & {
 };
 
 export type BookingWithProperty = BookingRow & {
-  property: Pick<PropertyRow, "id" | "title" | "formatted_address" | "state" | "images" | "type" | "price" | "price_period"> | null;
-  agent_profile: Pick<ProfileRow, "id" | "full_name" | "avatar_url"> | null;
+  property: Pick<PropertyRow, "id" | "title" | "formatted_address" | "state" | "images" | "type" | "price" | "price_period" | "status"> | null;
+  agent_profile: Pick<ProfileRow, "id" | "full_name" | "avatar_url" | "phone"> | null;
   client_profile: Pick<ProfileRow, "id" | "full_name" | "avatar_url" | "phone" | "email"> | null;
 };
 
@@ -153,8 +153,8 @@ export async function getAgentBookings(agentId: string, limit?: number): Promise
     .from("bookings")
     .select(`
       *,
-      property:property_listings ( id, title, formatted_address, state, images, type, price, price_period ),
-      agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url ),
+      property:property_listings ( id, title, formatted_address, state, images, type, price, price_period, status ),
+      agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url, phone ),
       client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url, phone, email )
     `)
     .eq("agent_id", agentId)
@@ -173,9 +173,9 @@ export async function getClientBookings(clientId: string): Promise<BookingWithPr
     .from("bookings")
     .select(`
       *,
-      property:property_listings ( id, title, formatted_address, state, images, type, price, price_period ),
-      agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url ),
-      client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url )
+      property:property_listings ( id, title, formatted_address, state, images, type, price, price_period, status ),
+      agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url, phone ),
+      client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url, phone, email )
     `)
     .eq("client_id", clientId)
     .order("created_at", { ascending: false })
@@ -183,6 +183,23 @@ export async function getClientBookings(clientId: string): Promise<BookingWithPr
 
   if (error) { console.error("getClientBookings:", error.message); return []; }
   return (data ?? []) as unknown as BookingWithProperty[];
+}
+
+export async function getBookingById(bookingId: string): Promise<BookingWithProperty | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      property:property_listings ( id, title, formatted_address, state, images, type, price, price_period, status ),
+      agent_profile:profiles!bookings_agent_id_fkey ( id, full_name, avatar_url, phone ),
+      client_profile:profiles!bookings_client_id_fkey ( id, full_name, avatar_url, phone, email )
+    `)
+    .eq("id", bookingId)
+    .maybeSingle();
+
+  if (error) { console.error("getBookingById:", error.message); return null; }
+  return (data as unknown as BookingWithProperty) ?? null;
 }
 
 export async function getClientStats(clientId: string) {

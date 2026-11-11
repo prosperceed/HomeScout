@@ -180,6 +180,13 @@ export function ChatContextPanel({
 									<span>Open Full Listing</span>
 									<ExternalLink className="h-3.5 w-3.5" />
 								</Link>
+
+								<Link
+									href="/client/applications"
+									className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand-700 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-600 shadow-2xs"
+								>
+									<span>Track Application / Book</span>
+								</Link>
 							</div>
 						</div>
 					</div>

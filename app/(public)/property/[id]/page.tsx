@@ -23,6 +23,7 @@ import {
 import { LISTING_TAGS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
+import { referencePropertyInquiryAction } from "@/app/actions/booking-actions";
 
 const periodLabel: Record<string, string> = {
 	per_year: "/ year",
@@ -492,6 +493,9 @@ function PropertyDetailPageInner() {
 										type="button"
 										onClick={() => {
 											const targetId = property.agent_id || property.owner_id;
+											if (targetId) {
+												referencePropertyInquiryAction({ propertyId: property.id, partnerId: targetId }).catch(() => {});
+											}
 											router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
 										}}
 										className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600"
@@ -504,6 +508,9 @@ function PropertyDetailPageInner() {
 									type="button"
 									onClick={() => {
 										const targetId = property.agent_id || property.owner_id;
+										if (targetId) {
+											referencePropertyInquiryAction({ propertyId: property.id, partnerId: targetId }).catch(() => {});
+										}
 										router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
 									}}
 									className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-sage-500 py-3.5 text-sm font-bold text-sage-600 transition hover:bg-sage-50"

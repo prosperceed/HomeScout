@@ -162,6 +162,16 @@ export function LandlordTenantsTable({ tenants }: { tenants: BookingWithProperty
 												<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${status.classes}`}>
 													{status.label}
 												</span>
+												{item.physical_verified && (
+													<span className="ml-1 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[9.5px] font-bold text-emerald-700 ring-1 ring-emerald-200">
+														Verified
+													</span>
+												)}
+												{item.viewing_date && (
+													<p className="mt-0.5 text-[10px] text-teal-700 font-medium">
+														Viewing: {new Date(item.viewing_date).toLocaleDateString("en-NG", { month: "short", day: "numeric" })}
+													</p>
+												)}
 											</td>
 
 											<td className="px-4 py-3.5 text-slate-400">

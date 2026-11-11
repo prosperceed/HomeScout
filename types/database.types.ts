@@ -124,6 +124,16 @@ export type Database = {
           client_id: string;
           agent_id: string | null;
           status: Database["public"]["Enums"]["booking_status"];
+          stage?: string;
+          physical_verified?: boolean;
+          physical_verified_at?: string | null;
+          verification_checklist?: Record<string, boolean> | null;
+          payment_status?: string;
+          payment_reference?: string | null;
+          payment_amount?: number | null;
+          paid_at?: string | null;
+          payment_method?: string | null;
+          inspection_notes?: string | null;
           message: string | null;
           viewing_date: string | null;
           move_in_date: string | null;

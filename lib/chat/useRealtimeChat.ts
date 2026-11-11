@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { referencePropertyInquiryAction } from "@/app/actions/booking-actions";
 import {
 	buildThreadKey,
 	resolvePropertyThumbnail,
@@ -215,6 +216,35 @@ export function useRealtimeChat(options: UseRealtimeChatOptions = {}) {
 							[key]: { partner, property: prop },
 						}));
 						setActiveThreadKey(key);
+
+						if (prop?.id) {
+							// Update property to under_review and ensure booking inquiry is recorded
+							(async () => {
+								try {
+									const { data: rpcBookingId } = await supabase.rpc("reference_property_inquiry", {
+										p_property_id: prop.id,
+										p_partner_id: partner.id,
+									});
+									if (!rpcBookingId) {
+										await supabase
+											.from("property_listings")
+											.update({ status: "under_review" })
+											.eq("id", prop.id)
+											.eq("status", "available");
+									}
+								} catch {
+									try {
+										await supabase
+											.from("property_listings")
+											.update({ status: "under_review" })
+											.eq("id", prop.id)
+											.eq("status", "available");
+									} catch {
+										// Silently handled
+									}
+								}
+							})();
+						}
 					}
 				}
 			} catch (err) {
@@ -576,6 +606,15 @@ export function useRealtimeChat(options: UseRealtimeChatOptions = {}) {
 					),
 				);
 				return false;
+			}
+
+			if (activeConversation.property?.id) {
+				supabase
+					.from("property_listings")
+					.update({ status: "under_review" })
+					.eq("id", activeConversation.property.id)
+					.eq("status", "available")
+					.then(() => {});
 			}
 
 			setMessages((prev) =>

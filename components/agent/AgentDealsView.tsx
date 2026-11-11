@@ -157,6 +157,16 @@ export function AgentDealsView({ bookings }: { bookings: BookingWithProperty[] }
 												<span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${stage.classes}`}>
 													{stage.label}
 												</span>
+												{d.physical_verified && (
+													<span className="ml-1 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[9.5px] font-bold text-emerald-700 ring-1 ring-emerald-200">
+														Verified
+													</span>
+												)}
+												{d.viewing_date && (
+													<p className="mt-0.5 text-[10px] text-teal-700 font-medium">
+														Viewing: {new Date(d.viewing_date).toLocaleDateString("en-NG", { month: "short", day: "numeric" })}
+													</p>
+												)}
 											</td>
 											<td className="px-4 py-3.5 text-slate-400">
 												{new Date(d.created_at).toLocaleDateString("en-NG", {
@@ -166,16 +176,23 @@ export function AgentDealsView({ bookings }: { bookings: BookingWithProperty[] }
 												})}
 											</td>
 											<td className="px-4 py-3.5 text-right">
-												{d.property?.id && (
+												<div className="flex items-center justify-end gap-1.5">
 													<Link
-														href={`/properties/${d.property.id}`}
-														target="_blank"
-														className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+														href={`/agent/messages?recipient=${d.client_id}&property=${d.property_id}`}
+														className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50"
 													>
-														Property
-														<ExternalLink className="h-3 w-3" />
+														Chat
 													</Link>
-												)}
+													{d.property?.id && (
+														<Link
+															href={`/property/${d.property.id}`}
+															className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+														>
+															Listing
+															<ExternalLink className="h-3 w-3" />
+														</Link>
+													)}
+												</div>
 											</td>
 										</tr>
 									);

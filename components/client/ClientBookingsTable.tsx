@@ -140,12 +140,20 @@ export function ClientBookingsTable({ bookings }: Props) {
                       <p className="truncate text-xs font-semibold text-slate-600">{agent?.full_name ?? "Owner"}</p>
                       <p className="text-[11px] text-slate-400">{formatDate(booking.created_at)}</p>
                     </div>
-                    <p className="shrink-0 text-right">
-                      <span className="text-base font-black tracking-tight text-slate-900">
-                        {formatPrice(booking.price_at_booking)}
-                      </span>
-                      <span className="text-xs text-slate-400">/{periodShort(booking.price_period)}</span>
-                    </p>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <p className="text-right">
+                        <span className="text-base font-black tracking-tight text-slate-900">
+                          {formatPrice(booking.price_at_booking)}
+                        </span>
+                        <span className="text-xs text-slate-400">/{periodShort(booking.price_period)}</span>
+                      </p>
+                      <Link
+                        href={`/client/applications/${booking.id}`}
+                        className="rounded-lg bg-brand-700 px-2.5 py-1 text-xs font-bold text-white hover:bg-brand-600"
+                      >
+                        {booking.status === "pending" ? "Book this" : "View"}
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -163,7 +171,8 @@ export function ClientBookingsTable({ bookings }: Props) {
               <th className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Agent / Landlord</th>
               <th className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Status</th>
               <th className="px-4 py-3.5 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Price</th>
-              <th className="px-6 py-3.5 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Date</th>
+              <th className="px-4 py-3.5 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Date</th>
+              <th className="px-6 py-3.5 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-100">
@@ -210,8 +219,17 @@ export function ClientBookingsTable({ bookings }: Props) {
                     </span>
                     <span className="text-xs text-slate-400">/{periodShort(booking.price_period)}</span>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right">
+                  <td className="whitespace-nowrap px-4 py-4 text-right">
                     <span className="text-xs font-medium text-slate-400">{formatDate(booking.created_at)}</span>
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-right">
+                    <Link
+                      href={`/client/applications/${booking.id}`}
+                      className="inline-flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-brand-600 shadow-2xs"
+                    >
+                      <span>{booking.status === "pending" ? "Book this" : "View Details"}</span>
+                      <ArrowUpRight className="h-3 w-3" />
+                    </Link>
                   </td>
                 </tr>
               );
