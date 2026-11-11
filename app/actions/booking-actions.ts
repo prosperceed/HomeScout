@@ -55,7 +55,10 @@ export async function referencePropertyInquiryAction({
 			.single();
 
 		if (propErr || !prop) {
-			console.error("referencePropertyInquiryAction: property not found", propErr);
+			console.error(
+				"referencePropertyInquiryAction: property not found",
+				propErr,
+			);
 			return { success: false, error: "Property listing not found" };
 		}
 
@@ -67,7 +70,10 @@ export async function referencePropertyInquiryAction({
 				.eq("id", propertyId);
 
 			if (updatePropErr) {
-				console.error("referencePropertyInquiryAction: failed to update status to under_review", updatePropErr);
+				console.error(
+					"referencePropertyInquiryAction: failed to update status to under_review",
+					updatePropErr,
+				);
 			}
 		}
 
@@ -100,7 +106,11 @@ export async function referencePropertyInquiryAction({
 			revalidatePath("/agent/deals");
 			revalidatePath("/landlord/properties");
 			revalidatePath("/landlord/tenants");
-			return { success: true, bookingId: existingBooking.id, status: existingBooking.status };
+			return {
+				success: true,
+				bookingId: existingBooking.id,
+				status: existingBooking.status,
+			};
 		}
 
 		// 5. Create new booking record with status pending and stage inquiry
@@ -119,7 +129,10 @@ export async function referencePropertyInquiryAction({
 			.single();
 
 		if (insertErr) {
-			console.error("referencePropertyInquiryAction: failed to insert booking", insertErr);
+			console.error(
+				"referencePropertyInquiryAction: failed to insert booking",
+				insertErr,
+			);
 			return { success: false, error: insertErr.message };
 		}
 
@@ -206,7 +219,8 @@ export async function confirmPhysicalVerificationAction({
 		if (!allConfirmed) {
 			return {
 				success: false,
-				error: "All physical verification checkboxes must be confirmed before proceeding.",
+				error:
+					"All physical verification checkboxes must be confirmed before proceeding.",
 			};
 		}
 
@@ -270,7 +284,8 @@ export async function completeBookingPaymentAction({
 		if (!booking.physical_verified) {
 			return {
 				success: false,
-				error: "Physical inspection verification is strictly required before making payment.",
+				error:
+					"Physical inspection verification is strictly required before making payment.",
 			};
 		}
 
@@ -290,7 +305,10 @@ export async function completeBookingPaymentAction({
 			.eq("id", bookingId);
 
 		if (bookingUpdateErr) {
-			console.error("completeBookingPaymentAction booking error:", bookingUpdateErr);
+			console.error(
+				"completeBookingPaymentAction booking error:",
+				bookingUpdateErr,
+			);
 			return { success: false, error: bookingUpdateErr.message };
 		}
 
