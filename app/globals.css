@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+:root {
 	--font-sans: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
 	--font-mono: "SFMono-Regular", "Consolas", monospace;
 
@@ -74,9 +74,6 @@
 	--color-warning-500: #f59e0b;
 	--color-danger-500: #f43f5e;
 	--color-info-500: #0ea5e9;
-}
-
-:root {
 	color-scheme: light;
 }
 
@@ -115,7 +112,6 @@ textarea {
 }
 
 :focus-visible {
-	/* outline: 2px solid rgba(15, 23, 42, 0.7); */
 	outline-offset: 3px;
 }
 
@@ -196,13 +192,10 @@ textarea {
 	}
 }
 
-/* ── Toast ─────────────────────────────────────────────────────────────────── */
-
 [data-sonner-toaster] {
 	--width: auto;
 }
 
-/* match the image: light grey bg, rounded, subtle shadow */
 [data-sonner-toast][data-styled="true"] {
 	background: rgba(243, 244, 246, 0.82) !important;
 	backdrop-filter: blur(20px) saturate(160%) !important;
@@ -218,7 +211,6 @@ textarea {
 	max-width: 340px !important;
 }
 
-/* per-type: very subtle tint, keeps the grey-glass feel from the image */
 [data-sonner-toast][data-styled="true"][data-type="success"] {
 	background: rgba(240, 253, 247, 0.85) !important;
 }
