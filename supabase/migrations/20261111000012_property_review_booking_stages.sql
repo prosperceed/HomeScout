@@ -478,12 +478,14 @@ CREATE POLICY "bookings: client can update own booking"
 
 -- 9. Update property_listings policies so under_review and rented properties remain visible
 DROP POLICY IF EXISTS "property_listings: anyone can read available" ON public.property_listings;
+DROP POLICY IF EXISTS "property_listings: anyone can read active or under review" ON public.property_listings;
+DROP POLICY IF EXISTS "property_listings: users can mark under review on inquiry" ON public.property_listings;
+
 CREATE POLICY "property_listings: anyone can read active or under review"
   ON public.property_listings FOR SELECT
   USING (status IN ('available', 'under_review', 'rented') OR owner_id = auth.uid() OR public.is_admin());
 
 -- Allow authenticated participants to set status to under_review during inquiry
-DROP POLICY IF EXISTS "property_listings: users can mark under review on inquiry" ON public.property_listings;
 CREATE POLICY "property_listings: users can mark under review on inquiry"
   ON public.property_listings FOR UPDATE
   TO authenticated

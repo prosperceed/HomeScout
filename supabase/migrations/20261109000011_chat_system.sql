@@ -56,6 +56,12 @@ CREATE INDEX IF NOT EXISTS message_attachments_msg_idx ON public.message_attachm
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.message_attachments ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "conversations: participant can select" ON public.conversations;
+DROP POLICY IF EXISTS "conversations: participant can insert" ON public.conversations;
+DROP POLICY IF EXISTS "conversations: participant can update" ON public.conversations;
+DROP POLICY IF EXISTS "message_attachments: participant can select" ON public.message_attachments;
+DROP POLICY IF EXISTS "message_attachments: sender can insert" ON public.message_attachments;
+
 CREATE POLICY "conversations: participant can select"
   ON public.conversations FOR SELECT
   TO authenticated

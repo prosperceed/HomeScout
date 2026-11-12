@@ -54,13 +54,19 @@ function SidebarLink({
 					: "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
 			}`}
 		>
-			<Icon className={`h-[18px] w-[18px] shrink-0 ${active ? "text-white" : "text-slate-400 group-hover:text-slate-700"}`} />
+			<Icon
+				className={`h-[18px] w-[18px] shrink-0 ${active ? "text-white" : "text-slate-400 group-hover:text-slate-700"}`}
+			/>
 			<span>{label}</span>
 		</Link>
 	);
 }
 
-export default function LandlordLayout({ children }: { children: React.ReactNode }) {
+export default function LandlordLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -75,7 +81,9 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 	};
 
 	const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
-		<aside className={`flex bg-white ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}>
+		<aside
+			className={`flex bg-white ${mobile ? "h-full w-72 flex-col" : "h-full flex-col"}`}
+		>
 			<div className="flex h-16 shrink-0 items-center border-b border-slate-100 px-6">
 				<Link
 					href="/landlord"
@@ -87,19 +95,50 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 				</Link>
 			</div>
 			<nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
-				<p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Main</p>
+				<p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+					Main
+				</p>
 				{landlordNav.map(({ href, label, icon, exact }) => (
-					<SidebarLink key={href} href={href} label={label} icon={icon} active={isActive(href, exact)} onClick={() => setSidebarOpen(false)} />
+					<SidebarLink
+						key={href}
+						href={href}
+						label={label}
+						icon={icon}
+						active={isActive(href, exact)}
+						onClick={() => setSidebarOpen(false)}
+					/>
 				))}
 			</nav>
 			<div className="shrink-0 border-t border-slate-100 px-3 py-4 space-y-1">
-				<p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">Account</p>
+				<p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+					Account
+				</p>
 				{landlordNavBottom.map(({ href, label, icon }) => (
-					<SidebarLink key={href} href={href} label={label} icon={icon} active={isActive(href)} onClick={() => setSidebarOpen(false)} />
+					<SidebarLink
+						key={href}
+						href={href}
+						label={label}
+						icon={icon}
+						active={isActive(href)}
+						onClick={() => setSidebarOpen(false)}
+					/>
 				))}
-				<button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 cursor-pointer">
-					<svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-						<path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+				<button
+					onClick={handleLogout}
+					className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+				>
+					<svg
+						className="h-[18px] w-[18px]"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						strokeWidth={2}
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+						/>
 					</svg>
 					Logout
 				</button>
@@ -108,8 +147,12 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 						<UserRound className="h-5 w-5" />
 					</div>
 					<div className="min-w-0">
-						<p className="truncate text-sm font-bold text-slate-800">Landlord</p>
-						<p className="truncate text-xs text-slate-400">landlord@homescout.ng</p>
+						<p className="truncate text-sm font-bold text-slate-800">
+							Landlord
+						</p>
+						<p className="truncate text-xs text-slate-400">
+							landlord@homescout.ng
+						</p>
 					</div>
 				</div>
 			</div>
@@ -125,10 +168,16 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 			</div>
 			{sidebarOpen && (
 				<div className="fixed inset-0 z-[60] lg:hidden">
-					<div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+					<div
+						className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+						onClick={() => setSidebarOpen(false)}
+					/>
 					<div className="absolute inset-y-0 left-0 z-10 shadow-xl">
 						<Sidebar mobile />
-						<button onClick={() => setSidebarOpen(false)} className="absolute right-3 top-4 flex h-8 w-8 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100">
+						<button
+							onClick={() => setSidebarOpen(false)}
+							className="absolute right-3 top-4 flex h-8 w-8 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100"
+						>
 							<X className="h-4 w-4" />
 						</button>
 					</div>
@@ -137,15 +186,22 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 			<div className="flex min-w-0 flex-1 flex-col">
 				<header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-6">
 					<div className="flex items-center gap-3">
-						<button onClick={() => setSidebarOpen(true)} className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+						<button
+							onClick={() => setSidebarOpen(true)}
+							className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 lg:hidden"
+							aria-label="Open menu"
+						>
 							<Menu className="h-5 w-5" />
 						</button>
 						<p className="hidden text-xs font-semibold text-slate-400 sm:block">
-							{landlordNav.find((n) => isActive(n.href, n.exact))?.label ?? "Dashboard"}
+							{landlordNav.find((n) => isActive(n.href, n.exact))?.label ??
+								"Dashboard"}
 						</p>
 					</div>
 					<div className="flex items-center gap-2">
-						<button className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100"><Search className="h-4 w-4" /></button>
+						<button className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100">
+							<Search className="h-4 w-4" />
+						</button>
 						<button className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100">
 							<Bell className="h-4 w-4" />
 							<span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-teal-500 ring-2 ring-white" />
@@ -154,7 +210,9 @@ export default function LandlordLayout({ children }: { children: React.ReactNode
 							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-teal-700 text-white">
 								<UserRound className="h-4 w-4" />
 							</div>
-							<span className="text-sm font-semibold text-slate-700">My Account</span>
+							<span className="text-sm font-semibold text-slate-700">
+								My Account
+							</span>
 						</div>
 					</div>
 				</header>

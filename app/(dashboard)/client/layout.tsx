@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import {
 	BarChart3,
 	Bell,
@@ -65,11 +65,7 @@ function SidebarLink({
 	);
 }
 
-export default function ClientLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+function ClientDashboardContents({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -150,14 +146,12 @@ export default function ClientLayout({
 
 	return (
 		<div className="flex min-h-screen bg-[#f0ece8]">
-			{/* Desktop sidebar */}
 			<div className="hidden w-[220px] shrink-0 lg:block">
 				<div className="fixed inset-y-0 left-0 w-[220px]">
 					<Sidebar />
 				</div>
 			</div>
 
-			{/* Mobile drawer */}
 			{sidebarOpen && (
 				<div className="fixed inset-0 z-[60] lg:hidden">
 					<div
@@ -176,7 +170,6 @@ export default function ClientLayout({
 				</div>
 			)}
 
-			{/* Main */}
 			<div className="flex min-w-0 flex-1 flex-col">
 				<header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-stone-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-8">
 					<div className="flex items-center gap-3">
@@ -224,5 +217,17 @@ export default function ClientLayout({
 				</main>
 			</div>
 		</div>
+	);
+}
+
+export default function ClientLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return (
+		<Suspense fallback={<div className="min-h-screen bg-[#f0ece8]" />}>
+			<ClientDashboardContents>{children}</ClientDashboardContents>
+		</Suspense>
 	);
 }
