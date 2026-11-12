@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { X, MapPin, Upload, ChevronDown, CheckCircle2 } from "lucide-react";
-import { PropertyMapPicker, type PickedLocation } from "@/components/maps/PropertyMapPicker";
+import {
+	PropertyMapPicker,
+	type PickedLocation,
+} from "@/components/maps/PropertyMapPicker";
 import { PROPERTY_TYPES, AMENITIES } from "@/lib/constants";
 
 interface NewListingModalProps {
@@ -34,13 +37,18 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 
 	if (!open) return null;
 
-	const handleField = (key: keyof typeof form) => (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-	) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
+	const handleField =
+		(key: keyof typeof form) =>
+		(
+			e: React.ChangeEvent<
+				HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+			>,
+		) =>
+			setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
 	const toggleAmenity = (a: string) =>
 		setSelectedAmenities((prev) =>
-			prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]
+			prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a],
 		);
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +76,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 							<h2 className="text-lg font-black tracking-[-0.03em] text-slate-900">
 								New Property Listing
 							</h2>
-							<p className="mt-0.5 text-xs text-slate-400">Fill in the details and pin the location</p>
+							<p className="mt-0.5 text-xs text-slate-400">
+								Fill in the details and pin the location
+							</p>
 						</div>
 						<button
 							onClick={onClose}
@@ -80,7 +90,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 
 					<form onSubmit={handleSubmit} className="px-6 py-6 space-y-5">
 						<div className="space-y-1.5">
-							<label className="text-xs font-bold text-slate-700">Listing Title</label>
+							<label className="text-xs font-bold text-slate-700">
+								Listing Title
+							</label>
 							<input
 								required
 								value={form.title}
@@ -92,7 +104,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-1.5">
-								<label className="text-xs font-bold text-slate-700">Property Type</label>
+								<label className="text-xs font-bold text-slate-700">
+									Property Type
+								</label>
 								<div className="relative">
 									<select
 										required
@@ -102,7 +116,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 									>
 										<option value="">Select type</option>
 										{PROPERTY_TYPES.map((pt) => (
-											<option key={pt.value} value={pt.value}>{pt.label}</option>
+											<option key={pt.value} value={pt.value}>
+												{pt.label}
+											</option>
 										))}
 									</select>
 									<ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -110,7 +126,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 							</div>
 
 							<div className="space-y-1.5">
-								<label className="text-xs font-bold text-slate-700">Price Period</label>
+								<label className="text-xs font-bold text-slate-700">
+									Price Period
+								</label>
 								<div className="relative">
 									<select
 										value={form.price_period}
@@ -118,7 +136,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 										className="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-800 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
 									>
 										{PRICE_PERIODS.map((p) => (
-											<option key={p.value} value={p.value}>{p.label}</option>
+											<option key={p.value} value={p.value}>
+												{p.label}
+											</option>
 										))}
 									</select>
 									<ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -128,7 +148,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 
 						<div className="grid grid-cols-3 gap-4">
 							<div className="space-y-1.5">
-								<label className="text-xs font-bold text-slate-700">Price (₦)</label>
+								<label className="text-xs font-bold text-slate-700">
+									Price (₦)
+								</label>
 								<input
 									required
 									type="number"
@@ -139,7 +161,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 								/>
 							</div>
 							<div className="space-y-1.5">
-								<label className="text-xs font-bold text-slate-700">Bedrooms</label>
+								<label className="text-xs font-bold text-slate-700">
+									Bedrooms
+								</label>
 								<input
 									type="number"
 									value={form.bedrooms}
@@ -150,7 +174,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 								/>
 							</div>
 							<div className="space-y-1.5">
-								<label className="text-xs font-bold text-slate-700">Bathrooms</label>
+								<label className="text-xs font-bold text-slate-700">
+									Bathrooms
+								</label>
 								<input
 									type="number"
 									value={form.bathrooms}
@@ -163,7 +189,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 						</div>
 
 						<div className="space-y-1.5">
-							<label className="text-xs font-bold text-slate-700">Description</label>
+							<label className="text-xs font-bold text-slate-700">
+								Description
+							</label>
 							<textarea
 								rows={3}
 								value={form.description}
@@ -174,7 +202,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 						</div>
 
 						<div className="space-y-2">
-							<label className="text-xs font-bold text-slate-700">Amenities</label>
+							<label className="text-xs font-bold text-slate-700">
+								Amenities
+							</label>
 							<div className="flex flex-wrap gap-2">
 								{AMENITIES.map((a) => {
 									const on = selectedAmenities.includes(a);
@@ -197,7 +227,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 						</div>
 
 						<div className="space-y-1.5">
-							<label className="text-xs font-bold text-slate-700">Property Location</label>
+							<label className="text-xs font-bold text-slate-700">
+								Property Location
+							</label>
 							<button
 								type="button"
 								onClick={() => setMapOpen(true)}
@@ -210,7 +242,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 								{location ? (
 									<>
 										<CheckCircle2 className="h-4 w-4 text-blue-600" />
-										<span className="flex-1 truncate text-left">{location.formatted_address}</span>
+										<span className="flex-1 truncate text-left">
+											{location.formatted_address}
+										</span>
 									</>
 								) : (
 									<>
@@ -221,7 +255,8 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 							</button>
 							{location && (
 								<p className="text-xs text-slate-400">
-									{location.lat.toFixed(5)}, {location.lng.toFixed(5)} · {location.state}
+									{location.lat.toFixed(5)}, {location.lng.toFixed(5)} ·{" "}
+									{location.state}
 								</p>
 							)}
 						</div>
@@ -230,7 +265,9 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 							<label className="text-xs font-bold text-slate-700">Photos</label>
 							<div className="flex h-24 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 text-slate-400 transition hover:border-blue-300 hover:bg-blue-50/40">
 								<Upload className="h-5 w-5" />
-								<span className="text-sm font-medium">Upload property images</span>
+								<span className="text-sm font-medium">
+									Upload property images
+								</span>
 							</div>
 						</div>
 
@@ -245,7 +282,10 @@ export function NewListingModal({ open, onClose }: NewListingModalProps) {
 							<button
 								type="submit"
 								disabled={isSubmitting}
-								className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 px-6 py-2.5 text-sm font-bold text-white shadow-[0_2px_8px_rgba(37,99,235,0.3)] transition hover:shadow-[0_4px_16px_rgba(37,99,235,0.4)] disabled:opacity-60"
+								style={{
+									background: "linear-gradient(to right, #3b82f6, #1d4ed8)",
+								}}
+								className="flex items-center gap-2 bg-slate-900 rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-[0_2px_8px_rgba(37,99,235,0.3)] transition hover:shadow-[0_4px_16px_rgba(37,99,235,0.4)] disabled:opacity-60"
 							>
 								{isSubmitting ? (
 									<>

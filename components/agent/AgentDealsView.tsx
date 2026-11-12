@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Briefcase, Search, ExternalLink, MapPin } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
+import { formatDate, formatDateShort } from "@/lib/utils";
 
 const stageConfig: Record<string, { label: string; classes: string }> = {
 	pending: { label: "Under Review", classes: "bg-amber-50 text-amber-700 ring-1 ring-amber-200" },
@@ -164,7 +165,7 @@ export function AgentDealsView({ bookings }: { bookings: BookingWithProperty[] }
 												)}
 												{d.viewing_date && (
 													<p className="mt-0.5 text-[10px] text-teal-700 font-medium">
-														Viewing: {new Date(d.viewing_date).toLocaleDateString("en-NG", { month: "short", day: "numeric" })}
+														Viewing: {formatDateShort(d.viewing_date)}
 													</p>
 												)}
 											</td>

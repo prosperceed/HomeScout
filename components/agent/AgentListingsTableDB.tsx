@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Search, SlidersHorizontal, ChevronDown, MoreHorizontal } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
+import { formatDate } from "@/lib/utils";
 
 type BookingStatus = "pending" | "approved" | "viewing" | "rejected" | "cancelled" | "completed";
 
@@ -101,7 +102,7 @@ export function AgentListingsTableDB({ bookings }: Props) {
                     #{booking.id.slice(0, 8).toUpperCase()}
                   </td>
                   <td className="px-4 py-3.5 text-xs text-slate-400">
-                    {new Date(booking.created_at).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" })}
+                    {formatDate(booking.created_at)}
                   </td>
                   <td className="px-4 py-3.5 text-sm font-medium text-slate-700">
                     {booking.client_profile?.full_name ?? "-"}

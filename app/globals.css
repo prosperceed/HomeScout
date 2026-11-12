@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root {
+@theme {
 	--font-sans: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
 	--font-mono: "SFMono-Regular", "Consolas", monospace;
 
@@ -74,6 +74,9 @@
 	--color-warning-500: #f59e0b;
 	--color-danger-500: #f43f5e;
 	--color-info-500: #0ea5e9;
+}
+
+:root {
 	color-scheme: light;
 }
 

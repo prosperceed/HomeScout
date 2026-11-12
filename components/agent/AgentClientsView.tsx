@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search, Users, Mail, Phone, MessageSquare } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
+import { formatDate } from "@/lib/utils";
 
 const statusConfig: Record<string, { label: string; classes: string }> = {
 	pending: { label: "Inquiry Pending", classes: "bg-amber-50 text-amber-700 ring-1 ring-amber-200" },

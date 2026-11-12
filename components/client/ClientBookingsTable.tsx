@@ -3,6 +3,7 @@
 import { ArrowUpRight, Building2, CheckCircle2, Clock, MapPin, Search, XCircle } from "lucide-react";
 import Link from "next/link";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
+import { formatDate } from "@/lib/utils";
 
 type BookingStatus = "pending" | "approved" | "viewing" | "rejected" | "cancelled" | "completed";
 
@@ -35,10 +36,6 @@ function formatPrice(n: number) {
 
 function periodShort(p: string | null | undefined) {
   return p === "per_year" ? "yr" : p === "per_month" ? "mo" : "night";
-}
-
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" });
 }
 
 function firstImage(images: unknown): string | null {

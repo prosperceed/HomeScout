@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search, Users, Mail, Phone, MapPin, MessageSquare } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
+import { formatDate, formatDateShort } from "@/lib/utils";
 
 type BookingStatus = "pending" | "approved" | "viewing" | "rejected" | "cancelled" | "completed";
 

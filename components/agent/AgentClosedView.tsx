@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Search, ExternalLink, MapPin } from "lucide-react";
 import type { BookingWithProperty } from "@/lib/supabase/queries";
+import { formatDate } from "@/lib/utils";
 
 function formatPrice(n: number) {
 	if (n >= 1_000_000) return `₦${(n / 1_000_000).toFixed(1)}M`;
