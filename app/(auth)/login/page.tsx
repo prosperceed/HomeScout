@@ -6,6 +6,7 @@ import { FormEvent, Suspense, useState } from "react";
 import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
+import posthog from "posthog-js";
 
 function LoginPageInner() {
 	const searchParams = useSearchParams();
@@ -29,6 +30,7 @@ function LoginPageInner() {
 			toast.success("Logged in", { description: "Redirecting…" });
 
 			const role = String(data.user.user_metadata?.role ?? "client");
+			posthog.capture("user_login_completed", { role });
 			const next =
 				searchParams.get("next") ??
 				searchParams.get("redirect") ??

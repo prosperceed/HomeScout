@@ -8,6 +8,7 @@ import { MapPin, Bed, Bath, ArrowUpRight, ShieldCheck, Bookmark } from "lucide-r
 import { LISTING_TAGS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
+import posthog from "posthog-js";
 
 interface PropertyCardProps {
 	id?: string;
@@ -145,6 +146,10 @@ export function PropertyCard({
 					description: "Removed from your saved homes.",
 				});
 			}
+
+			posthog.capture("property_bookmark_updated", {
+				bookmark_status: nextState ? "saved" : "removed",
+			});
 		} catch (err) {
 			setBookmarked(!nextState);
 			onBookmarkToggle?.(id, !nextState);

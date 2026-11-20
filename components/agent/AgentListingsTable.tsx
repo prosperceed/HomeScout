@@ -20,6 +20,7 @@ import { EditListingModal } from "./EditListingModal";
 import { deleteListingAction } from "@/app/actions/listing-actions";
 import { toast } from "@/lib/toast";
 import { formatDate } from "@/lib/utils";
+import posthog from "posthog-js";
 
 type PropertyRow = Tables<"property_listings">;
 
@@ -216,6 +217,9 @@ export default function AgentListingsTable() {
 		const result = await deleteListingAction(deletingListing.id);
 		setIsDeleting(false);
 		if (result.success) {
+			posthog.capture("listing_deleted", {
+				listing_status: deletingListing.status,
+			});
 			toast.success("Listing deleted.");
 			setDeletingListing(null);
 		} else {

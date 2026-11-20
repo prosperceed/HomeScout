@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, MapPin, Home, DollarSign } from "lucide-react";
 import { NIGERIAN_STATES, PROPERTY_TYPES, PRICE_RANGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import posthog from "posthog-js";
 
 type Tab = "location" | "type" | "price";
 
@@ -26,6 +27,13 @@ export default function SearchBar() {
     if (state) params.set("state", state);
     if (propertyType) params.set("type", propertyType);
     if (priceRange) params.set("price", priceRange);
+
+    posthog.capture("property_search_submitted", {
+      has_state_filter: Boolean(state),
+      property_type: propertyType || undefined,
+      has_price_range_filter: Boolean(priceRange),
+    });
+
     router.push(`/explore?${params.toString()}`);
   }
 

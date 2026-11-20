@@ -24,6 +24,7 @@ import { LISTING_TAGS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import { referencePropertyInquiryAction } from "@/app/actions/booking-actions";
+import posthog from "posthog-js";
 
 const periodLabel: Record<string, string> = {
 	per_year: "/ year",
@@ -172,12 +173,28 @@ function PropertyDetailPageInner() {
 					description: "Removed from your saved homes.",
 				});
 			}
+
+			posthog.capture("property_bookmark_updated", {
+				bookmark_status: nextState ? "saved" : "removed",
+			});
 		} catch (err) {
 			setSaved(!nextState);
 			toast.error("Failed to update bookmark", {
 				description:
 					err instanceof Error ? err.message : "Please try again later.",
 			});
+		}
+	};
+
+	const handleContact = (contactMethod: "call" | "message") => {
+		const targetId = property.agent_id || property.owner_id;
+		posthog.capture("property_inquiry_initiated", { contact_method: contactMethod });
+
+		if (contactMethod === "message") {
+			if (targetId) {
+				referencePropertyInquiryAction({ propertyId: property.id, partnerId: targetId }).catch(() => {});
+			}
+			router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
 		}
 	};
 
@@ -483,6 +500,7 @@ function PropertyDetailPageInner() {
 								{property.owner?.phone ? (
 									<a
 										href={`tel:${property.owner.phone}`}
+										onClick={() => handleContact("call")}
 										className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600"
 									>
 										<Phone className="h-4 w-4" />
@@ -491,13 +509,7 @@ function PropertyDetailPageInner() {
 								) : (
 									<button
 										type="button"
-										onClick={() => {
-											const targetId = property.agent_id || property.owner_id;
-											if (targetId) {
-												referencePropertyInquiryAction({ propertyId: property.id, partnerId: targetId }).catch(() => {});
-											}
-											router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
-										}}
+										onClick={() => handleContact("message")}
 										className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600"
 									>
 										<Phone className="h-4 w-4" />
@@ -506,13 +518,7 @@ function PropertyDetailPageInner() {
 								)}
 								<button
 									type="button"
-									onClick={() => {
-										const targetId = property.agent_id || property.owner_id;
-										if (targetId) {
-											referencePropertyInquiryAction({ propertyId: property.id, partnerId: targetId }).catch(() => {});
-										}
-										router.push(`/${userRole}/messages?recipient=${targetId}&property=${property.id}`);
-									}}
+									onClick={() => handleContact("message")}
 									className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-sage-500 py-3.5 text-sm font-bold text-sage-600 transition hover:bg-sage-50"
 								>
 									<MessageCircle className="h-4 w-4" />
