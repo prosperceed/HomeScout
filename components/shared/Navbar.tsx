@@ -35,18 +35,14 @@ const roleNavLinks: Record<string, { label: string; href: string }[]> = {
 		{ label: "Properties", href: "/agent/properties" },
 		{ label: "Portfolio", href: "/agent/portfolio" },
 	],
-	admin: [
-		{ label: "Overview", href: "/admin" },
-		{ label: "Users", href: "/admin/users" },
-		{ label: "Listings", href: "/admin/listings" },
-	],
+	admin: [],
 };
 
 const roleDashboardMap: Record<string, string> = {
 	client: "/client",
 	landlord: "/landlord",
 	agent: "/agent",
-	admin: "/admin",
+	admin: "/admin_panel",
 };
 
 function getRoleFromUser(user: any): string | null {

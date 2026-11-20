@@ -5,12 +5,12 @@ const ROLE_HOME: Record<string, string> = {
 	client: "/client",
 	landlord: "/landlord",
 	agent: "/agent",
-	admin: "/admin",
+	admin: "/admin_panel",
 };
 
 const PROTECTED_PREFIXES: Record<string, string> = {
 	"/agent": "agent",
-	"/admin": "admin",
+	"/admin_panel": "admin",
 	"/landlord": "landlord",
 	"/client": "client",
 };
@@ -54,6 +54,21 @@ export async function middleware(request: NextRequest) {
 		return supabaseResponse;
 	}
 
+	if (pathname.startsWith("/admin_panel")) {
+		if (!user) {
+			const loginUrl = new URL("/login", request.url);
+			loginUrl.searchParams.set("next", pathname);
+			return NextResponse.redirect(loginUrl);
+		}
+		const { data: profile } = await supabase
+			.from("profiles")
+			.select("role")
+			.eq("id", user.id)
+			.maybeSingle();
+		if (profile?.role !== "admin") return NextResponse.redirect(new URL("/explore", request.url));
+		return supabaseResponse;
+	}
+
 	const matchedPrefix = Object.keys(PROTECTED_PREFIXES).find((prefix) =>
 		pathname.startsWith(prefix),
 	);
@@ -88,7 +103,7 @@ export const config = {
 		"/client/:path*",
 		"/landlord/:path*",
 		"/agent/:path*",
-		"/admin/:path*",
+		"/admin_panel/:path*",
 		"/property/:path*",
 	],
 };

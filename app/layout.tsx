@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
+import { AnalyticsTracker } from "@/components/analytics/AnalyticsTracker";
 
 export const metadata: Metadata = {
 	title: {
@@ -60,6 +61,7 @@ export default function RootLayout({
 			</head>
 			<body>
 				{children}
+				<AnalyticsTracker />
 				<Toaster />
 			</body>
 		</html>

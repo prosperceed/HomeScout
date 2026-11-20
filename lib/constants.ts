@@ -67,7 +67,7 @@ export const DASHBOARD_ROUTES: Record<string, string> = {
 	client: "/client",
 	landlord: "/landlord",
 	agent: "/agent",
-	admin: "/admin",
+	admin: "/admin_panel",
 };
 
 export const AUTH_ROUTES = {

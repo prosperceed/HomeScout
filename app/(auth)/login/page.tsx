@@ -36,7 +36,7 @@ function LoginPageInner() {
 					client: "/client",
 					landlord: "/landlord",
 					agent: "/agent",
-					admin: "/admin",
+					admin: "/admin_panel",
 				}[role] ??
 				"/explore";
 

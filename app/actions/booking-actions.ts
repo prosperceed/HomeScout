@@ -289,6 +289,9 @@ export async function completeBookingPaymentAction({
 			};
 		}
 
+		const baseAmount = Number(booking.price_at_booking || 0);
+		const platformFee = Math.round(baseAmount * 0.05) + 25000;
+		const paymentAmount = baseAmount + Math.round(baseAmount * 0.1) + platformFee;
 		const paymentRef = `HS-PAY-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
 		const { error: bookingUpdateErr } = await admin
@@ -298,7 +301,9 @@ export async function completeBookingPaymentAction({
 				stage: "completed",
 				payment_status: "paid",
 				payment_reference: paymentRef,
-				payment_amount: booking.price_at_booking,
+				payment_amount: paymentAmount,
+				platform_fee: platformFee,
+				escrow_status: "held",
 				paid_at: new Date().toISOString(),
 				payment_method: paymentMethod,
 			})

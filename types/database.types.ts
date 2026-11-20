@@ -175,6 +175,8 @@ export type Database = {
 					payment_amount?: number | null;
 					paid_at?: string | null;
 					payment_method?: string | null;
+					platform_fee?: number;
+					escrow_status?: "not_started" | "queued" | "held" | "released" | "refunded";
 					inspection_notes?: string | null;
 					message: string | null;
 					viewing_date: string | null;
