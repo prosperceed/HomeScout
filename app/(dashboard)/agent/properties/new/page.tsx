@@ -18,6 +18,7 @@ import {
 } from "@/components/maps/PropertyMapPicker";
 import { PROPERTY_TYPES, AMENITIES, LISTING_TAGS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import posthog from "posthog-js";
 
 const PRICE_PERIODS = [
 	{ value: "per_year", label: "Per Year" },
@@ -148,6 +149,13 @@ export default function NewListingPage() {
 				.single();
 
 			if (insertErr) throw insertErr;
+
+			posthog.capture("listing_created", {
+				listing_type: form.type,
+				listing_tag: form.listing_tag,
+				image_count: uploadedUrls.length,
+				amenity_count: selectedAmenities.length,
+			});
 
 			setIsSubmitting(false);
 			toast.success("Property added", {

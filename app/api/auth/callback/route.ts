@@ -1,4 +1,6 @@
+import { SeverityNumber } from "@opentelemetry/api-logs";
 import { NextRequest, NextResponse } from "next/server";
+import { posthogLogger } from "@/instrumentation";
 import { createClient } from "@/lib/supabase/server";
 import { DASHBOARD_ROUTES } from "@/lib/constants";
 import type { UserRole } from "@/types";
@@ -27,6 +29,12 @@ export async function GET(request: NextRequest) {
 
 	// Surface Supabase errors back to the login page
 	if (error) {
+		posthogLogger?.emit({
+			body: "auth_callback_completed",
+			severityNumber: SeverityNumber.WARN,
+			attributes: { "auth.callback_outcome": "provider_error" },
+		});
+
 		const params = new URLSearchParams({
 			error,
 			...(errorDescription ? { error_description: errorDescription } : {}),
@@ -35,6 +43,12 @@ export async function GET(request: NextRequest) {
 	}
 
 	if (!code) {
+		posthogLogger?.emit({
+			body: "auth_callback_completed",
+			severityNumber: SeverityNumber.WARN,
+			attributes: { "auth.callback_outcome": "missing_code" },
+		});
+
 		// No code and no error — likely a direct navigation; send home
 		return NextResponse.redirect(`${origin}/`);
 	}
@@ -45,6 +59,12 @@ export async function GET(request: NextRequest) {
 		await supabase.auth.exchangeCodeForSession(code);
 
 	if (exchangeError || !data.session) {
+		posthogLogger?.emit({
+			body: "auth_callback_completed",
+			severityNumber: SeverityNumber.WARN,
+			attributes: { "auth.callback_outcome": "exchange_failed" },
+		});
+
 		const params = new URLSearchParams({
 			error: "auth_callback_failed",
 			error_description:
@@ -58,6 +78,12 @@ export async function GET(request: NextRequest) {
 	const role = data.session.user.user_metadata?.role as UserRole | undefined;
 	const destination =
 		role && DASHBOARD_ROUTES[role] ? DASHBOARD_ROUTES[role] : "/"; // Fallback to home if role is missing
+
+	posthogLogger?.emit({
+		body: "auth_callback_completed",
+		severityNumber: SeverityNumber.INFO,
+		attributes: { "auth.callback_outcome": "success" },
+	});
 
 	return NextResponse.redirect(`${origin}${destination}`);
 }

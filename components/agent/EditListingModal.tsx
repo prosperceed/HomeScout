@@ -7,6 +7,7 @@ import { PROPERTY_TYPES, AMENITIES } from "@/lib/constants";
 import { updateListingAction } from "@/app/actions/listing-actions";
 import { toast } from "@/lib/toast";
 import type { Tables } from "@/types/database.types";
+import posthog from "posthog-js";
 
 type PropertyRow = Tables<"property_listings">;
 
@@ -123,6 +124,11 @@ export function EditListingModal({ listing, open, onClose, onUpdated }: EditList
     setIsSubmitting(false);
 
     if (result.success) {
+      posthog.capture("listing_updated", {
+        listing_type: form.type,
+        listing_tag: form.listing_tag,
+        amenity_count: selectedAmenities.length,
+      });
       toast.success("Listing updated successfully.");
       onUpdated?.();
       onClose();

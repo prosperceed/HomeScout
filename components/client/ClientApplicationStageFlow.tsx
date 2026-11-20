@@ -28,6 +28,7 @@ import {
 	confirmPhysicalVerificationAction,
 	completeBookingPaymentAction,
 } from "@/app/actions/booking-actions";
+import posthog from "posthog-js";
 
 interface ClientApplicationStageFlowProps {
 	booking: BookingWithProperty;
@@ -74,7 +75,9 @@ export function ClientApplicationStageFlow({
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	// Inspection Form State
-	const tomorrowStr = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+	const [tomorrowStr] = useState(
+		() => new Date(Date.now() + 86400000).toISOString().split("T")[0],
+	);
 	const [selectedDate, setSelectedDate] = useState<string>(
 		booking.viewing_date ? booking.viewing_date.split("T")[0] : tomorrowStr,
 	);
@@ -149,6 +152,9 @@ export function ClientApplicationStageFlow({
 				return;
 			}
 
+			posthog.capture("inspection_scheduled", {
+				has_existing_inspection: Boolean(booking.viewing_date),
+			});
 			setActiveStepTab("verification");
 			router.refresh();
 		});
@@ -173,6 +179,7 @@ export function ClientApplicationStageFlow({
 				return;
 			}
 
+			posthog.capture("physical_verification_confirmed");
 			setActiveStepTab("payment");
 			router.refresh();
 		});
@@ -191,6 +198,9 @@ export function ClientApplicationStageFlow({
 				return;
 			}
 
+			posthog.capture("booking_payment_completed", {
+				payment_method: paymentMethod,
+			});
 			setPaidReference(res.paymentReference || "HS-CONFIRMED");
 			setActiveStepTab("completed");
 			router.refresh();
