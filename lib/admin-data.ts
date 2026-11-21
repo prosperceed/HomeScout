@@ -12,16 +12,24 @@ export type AdminDashboardData = {
 	regions: Array<{ name: string; visits: number }>;
 	trend: Array<{ day: string; activity: number; volume: number }>;
 	bookings: Array<Record<string, unknown>>;
+	usersList: Array<Record<string, unknown>>;
+	listingsList: Array<Record<string, unknown>>;
+	tickets: Array<Record<string, unknown>>;
+	messages: Array<Record<string, unknown>>;
 };
 
 export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 	const admin = createAdminClient();
 	const since = new Date(Date.now() - 30 * 86400000).toISOString();
-	const [users, listings, bookings, events] = await Promise.all([
+	const [users, listings, bookings, events, usersList, listingsList, tickets, messages] = await Promise.all([
 		admin.from("profiles").select("id", { count: "exact", head: true }),
 		admin.from("property_listings").select("id", { count: "exact", head: true }),
 		admin.from("bookings").select("id, status, payment_status, escrow_status, price_at_booking, payment_amount, platform_fee, client_id, property_id, created_at, paid_at").order("created_at", { ascending: false }).limit(100),
 		admin.from("analytics_events").select("region, occurred_at").gte("occurred_at", since),
+		admin.from("profiles").select("id, full_name, email, role, verification_status, created_at, phone").order("created_at", { ascending: false }).limit(200),
+		admin.from("property_listings").select("id, title, status, price, price_period, type, owner_id, owner_type, is_verified, is_featured, created_at, updated_at").order("created_at", { ascending: false }).limit(200),
+		admin.from("support_tickets").select("id, subject, category, priority, status, created_by, assigned_to, created_at, updated_at, requester:profiles!support_tickets_created_by_fkey(full_name, email, role)").order("updated_at", { ascending: false }).limit(100),
+		admin.from("support_messages").select("id, ticket_id, sender_id, body, created_at, sender:profiles!support_messages_sender_id_fkey(full_name, role)").order("created_at", { ascending: true }).limit(500),
 	]);
 
 	const rows = bookings.data ?? [];
@@ -51,5 +59,9 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 		regions: [...byRegion.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([name, visits]) => ({ name, visits })),
 		trend: [...trend.entries()].map(([day, value]) => ({ day, ...value })),
 		bookings: rows,
+		usersList: usersList.data ?? [],
+		listingsList: listingsList.data ?? [],
+		tickets: tickets.data ?? [],
+		messages: messages.data ?? [],
 	};
 }

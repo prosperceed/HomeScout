@@ -196,6 +196,28 @@ export type Database = {
 				Update: Partial<Database["public"]["Tables"]["bookings"]["Insert"]>;
 			};
 
+			support_tickets: {
+				Row: {
+					id: string;
+					created_by: string;
+					assigned_to: string | null;
+					subject: string;
+					category: string;
+					priority: string;
+					status: string;
+					created_at: string;
+					updated_at: string;
+				};
+				Insert: Omit<Database["public"]["Tables"]["support_tickets"]["Row"], "id" | "created_at" | "updated_at">;
+				Update: Partial<Database["public"]["Tables"]["support_tickets"]["Insert"]>;
+			};
+
+			support_messages: {
+				Row: { id: string; ticket_id: string; sender_id: string; body: string; created_at: string };
+				Insert: Omit<Database["public"]["Tables"]["support_messages"]["Row"], "id" | "created_at">;
+				Update: never;
+			};
+
 			saved_properties: {
 				Row: {
 					id: string;
