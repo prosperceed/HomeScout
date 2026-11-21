@@ -24,7 +24,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
 	const [users, listings, bookings, events, usersList, listingsList, tickets, messages] = await Promise.all([
 		admin.from("profiles").select("id", { count: "exact", head: true }),
 		admin.from("property_listings").select("id", { count: "exact", head: true }),
-		admin.from("bookings").select("id, status, payment_status, escrow_status, price_at_booking, payment_amount, platform_fee, client_id, property_id, created_at, paid_at").order("created_at", { ascending: false }).limit(100),
+		admin.from("bookings").select("id, status, payment_status, escrow_status, price_at_booking, payment_amount, platform_fee, client_id, agent_id, property_id, created_at, paid_at, client:profiles!bookings_client_id_fkey(full_name, email, role), agent:profiles!bookings_agent_id_fkey(full_name, email, role), property:property_listings!bookings_property_id_fkey(title, formatted_address, city, state, owner_type, owner:profiles!property_listings_owner_id_fkey(full_name, email, role))").order("created_at", { ascending: false }).limit(100),
 		admin.from("analytics_events").select("region, occurred_at").gte("occurred_at", since),
 		admin.from("profiles").select("id, full_name, email, role, verification_status, created_at, phone").order("created_at", { ascending: false }).limit(200),
 		admin.from("property_listings").select("id, title, status, price, price_period, type, owner_id, owner_type, is_verified, is_featured, created_at, updated_at").order("created_at", { ascending: false }).limit(200),

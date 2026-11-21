@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, BarChart3, Building2, CheckCircle2, Clock3, MapPin, ShieldCheck, Users, WalletCards, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, Building2, CheckCircle2, MapPin, Users, type LucideIcon } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { AdminDashboardData } from "@/lib/admin-data";
 
 const money = (value: number) => `₦${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 const compactMoney = (value: number) => value >= 1_000_000 ? `₦${(value / 1_000_000).toFixed(1)}m` : money(value);
-const metrics: Array<{ label: string; key: "volume" | "escrow" | "revenue" | "queued"; icon: LucideIcon; tone: string; marker: string }> = [
-	{ label: "Gross transacted", key: "volume", icon: BarChart3, tone: "bg-sage-50 text-sage-700", marker: "Live" },
-	{ label: "Funds in escrow", key: "escrow", icon: ShieldCheck, tone: "bg-teal-50 text-teal-700", marker: "Tracked" },
-	{ label: "Treasury revenue", key: "revenue", icon: WalletCards, tone: "bg-slate-100 text-slate-700", marker: "Collected" },
-	{ label: "Queued transactions", key: "queued", icon: Clock3, tone: "bg-teal-50 text-teal-700", marker: "Action needed" },
+const metrics: Array<{ label: string; key: "volume" | "escrow" | "revenue" | "queued"; marker: string }> = [
+	{ label: "Gross transacted", key: "volume", marker: "Live" },
+	{ label: "Funds in escrow", key: "escrow", marker: "Tracked" },
+	{ label: "Treasury revenue", key: "revenue", marker: "Collected" },
+	{ label: "Queued transactions", key: "queued", marker: "Action needed" },
 ];
 
 export function AdminOverview({ data }: { data: AdminDashboardData }) {
@@ -25,7 +25,14 @@ function WelcomeBanner({ data }: { data: AdminDashboardData }) {
 }
 
 function MetricGrid({ data }: { data: AdminDashboardData }) {
-	return <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{metrics.map(({ label, key, icon: Icon, tone, marker }, index) => <article key={key} className={`relative min-w-0 overflow-hidden rounded-[22px] p-4 transition-colors ${index === 0 ? "bg-gradient-to-br from-sage-100 via-teal-50 to-sage-200/70 hover:from-sage-200/80" : index === 1 ? "bg-gradient-to-br from-teal-100 via-white to-sage-100 hover:from-teal-200/70" : index === 2 ? "bg-gradient-to-br from-slate-100 via-sage-50 to-slate-200/80 hover:from-slate-200/80" : "bg-gradient-to-br from-teal-100 via-slate-50 to-teal-200/70 hover:from-teal-200/80"}`}><div className="flex items-start justify-between gap-2"><div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${tone}`}><Icon className="h-[17px] w-[17px]" /></div><span className="truncate rounded-full bg-white/75 px-2 py-1 text-[10px] font-bold text-slate-600">{marker}</span></div><p className="mt-5 text-[11px] font-semibold text-slate-700">{label}</p><p className="mt-1 truncate text-2xl font-black leading-tight tracking-[-0.04em] tabular-nums text-slate-950 sm:text-[25px]">{key === "queued" ? data[key].toLocaleString() : compactMoney(data[key])}</p></article>)}</div>;
+	return <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{metrics.map(({ label, key, marker }, index) => <article key={key} className={`relative flex min-h-[148px] min-w-0 overflow-hidden rounded-[22px] p-5 text-white transition-transform hover:-translate-y-0.5 ${index === 0 ? "bg-gradient-to-br from-slate-700 via-slate-600 to-sage-700" : index === 1 ? "bg-gradient-to-br from-teal-800 via-teal-700 to-sage-700" : index === 2 ? "bg-gradient-to-br from-sage-800 via-sage-700 to-slate-700" : "bg-gradient-to-br from-slate-700 via-teal-800 to-slate-800"}`}><div className="relative z-10 flex min-w-0 flex-1 flex-col"><span className="w-fit rounded-full bg-white/15 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-white/80">{marker}</span><p className="mt-auto text-[11px] font-semibold text-white/80">{label}</p><p className="mt-1 truncate text-2xl font-black leading-none tracking-[-0.04em] tabular-nums sm:text-[26px]">{key === "queued" ? data[key].toLocaleString() : compactMoney(data[key])}</p></div><MetricArtwork variant={index} /></article>)}</div>;
+}
+
+function MetricArtwork({ variant }: { variant: number }) {
+	if (variant === 0) return <svg viewBox="0 0 100 80" className="absolute right-3 bottom-3 h-[68px] w-[84px] text-white/70" aria-hidden="true"><path d="M12 62 31 45l14 9 25-29" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /><path d="m60 25 10 0 0 10" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /><path d="M12 68h68" stroke="currentColor" strokeWidth="2" opacity=".35" /></svg>;
+	if (variant === 1) return <svg viewBox="0 0 100 80" className="absolute right-3 bottom-3 h-[68px] w-[84px] text-white/70" aria-hidden="true"><rect x="23" y="28" width="54" height="35" rx="7" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M31 28v-5c0-7 5-12 12-12h14c7 0 12 5 12 12v5M43 45h14" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><circle cx="50" cy="45" r="4" fill="currentColor" /></svg>;
+	if (variant === 2) return <svg viewBox="0 0 100 80" className="absolute right-3 bottom-3 h-[68px] w-[84px] text-white/70" aria-hidden="true"><path d="M25 28h50v34H25z" fill="none" stroke="currentColor" strokeWidth="3" /><path d="M32 36h36M32 45h24M32 54h18" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /><circle cx="69" cy="58" r="10" fill="currentColor" opacity=".25" /><path d="M64 58h10M69 53v10" stroke="currentColor" strokeWidth="2" /></svg>;
+	return <svg viewBox="0 0 100 80" className="absolute right-3 bottom-3 h-[68px] w-[84px] text-white/70" aria-hidden="true"><circle cx="50" cy="42" r="24" fill="none" stroke="currentColor" strokeWidth="4" /><path d="M50 42V28M50 42l10 7M50 12v5M50 67v5M20 42h5M75 42h5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>;
 }
 
 function ActivityChart({ data, mode, onModeChange }: { data: Array<{ day: string; activity: number; volume: number; label: string }>; mode: "activity" | "volume"; onModeChange: (mode: "activity" | "volume") => void }) {

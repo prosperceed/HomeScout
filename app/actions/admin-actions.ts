@@ -110,3 +110,19 @@ export async function updateSupportTicketAction(input: { id: string; status: str
 		return error ? { success: false, error: error.message } : { success: true };
 	} catch (error) { return { success: false, error: error instanceof Error ? error.message : "Unable to update support ticket" }; }
 }
+
+export async function sendAdminEmailAction(input: { recipientId: string; subject: string; message: string }) {
+	try {
+		const { admin } = await requireAdmin();
+		if (!process.env.RESEND_API_KEY || !process.env.ADMIN_EMAIL_FROM) return { success: false, error: "Configure RESEND_API_KEY and ADMIN_EMAIL_FROM before sending email." };
+		if (!input.subject.trim() || !input.message.trim()) return { success: false, error: "Subject and message are required." };
+		const { data: recipient, error: recipientError } = await admin.from("profiles").select("email, full_name").eq("id", input.recipientId).single();
+		if (recipientError || !recipient?.email) return { success: false, error: "This account does not have a deliverable email address." };
+		const response = await fetch("https://api.resend.com/emails", {
+			method: "POST",
+			headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+			body: JSON.stringify({ from: process.env.ADMIN_EMAIL_FROM, to: [recipient.email], subject: input.subject.trim(), text: `Hello ${recipient.full_name || "there"},\n\n${input.message.trim()}\n\nHomeScout Operations` }),
+		});
+		return response.ok ? { success: true } : { success: false, error: "The email provider could not deliver this message." };
+	} catch (error) { return { success: false, error: error instanceof Error ? error.message : "Unable to send email" }; }
+}
