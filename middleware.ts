@@ -56,9 +56,7 @@ export async function middleware(request: NextRequest) {
 
 	if (pathname.startsWith("/admin_panel")) {
 		if (!user) {
-			const loginUrl = new URL("/login", request.url);
-			loginUrl.searchParams.set("next", pathname);
-			return NextResponse.redirect(loginUrl);
+			return supabaseResponse;
 		}
 		const { data: profile } = await supabase
 			.from("profiles")
