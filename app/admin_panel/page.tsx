@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getAdminDashboardData } from "@/lib/admin-data";
 import { AdminPanel } from "@/components/admin/AdminPanel";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPanelPage() {
 	const supabase = await createClient();
 	const { data: { user } } = await supabase.auth.getUser();
